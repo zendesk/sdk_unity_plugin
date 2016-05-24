@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Unity</string>
+    <string name="title_activity_rate_my_app">RateMyAppActivity</string>
+    <string name="push_title">Zendesk Unity App</string>
+</resources>

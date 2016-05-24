@@ -1,0 +1,46 @@
+build
+build/*
+plugin/IOSBuild
+plugin/IOSBuild/*
+plugin/Library
+plugin/Library/*
+plugin/Temp
+plugin/Temp/*
+plugin/Zendesk
+plugin/ProjectSettings
+
+# android files
+*.apk
+*.ap_
+*/bin
+*/gen
+*/obj
+
+# built products
+*/bin/*
+*/jar/*
+*.pyc
+.settings/
+local.properties
+proguard/
+*.swo
+*.swp
+*.iml
+.idea/
+.gradle
+*.dex
+*.class
+
+# gitignore
+.history
+.DS_Store
+
+# files to be ignored if the project is built directly from example scene
+*.csproj
+plugin/Library
+plugin/ProjectSettings
+plugin/Temp
+plugin/iOSBuild
+plugin/plugin-csharp.sln
+plugin/plugin.sln
+plugin/plugin.userprefs

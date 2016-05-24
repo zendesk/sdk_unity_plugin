@@ -1,0 +1,35 @@
+// build file for ios-plugin component of the Urban Airship Unity SDK
+// to be packaged up for the Zendesk Unity SDK
+
+import java.util.regex.Pattern
+
+task clean(type: Delete) {
+    delete "$buildDir/unity-plugin"
+}
+
+task build << {
+    // Copy the plugin src
+    copy {
+        from file("src")
+        into file("$buildDir/unity-plugin/Assets/Plugins/iOS")
+    }
+
+    // Copy the plugin editor
+    copy {
+        from file("editor")
+        into file("$buildDir/unity-plugin/Assets/UrbanAirship/Editor")
+    }
+
+     // Copy the airshipconfig.properties
+    copy {
+        from file("AirshipConfig-template.plist")
+        into file("$buildDir/unity-plugin/Assets/Plugins/iOS")
+        rename "AirshipConfig-template.plist", "AirshipConfig.plist"
+        filter { String line ->
+            line.replaceAll(Pattern.quote("APP_KEY"), uaAppKey)
+                .replaceAll(Pattern.quote("APP_SECRET"), uaAppSecret)
+        }
+    }
+}
+
+build.dependsOn("clean")

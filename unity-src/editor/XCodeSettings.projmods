@@ -1,0 +1,13 @@
+{
+    "group":       "Zendesk",
+    "patches":     [],
+    "libs":        [],
+    "frameworks":  ["Security.framework","MobileCoreServices.framework", "../../Plugins/iOS/ZendeskSDK.framework"],
+    "frameworksearchpaths":[],
+    "headerpaths": [],
+    "files":       ["../../Plugins/iOS/ZendeskSDK.bundle", "../../Plugins/iOS/ZendeskSDKStrings.bundle", "../../Plugins/iOS/ZendeskSDK.framework"],
+    "folders":     [],
+    "excludes":    [],
+    "buildSettings": {
+    }
+}

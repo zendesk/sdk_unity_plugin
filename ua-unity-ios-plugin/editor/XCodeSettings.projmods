@@ -1,0 +1,14 @@
+{
+    "group":       "UrbanAirship",
+    "patches":     [],
+    "libs":        [],
+    "frameworks":  ["MessageUI.framework","MapKit.framework","Security.framework","PassKit.framework","CoreData.framework","CoreTelephony.framework","CoreText.framework","libz.dylib","libsqlite3.dylib"],
+    "frameworksearchpaths":[],
+    "headerpaths": [],
+    "files":       ["../../Plugins/iOS/AirshipConfig.plist"],
+    "folders":     [],
+    "excludes":    [],
+    "buildSettings": {
+    	"OTHER_LDFLAGS" : ["-ObjC"]
+    }
+}
