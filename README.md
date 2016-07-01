@@ -11,7 +11,11 @@ This is a Unity plugin that wraps the iOS and Android Zendesk SDKs. It also allo
 ## Requirements
 
 - Unity 5.0+
-- Android SDK with the latest support repo and libaries installed. (Required to build the plugin, even if you are just using iOS)
+- Xcode 7.0+ (if building for iOS)
+- Android SDK with the latest support repo and libraries installed. (Required to build the plugin, even if you are just using iOS)
+- Note that you must have the "Android Support Library" installed. You can download this using the Android SDK Manager. 
+If you don't see this as an available option, make sure you are using the standalone SDK Manager (not the Android Studio one),
+and tick the "Obsolete" checkbox.
 
 ## Basics
 
