@@ -223,6 +223,7 @@ To find list of strings, see:
 https://developer.zendesk.com/embeddables/docs/android/customization
 
 ## Known issues
+
 1. External ID on anonymous authentication for iOS will not be picked up by the server. Anonymous authentication will still work, but the external ID will not be recognised.
 2. Push notification deep-linking does not work. It will open the app, but won't deep-link to the ticket. 
 3. When creating a ticket using Rate My App on Android, the description of the issue is used for the subject line of the ticket. 
@@ -232,4 +233,4 @@ However, the ticket will still be successfully created, and will be present in t
 and [iOS](http://docs.urbanairship.com/platform/ios.html#retrieving-your-channel-id), can return a `null` channel ID until the device has been properly set up with the Urban Airship services. 
 Restarting the app is usually enough to fix this. Unfortunately, it's quite inconsistent. 
 In some cases (particularly when testing multiple builds and/or configurations on the same device), a more thorough clean is required. Reinstalling the plugin from scratch is usually enough to do this.   
-  
+6. The UI provided in these versions of the native SDKs and plugin do not work on iOS 10.
