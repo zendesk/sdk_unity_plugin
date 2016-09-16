@@ -35,10 +35,6 @@ char* _zendeskLanguage() {
     return ZDKMakeStringCopy([ZDKDeviceInfo language].UTF8String);
 }
 
-char* _zendeskDeviceInfoString() {
-    return ZDKMakeStringCopy([ZDKDeviceInfo deviceInfoString].UTF8String);
-}
-
 char* _zendeskDeviceInfoDictionary() {
     // ZDKDeviceInfo:deviceInfoDictionary calls may cause crash.
     NSDictionary *result = [ZDKDeviceInfo deviceInfoDictionary];

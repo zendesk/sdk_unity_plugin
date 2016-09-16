@@ -10,27 +10,6 @@ namespace ZendeskSDK {
 	/// </summary>
 	public sealed class ZDKConfig : ZDKBaseComponent {
 
-		public class ContactConfig {
-			public string[] Tags;
-			public string AdditionalInfo;
-			public string RequestSubject;
-
-			public ContactConfig WithTags(string[] Tags) {
-				this.Tags = Tags;
-				return this;
-			}
-
-			public ContactConfig WithAdditionalInfo(string AdditionalInfo) {
-				this.AdditionalInfo = AdditionalInfo;
-				return this;
-			}
-
-			public ContactConfig WithRequestSubject(string RequestSubject) {
-				this.RequestSubject = RequestSubject;
-				return this;
-			}
-		}
-
 		private ZDKConfig(){}
 
 		/// <summary>
@@ -77,20 +56,20 @@ namespace ZendeskSDK {
 		/// </summary>
 		/// <param name="gameObject">A GameObject that is attached to your active scene.
 		/// 	This object will persist scene changes because DontDestroyOnLoad will be called on it.</param>
-		public static void Initialize(GameObject gameObject) {
+		public static void Initialize(GameObject gameObject, String zendeskUrl, String applicationId, String oauthClientId) {
 			SharedGameObject = gameObject;
 			UnityEngine.Object.DontDestroyOnLoad(gameObject);
-			OnApplicationPause(false);
+
+			Instance.Do ("initialize", zendeskUrl, applicationId, oauthClientId);
 		}
-		
+
 		/// <summary>
-		/// You must forward the OnAppliationPause event from the GameObject you initialized the Zendesk SDK with in Initialize().
+		/// Configure the User Identity with an anonymous user.
 		/// </summary>
-		/// <param name="pauseStatus">The paused indicator associated with the event</param>
-		public static void OnApplicationPause(bool pauseStatus) {
-			if (!pauseStatus) {
-				Instance.DoAndroid("onResume");
-			}
+		public static void AuthenticateAnonymousIdentity() {
+			if (!Instance.checkInitialized())
+				return;
+			Instance.Do("authenticateAnonymousIdentity", null, null, null);
 		}
 
 		/// <summary>
@@ -113,10 +92,6 @@ namespace ZendeskSDK {
 			if (!Instance.checkInitialized())
 				return;
 			Instance.Do("authenticateJwtUserIdentity", jwtUserIdentity);
-		}
-
-		public static void SetContactConfiguration(ContactConfig contactConfig) {
-			Instance.Do ("setContactConfiguration", contactConfig.Tags, contactConfig.Tags.Length, contactConfig.AdditionalInfo, contactConfig.RequestSubject);
 		}
 
 		public static void SetCustomFields(Hashtable fields) {
@@ -218,6 +193,8 @@ namespace ZendeskSDK {
 
 		#if UNITY_IPHONE
 
+		[DllImport("__Internal")]
+		private static extern void _zendeskConfigInitialize(string zendeskUrl, string applicationId, string oauthClientId);
 		[DllImport("__Internal")]
 		private static extern void _zendeskConfigAuthenticateAnonymousIdentity(string name, string email, string externalId);
 		[DllImport("__Internal")]

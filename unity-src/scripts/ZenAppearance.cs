@@ -5,197 +5,94 @@ using System.Runtime.InteropServices;
 
 namespace ZendeskSDK {
 
-	public enum UIBARSTYLE {
-		UIBARSTYLEDEFAULT,
-		UIBARSTYLEBLACK
-	};
-	
-	public enum UIACTIONSHEETSTYLE {
-		UIACTIONSHEETSTYLEAUTOMATIC = -1,
-		UIACTIONSHEETSTYLEDEFAULT = 0,
-		UIACTIONSHEETSTYLEBLACKTRANSLUCENT = 1,
-		UIACTIONSHEETSTYLEBLACKOPAQUE = 2
-	};
-
-	public enum UIACTIVITYINDICATORVIEWSTYLE {
-		UIACTIVITYINDICATORVIEWSTYLEWHITELARGE,
-		UIACTIVITYINDICATORVIEWSTYLEWHITE,
-		UIACTIVITYINDICATORVIEWSTYLEGRAY
-	};
-
 	/// <summary>
 	/// Appearance specifications for customizing the Zendesk
 	/// interface on iOS.
 	/// </summary>
 	public class IOSAppearance {
-		
-		private static string _logTag = "Appearance";		
-		public static void Log(string message) {
-			if(Debug.isDebugBuild)
-				Debug.Log(_logTag + "/" + message);
+
+		public IOSAppearance() {
+			// Intentionally empty
 		}
 
-		private string _className;
-
-		public IOSAppearance(string className) {
-			_className = className;
-		}
-		
-		#if UNITY_EDITOR || !UNITY_IPHONE
-
-		public void SetFont(string propertyName, string fontName, float size) {
-			Log("Unity : " + _className + ":Appearance:SetFont");
-		}
-		
-		public void SetColor(string propertyName, ZenColor color) {
-			Log("Unity : " + _className + ":Appearance:SetColorWithWhite");
-		}
-
-		public void SetEdgeInsets(string propertyName, float top, float left, float bottom, float right) {
-			Log("Unity : " + _className + ":Appearance:SetEdgeInsets");
-		}
-
-		public void SetBorderWidth(string propertyName, float width) {
-			Log("Unity : " + _className + ":Appearance:SetBorderWidth");
-		}
-
-		public void SetCornerRadius(string propertyName, float width) {
-			Log("Unity : " + _className + ":Appearance:SetCornerRadius");
-		}
-
-		public void SetAutomaticallyHideNavBarOnLandscape(int enabled) {
-			Log("Unity : " + _className + ":Appearance:SetAutomaticallyHideNavBarOnLandscape");
-		}
-
-		public void SetAvatarSize(float size) {
-			Log("Unity : " + _className + ":Appearance:SetAvatarSize");
-		}
-
-		public void SetVerticalMargin(float size) {
-			Log("Unity : " + _className + ":Appearance:SetVerticalMargin");
-		}
-
-		public void SetDescriptionTimestampMargin(float size) {
-			Log("Unity : " + _className + ":Appearance:SetDescriptionTimestampMargin");
-		}
-		
-		public void SetLeftInset(float size) {
-			Log("Unity : " + _className + ":Appearance:SetLeftInset");
-		}
-
-		public void SetSearchBarStyle(UIBARSTYLE style) {
-			Log("Unity : " + _className + ":Appearance:SetSearchBarStyle");
-		}
-		
-		public void SetAttachmentActionSheetStyle(UIACTIONSHEETSTYLE style) {
-			Log("Unity : " + _className + ":Appearance:SetAttachmentActionSheetStyle");
-		}
-
-		public void SetSpinnerUIActivityIndicatorViewStyle(UIACTIVITYINDICATORVIEWSTYLE style) {
-			Log("Unity : " + _className + ":Appearance:SetSpinnerUIActivityIndicatorViewStyle");
-		}
-
-		public void SetAttachmentButtonImage(string imageName, string type) {
-			Log("Unity : " + _className + ":Appearance:SetAttachmentButtonImage");
-		}
-
-		#elif UNITY_IPHONE
-		
+		#if UNITY_IPHONE
 		[DllImport("__Internal")]
-		private static extern void _zendeskSetFont(string className, string propertyName, string fontName, float size);
+		private static extern void _zendeskThemeStartWithBaseTheme();
 		[DllImport("__Internal")]
-		private static extern void _zendeskSetColorWithWhite(string className, string propertyName, float white, float alpha);
+		private static extern void _zendeskThemeApplyTheme();
 		[DllImport("__Internal")]
-		private static extern void _zendeskSetColorWithRed(string className, string propertyName, float red, float green, float blue, float alpha);
+		private static extern void _zendeskThemeSetPrimaryTextColor(float red, float green, float blue, float alpha);
 		[DllImport("__Internal")]
-		private static extern void _zendeskSetColorWithName(string className, string propertyName, string colorName);
+		private static extern void _zendeskThemeSetSecondaryTextColor(float red, float green, float blue, float alpha);
 		[DllImport("__Internal")]
-		private static extern void _zendeskSetEdgeInsets(string className, string propertyName, float top, float left, float bottom, float right);
+		private static extern void _zendeskThemeSetPrimaryBackgroundColor(float red, float green, float blue, float alpha);
 		[DllImport("__Internal")]
-		private static extern void _zendeskSetBorderWidth(string className, string propertyName, float width);
+		private static extern void _zendeskThemeSetSecondaryBackgroundColor(float red, float green, float blue, float alpha);
 		[DllImport("__Internal")]
-		private static extern void _zendeskSetCornerRadius(string className, string propertyName, float width);
+		private static extern void _zendeskThemeSetEmptyBackgroundColor(float red, float green, float blue, float alpha);
 		[DllImport("__Internal")]
-		private static extern void _zendeskSetAutomaticallyHideNavBarOnLandscape(string className, int enabled);
+		private static extern void _zendeskThemeSetMetaTextColor(float red, float green, float blue, float alpha);
 		[DllImport("__Internal")]
-		private static extern void _zendeskSetAvatarSize(string className, float size);
+		private static extern void _zendeskThemeSetSeparatorColor(float red, float green, float blue, float alpha);
 		[DllImport("__Internal")]
-		private static extern void _zendeskSetVerticalMargin(string className, float size);
+		private static extern void _zendeskThemeSetInputFieldColor(float red, float green, float blue, float alpha);
 		[DllImport("__Internal")]
-		private static extern void _zendeskSetDescriptionTimestampMargin(string className, float size);
+		private static extern void _zendeskThemeSetInputFieldBackgroundColor(float red, float green, float blue, float alpha);
 		[DllImport("__Internal")]
-		private static extern void _zendeskSetLeftInset(string className, float size);
+		private static extern void _zendeskThemeSetFontName(string fontName);
 		[DllImport("__Internal")]
-		private static extern void _zendeskSetSearchBarStyle(string className, int style);
-		[DllImport("__Internal")]
-		private static extern void _zendeskSetAttachmentActionSheetStyle(string className, int style);
-		[DllImport("__Internal")]
-		private static extern void _zendeskSetSpinnerUIActivityIndicatorViewStyle(string className, int style);
-		[DllImport("__Internal")]
-		private static extern void _zendeskSetAttachmentButtonImage(string className, string imageName, string type);
+		private static extern void _zendeskThemeSetBoldFontName(string boldFontName);
 
-		public void SetFont(string propertyName, string fontName, float size) {
-			_zendeskSetFont(_className, propertyName, fontName, size);
+		public void StartWithBaseTheme() {
+			_zendeskThemeStartWithBaseTheme ();
 		}
 
-		public void SetColor(string propertyName, ZenColor color) {
-			if (color.Type == ZenColor.COLORTYPE.WHITEONLY) {
-				_zendeskSetColorWithWhite(_className, propertyName, color.White, color.Alpha);
-			}
-			else if (color.Type == ZenColor.COLORTYPE.REDGREENBLUE) {
-				_zendeskSetColorWithRed(_className, propertyName, color.Red, color.Green, color.Blue, color.Alpha);
-			}
-			else if (color.Type == ZenColor.COLORTYPE.BYNAME) {
-				_zendeskSetColorWithName(_className, propertyName, color.Name);
-			}
+		public void ApplyTheme() {
+			_zendeskThemeApplyTheme();
 		}
 
-		public void SetEdgeInsets(string propertyName, float top, float left, float bottom, float right) {
-			_zendeskSetEdgeInsets(_className, propertyName, top, left, bottom, right);
+		public void SetPrimaryTextColor(ZenColor color) {
+			_zendeskThemeSetPrimaryTextColor(color.Red, color.Green, color.Blue, color.Alpha);
 		}
 
-		public void SetBorderWidth(string propertyName, float width) {
-			_zendeskSetBorderWidth(_className, propertyName, width);
-		}
-		
-		public void SetCornerRadius(string propertyName, float width) {
-			_zendeskSetCornerRadius(_className, propertyName, width);
+		public void SetSecondaryTextColor(ZenColor color) {
+			_zendeskThemeSetSecondaryTextColor(color.Red, color.Green, color.Blue, color.Alpha);
 		}
 
-		public void SetAutomaticallyHideNavBarOnLandscape(int enabled) {
-			_zendeskSetAutomaticallyHideNavBarOnLandscape(_className, enabled);
+		public void SetPrimaryBackgroundColor(ZenColor color) {
+			_zendeskThemeSetPrimaryBackgroundColor(color.Red, color.Green, color.Blue, color.Alpha);
 		}
 
-		public void SetAvatarSize(float size) {
-			_zendeskSetAvatarSize(_className, size);
+		public void SetSecondaryBackgroundColor(ZenColor color) {
+			_zendeskThemeSetSecondaryBackgroundColor(color.Red, color.Green, color.Blue, color.Alpha);
 		}
 
-		public void SetVerticalMargin(float size) {
-			_zendeskSetVerticalMargin(_className, size);
-		}
-		
-		public void SetDescriptionTimestampMargin(float size) {
-			_zendeskSetDescriptionTimestampMargin(_className, size);
-		}
-		
-		public void SetLeftInset(float size) {
-			_zendeskSetLeftInset(_className, size);
+		public void SetEmptyBackgroundColor(ZenColor color) {
+			_zendeskThemeSetEmptyBackgroundColor(color.Red, color.Green, color.Blue, color.Alpha);
 		}
 
-		public void SetSearchBarStyle(UIBARSTYLE style) {
-			_zendeskSetSearchBarStyle(_className, (int) style);
-		}
-		
-		public void SetAttachmentActionSheetStyle(UIACTIONSHEETSTYLE style) {
-			_zendeskSetAttachmentActionSheetStyle(_className, (int) style);
+		public void SetMetaTextColor(ZenColor color) {
+			_zendeskThemeSetMetaTextColor(color.Red, color.Green, color.Blue, color.Alpha);
 		}
 
-		public void SetSpinnerUIActivityIndicatorViewStyle(UIACTIVITYINDICATORVIEWSTYLE style) {
-			_zendeskSetSpinnerUIActivityIndicatorViewStyle(_className, (int) style);
+		public void SetSeparatorColor(ZenColor color) {
+			_zendeskThemeSetSeparatorColor(color.Red, color.Green, color.Blue, color.Alpha);
 		}
 
-		public void SetAttachmentButtonImage(string imageName, string type) {
-			_zendeskSetAttachmentButtonImage(_className, imageName, type);
+		public void SetInputFieldColor(ZenColor color) {
+			_zendeskThemeSetInputFieldColor(color.Red, color.Green, color.Blue, color.Alpha);
+		}
+
+		public void SetInputFieldBackgroundColor(ZenColor color) {
+			_zendeskThemeSetInputFieldBackgroundColor(color.Red, color.Green, color.Blue, color.Alpha);
+		}
+
+		public void SetFontName(string fontName) {
+			_zendeskThemeSetFontName(fontName);
+		}
+
+		public void SetBoldFontName(string boldFontName) {
+			_zendeskThemeSetBoldFontName(boldFontName);
 		}
 
 		#endif

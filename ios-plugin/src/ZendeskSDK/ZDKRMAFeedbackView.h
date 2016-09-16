@@ -15,6 +15,7 @@
  */
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import "ZDKSpinnerDelegate.h"
 
 @class ZDKRMAConfigObject, ZDKUITextView;
@@ -37,7 +38,7 @@
 /**
  * Tells the delegate that the cancel action has been selected in the
  * feedback dialog. The delegate should handle either returning to previous dialog
- * or dissmissing the dialog entirely.
+ * or dismissing the dialog entirely.
  */
 - (void) back;
 
@@ -73,68 +74,51 @@ typedef NS_ENUM(NSInteger, ZDKRMAFeedbackDialogState) {
 }
 
 
-@property (nonatomic) ZDKRMAFeedbackDialogState feedbackState;
+@property (nonatomic, assign) ZDKRMAFeedbackDialogState feedbackState;
 
 
 /**
  * A ZDKRMATextView for text entry.
  */
-@property (nonatomic, retain) ZDKUITextView *textView;
+@property (nonatomic, strong) ZDKUITextView *textView;
 
 
 /**
  * A UIButton calls ZDKRMAFeedbackViewDelegate cancel method.
  */
-@property (nonatomic, retain) UIButton *backButton;
+@property (nonatomic, strong) UIButton *backButton;
 
 
 /**
  * A UIButton calls ZDKRMAFeedbackViewDelegate sendFeedback method.
  */
-@property (nonatomic, retain) UIButton *submitButton;
+@property (nonatomic, strong) UIButton *submitButton;
 
 
 /**
  * A UIButton dismisses the ZDKRMA dialog.
  */
-@property (nonatomic, retain) UIButton *closeButton;
+@property (nonatomic, strong) UIButton *closeButton;
 
 
 /**
  * A UILabel in the header of the feedback view. This label has only one
  * line and is the main title.
  */
-@property (nonatomic, retain) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *titleLabel;
 
 
 /**
  * A UILabel in the header of the feedback view. This label has three
  * lines and is for any extra details in the header.
  */
-@property (nonatomic, retain) UILabel *detailTitleLabel;
+@property (nonatomic, strong) UILabel *detailTitleLabel;
 
 
 /**
  * Displays an image if one has been specified by either successImageName
  */
-@property (nonatomic, retain) UIImageView *submissionStatusImageView;
-
-
-@property (nonatomic, strong) UIColor *buttonColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *buttonSelectedColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *buttonBackgroundColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *separatorLineColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIFont *headerFont UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIFont *subheaderFont UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIFont *textEntryFont UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIFont *buttonFont UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) id<ZDKSpinnerDelegate> spinner UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *viewBackgroundColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *headerColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *subHeaderColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *textEntryColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *textEntryBackgroundColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *placeHolderColor UI_APPEARANCE_SELECTOR;
+@property (nonatomic, strong) UIImageView *submissionStatusImageView;
 
 @property (nonatomic, strong) NSString *successImageName;
 @property (nonatomic, strong) NSString *errorImageName;

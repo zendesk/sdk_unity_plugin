@@ -1,5 +1,0 @@
-<resources>
-    <string name="zd_url">ZDK_URL</string>
-    <string name="zd_appid">ZDK_APP_ID</string>
-    <string name="zd_oauth">ZDK_OAUTH</string>
-</resources>

@@ -15,18 +15,12 @@ public class ZendeskTester: MonoBehaviour
 	void Awake() {
 		avatarTexture = new Texture2D(textureSize, textureSize);
 		ZendeskSDK.ZDKLogger.Enable (true);
-		ZendeskSDK.ZDKConfig.Initialize (gameObject); // DontDestroyOnLoad automatically called on your supplied gameObject
-	}
-
-	/** must include this method for android to behave properly */
-	void OnApplicationPause(bool pauseStatus) {
-		ZendeskSDK.ZDKConfig.OnApplicationPause (pauseStatus);
 	}
 
 	/** must include this method for any zendesk callbacks to work */
 	void OnZendeskCallback(string results) {
 		Debug.Log("OnZendeskCallback - " + MakeResultString(results));
-		ZDKConfig.CallbackResponse (results);
+		ZendeskSDK.ZDKConfig.CallbackResponse (results);
 	}
 
 	void OnEnable() {
@@ -64,11 +58,12 @@ public class ZendeskTester: MonoBehaviour
 		GUILayoutOption buttonWidth = GUILayout.Width (screenWidth - (spacerSize * 2));
 
 		if (GUILayout.Button ("Initialize SDK", buttonWidth)) {
-			//ZendeskSDK.ZDKConfig.AuthenticateAnonymousIdentity("","","");
-			ZendeskSDK.ZDKConfig.AuthenticateJwtUserIdentity ("MyTestID");
+			ZendeskSDK.ZDKConfig.Initialize (gameObject, "https://{subdomain}.zendesk.com", "{applicationId}", "{oauthClientId}");
+			ZendeskSDK.ZDKConfig.AuthenticateAnonymousIdentity();
+			//ZendeskSDK.ZDKConfig.AuthenticateJwtUserIdentity ("MyTestID");
 		}
 
-        if (GUILayout.Button ("Set Custom Fields", buttonWidth)) {
+		if (GUILayout.Button ("Set Custom Fields", buttonWidth)) {
 			Hashtable customFields = new Hashtable ();
 			string customFieldId = "customFieldId";
 			customFields[customFieldId] = "customFieldValue";
@@ -76,23 +71,9 @@ public class ZendeskTester: MonoBehaviour
 			ZendeskSDK.ZDKConfig.SetCustomFields (customFields);
 		}
 
-		if (GUILayout.Button ("Set Contact Configuration", buttonWidth)) {
-            string[] tags = new string[2];
-        	tags[0] = "unityTag1";
-        	tags[1] = "unityTag2";
-
-            ZendeskSDK.ZDKConfig.ContactConfig contactConfig = new ZDKConfig.ContactConfig()
-                	.WithTags(tags)
-                	.WithAdditionalInfo("AdditionalRequestInfo TEST")
-                	.WithRequestSubject("Unity Custom Support Request");
-
-            ZendeskSDK.ZDKConfig.SetContactConfiguration (contactConfig);
-        }
-
-
 		if (GUILayout.Button (pushEnabled ? "Disable Push" : "Enable Push", buttonWidth)) {
 			if (!pushEnabled) {
-				ZendeskSDK.ZDKPush.Enable((result, error) => {
+				ZendeskSDK.ZDKPush.EnableWithIdentifier("{deviceOrChannelId}", (result, error) => {
 					if (error != null) {
 						Debug.Log("ERROR: ZDKPush.Enable - " + error.Description);
 					}
@@ -102,7 +83,7 @@ public class ZendeskTester: MonoBehaviour
 					}
 				});
 			} else {
-				ZendeskSDK.ZDKPush.Disable((result, error) => {
+				ZendeskSDK.ZDKPush.Disable("{deviceOrChannelId}", (result, error) => {
 					if (error != null) {
 						Debug.Log("ERROR: ZDKPush.Disable - " + error.Description);
 					}
@@ -115,23 +96,33 @@ public class ZendeskTester: MonoBehaviour
 		}
 
 		if (GUILayout.Button ("Show Help Center", buttonWidth)) {
-			ZendeskSDK.ZDKHelpCenter.ShowHelpCenter (
-				ZendeskSDK.ZDKHelpCenter.ShowOptions.ListCategories()
-				.SetShowContactUsButton(true));
+			ZendeskSDK.ZDKHelpCenter.ShowHelpCenter ();
 		}
 
-		if (GUILayout.Button ("Show Help Center Section", buttonWidth)) {
-			ZendeskSDK.ZDKHelpCenter.ShowHelpCenter (
-				ZendeskSDK.ZDKHelpCenter.ShowOptions.ListArticles(200658665)
-				.SetShowContactUsButton(false));
+		if (GUILayout.Button ("Show Help Center With Options", buttonWidth)) {
+			ZendeskSDK.ZDKHelpCenter.HelpCenterOptions options = new ZendeskSDK.ZDKHelpCenter.HelpCenterOptions ();
+//			options.IncludeCategoryIds = new [] { 123L, 456L };
+//			options.IncludeSectionIds = new [] { 123L, 456L };
+//			options.IncludeLabelNames = new [] { "unity" };
+
+			ZDKHelpCenter.ContactConfiguration config = new ZDKHelpCenter.ContactConfiguration ();
+			config.RequestSubject = "My printer is on fire!";
+			config.Tags = new[] {"printer", "technical"};
+			config.AdditionalInfo = " - Sent from Unity!";
+
+			options.ContactConfiguration = config;
+
+			ZendeskSDK.ZDKHelpCenter.ShowHelpCenter (options);
 		}
 
 		if (GUILayout.Button ("Show Request Creation", buttonWidth)) {
-			ZendeskSDK.ZDKRequests.ShowRequestCreation ();
-		}
 
-		if (GUILayout.Button ("Show Requests List", buttonWidth)) {
-			ZendeskSDK.ZDKRequests.ShowRequestList ();
+			ZDKRequestCreationConfig config = new ZDKRequestCreationConfig ();
+			config.RequestSubject = "My printer is still on fire";
+			config.Tags = new [] { "printer" };
+			config.AdditionalRequestInfo = " - Sent from Unity!";
+
+			ZendeskSDK.ZDKRequests.ShowRequestCreationWithConfig (config);
 		}
 
 		if (GUILayout.Button ("Show Rate My App", buttonWidth)) {
@@ -164,213 +155,37 @@ public class ZendeskTester: MonoBehaviour
 			RunAppearanceTests ();
 		}
 
-		if (GUILayout.Button ("Run SDK Tests", buttonWidth)) {
-			ZendeskSDK.ZDKConfig.SetUserLocale ("en-us");
-			ZendeskSDK.ZDKConfig.SetCoppaEnabled (true);
-
-			ZendeskSDK.ZDKLogger.Enable (true);
-			ZendeskSDK.ZDKLogger.SetLogLevelIOS (LogLevel.Verbose);
-
-			// ZDKDeviceInfo Tests
-			Debug.Log (string.Format ("Device Type: {0}", ZendeskSDK.ZDKDeviceInfo.DeviceTypeiOS ()));
-			Debug.Log (string.Format ("Total Device Memory: {0}", ZendeskSDK.ZDKDeviceInfo.TotalDeviceMemoryiOS ()));
-			Debug.Log (string.Format ("Free Disk Space: {0}", ZendeskSDK.ZDKDeviceInfo.FreeDiskspaceiOS ()));
-			Debug.Log (string.Format ("Total Disk Space: {0}", ZendeskSDK.ZDKDeviceInfo.TotalDiskspaceiOS ()));
-			Debug.Log (string.Format ("Battery Level: {0}", ZendeskSDK.ZDKDeviceInfo.BatteryLeveliOS ()));
-			Debug.Log (string.Format ("Region: {0}", ZendeskSDK.ZDKDeviceInfo.RegioniOS ()));
-			Debug.Log (string.Format ("Language: {0}", ZendeskSDK.ZDKDeviceInfo.LanguageiOS ()));
-			Debug.Log (string.Format ("Device Info String: {0}", ZendeskSDK.ZDKDeviceInfo.DeviceInfoString ()));
-			Hashtable deviceInfoDict = ZendeskSDK.ZDKDeviceInfo.DeviceInfoDictionary ();
-			Debug.Log (string.Format ("Device Info Dictionary:"));
-
-			foreach (string key in deviceInfoDict.Keys) {
-				Debug.Log (string.Format ("{0}: {1}", key, deviceInfoDict [key]));
-			}
-
-			// ZDKStringUtil Tests
-			string[] strings = new string[2];
-			strings [0] = "one";
-			strings [1] = "second";
-			Debug.Log (string.Format ("CSVStringFromArray: {0}", ZendeskSDK.ZDKStringUtil.CsvStringFromArray (strings)));
-
-			// ZDKLogger Tests
-			ZendeskSDK.ZDKLogger.Enable (true);
-		}
-
 		GUI.EndScrollView();
 		GUILayout.EndArea();
 		GUILayout.EndVertical ();
-
-
-
 	}
 
 	void RunAppearanceTests() {
-		ZenColor testColor1 = new ZenColor(0.9f, 1.0f); // Random Gray color
 
-		ZendeskSDK.ZDKRequestListLoadingTableCell.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRequestListLoadingTableCell.SetSeparatorInset(0, 0, 0, 0);
+		#if UNITY_IPHONE
 
-		ZendeskSDK.ZDKRequestListEmptyTableCell.SetMessageFont("system", 14);
-		ZendeskSDK.ZDKRequestListEmptyTableCell.SetMessageColor(testColor1);
-		ZendeskSDK.ZDKRequestListEmptyTableCell.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRequestListEmptyTableCell.SetSeparatorInset(0, 0, 0, 0);
+		runUploadImageAndAttachToCreateRequestTest ();
 
-		ZendeskSDK.ZDKUILoadingView.SetBackgroundColor(testColor1);
+		IOSAppearance appearance = new IOSAppearance ();
+		appearance.StartWithBaseTheme ();
 
-		ZendeskSDK.ZDKUIImageScrollView.SetBackgroundColor(testColor1);
+		appearance.SetPrimaryTextColor(new ZenColor (1.0f, 1.0f, 0f));
+		appearance.SetSecondaryTextColor (new ZenColor (1.0f, 0f, 0f));
+		appearance.SetPrimaryBackgroundColor(new ZenColor(0f, 0f, 1.0f));
+		appearance.SetSecondaryBackgroundColor (new ZenColor (0f, 1f, 0f));
+		appearance.SetMetaTextColor (new ZenColor (0.5f, 0f, 0f));
+		appearance.SetEmptyBackgroundColor (new ZenColor (0.5f, 0.5f, 0f));
+		appearance.SetSeparatorColor (new ZenColor (0.5f, 0f, 0.5f));
+		appearance.SetInputFieldColor (new ZenColor(0.5f, 0.7f, 0.2f));
+		appearance.SetInputFieldBackgroundColor(new ZenColor(0.9f, 0.1f, 0.9f));
 
-		ZendeskSDK.ZDKSupportView.SetNoResultsContactButtonFont("system", 14);
-		ZendeskSDK.ZDKSupportView.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKSupportView.SetTableBackgroundColor(testColor1);
-		ZendeskSDK.ZDKSupportView.SetSeparatorColor(testColor1);
-		ZendeskSDK.ZDKSupportView.SetNoResultsFoundLabelColor(testColor1);
-		ZendeskSDK.ZDKSupportView.SetNoResultsFoundLabelBackground(testColor1);
-		ZendeskSDK.ZDKSupportView.SetNoResultsContactButtonBackground(testColor1);
-		ZendeskSDK.ZDKSupportView.SetNoResultsContactButtonBorderColor(testColor1);
-		ZendeskSDK.ZDKSupportView.SetNoResultsContactButtonTitleColorNormal(testColor1);
-		ZendeskSDK.ZDKSupportView.SetNoResultsContactButtonTitleColorHighlighted(testColor1);
-		ZendeskSDK.ZDKSupportView.SetNoResultsContactButtonTitleColorDisabled(testColor1);
-		ZendeskSDK.ZDKSupportView.SetNoResultsContactButtonEdgeInsets(0, 0, 0, 0);
-		ZendeskSDK.ZDKSupportView.SetNoResultsContactButtonBorderWidth(5);
-		ZendeskSDK.ZDKSupportView.SetNoResultsContactButtonCornerRadius(15);
-		ZendeskSDK.ZDKSupportView.SetAutomaticallyHideNavBarOnLandscape(1);
-		ZendeskSDK.ZDKSupportView.SetSearchBarStyle(UIBARSTYLE.UIBARSTYLEDEFAULT);
-		ZendeskSDK.ZDKSupportView.SetSpinnerUIActivityIndicatorViewStyle(UIACTIVITYINDICATORVIEWSTYLE.UIACTIVITYINDICATORVIEWSTYLEGRAY);
-		ZendeskSDK.ZDKSupportView.SetSpinnerColor(testColor1);
+		appearance.ApplyTheme ();
 
-		ZendeskSDK.ZDKSupportTableViewCell.SetTitleLabelFont("system", 14);
-		ZendeskSDK.ZDKSupportTableViewCell.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKSupportTableViewCell.SetTitleLabelColor(testColor1);
-		ZendeskSDK.ZDKSupportTableViewCell.SetTitleLabelBackground(testColor1);
-		ZendeskSDK.ZDKSupportTableViewCell.SetSeparatorInset(0, 0, 0, 0);
+		#else
 
-		ZendeskSDK.ZDKSupportAttachmentCell.SetTitleLabelFont("system", 14);
-		ZendeskSDK.ZDKSupportAttachmentCell.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKSupportAttachmentCell.SetFileSizeLabelColor(testColor1);
-		ZendeskSDK.ZDKSupportAttachmentCell.SetFileSizeLabelBackground(testColor1);
-		ZendeskSDK.ZDKSupportAttachmentCell.SetTitleLabelColor(testColor1);
-		ZendeskSDK.ZDKSupportAttachmentCell.SetTitleLabelBackground(testColor1);
-		ZendeskSDK.ZDKSupportAttachmentCell.SetSeparatorInset(0, 0, 0, 0);
+		Debug.Log("This is only for iPhone");
 
-		ZendeskSDK.ZDKSupportArticleTableViewCell.SetArticleParentsLabelFont("system", 14);
-		ZendeskSDK.ZDKSupportArticleTableViewCell.SetTitleLabelFont("system", 14);
-		ZendeskSDK.ZDKSupportArticleTableViewCell.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKSupportArticleTableViewCell.SetArticleParentsLabelColor(testColor1);
-		ZendeskSDK.ZDKSupportArticleTableViewCell.SetArticleParentsLabelBackground(testColor1);
-		ZendeskSDK.ZDKSupportArticleTableViewCell.SetTitleLabelColor(testColor1);
-		ZendeskSDK.ZDKSupportArticleTableViewCell.SetTitleLabelBackground(testColor1);
-		ZendeskSDK.ZDKSupportArticleTableViewCell.SetSeparatorInset(0, 0, 0, 0);
-
-		ZendeskSDK.ZDKRMAFeedbackView.SetSubheaderFont("system", 14);
-		ZendeskSDK.ZDKRMAFeedbackView.SetHeaderFont("system", 14);
-		ZendeskSDK.ZDKRMAFeedbackView.SetTextEntryFont("system", 14);
-		ZendeskSDK.ZDKRMAFeedbackView.SetButtonFont("system", 14);
-		ZendeskSDK.ZDKRMAFeedbackView.SetButtonColor(testColor1);
-		ZendeskSDK.ZDKRMAFeedbackView.SetButtonSelectedColor(testColor1);
-		ZendeskSDK.ZDKRMAFeedbackView.SetButtonBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRMAFeedbackView.SetSeparatorLineColor(testColor1);
-		ZendeskSDK.ZDKRMAFeedbackView.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRMAFeedbackView.SetHeaderColor(testColor1);
-		ZendeskSDK.ZDKRMAFeedbackView.SetSubHeaderColor(testColor1);
-		ZendeskSDK.ZDKRMAFeedbackView.SetTextEntryColor(testColor1);
-		ZendeskSDK.ZDKRMAFeedbackView.SetTextEntryBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRMAFeedbackView.SetPlaceHolderColor(testColor1);
-		ZendeskSDK.ZDKRMAFeedbackView.SetSpinnerUIActivityIndicatorViewStyle (UIACTIVITYINDICATORVIEWSTYLE.UIACTIVITYINDICATORVIEWSTYLEGRAY);
-		ZendeskSDK.ZDKRMAFeedbackView.SetSpinnerColor(testColor1);
-
-		ZendeskSDK.ZDKRMADialogView.SetHeaderFont("system", 14);
-		ZendeskSDK.ZDKRMADialogView.SetButtonFont("system", 14);
-		ZendeskSDK.ZDKRMADialogView.SetHeaderBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRMADialogView.SetHeaderColor(testColor1);
-		ZendeskSDK.ZDKRMADialogView.SetSeparatorLineColor(testColor1);
-		ZendeskSDK.ZDKRMADialogView.SetButtonBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRMADialogView.SetButtonSelectedBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRMADialogView.SetButtonColor(testColor1);
-		ZendeskSDK.ZDKRMADialogView.SetBackgroundColor(testColor1);
-
-		ZendeskSDK.ZDKRequestCommentTableCell.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRequestCommentTableCell.SetSeparatorInset(0, 0, 0, 0);
-
-		ZendeskSDK.ZDKRequestListTableCell.SetDescriptionFont("system", 14);
-		ZendeskSDK.ZDKRequestListTableCell.SetCreatedAtFont("system", 14);
-		ZendeskSDK.ZDKRequestListTableCell.SetUnreadColor(testColor1);
-		ZendeskSDK.ZDKRequestListTableCell.SetDescriptionColor(testColor1);
-		ZendeskSDK.ZDKRequestListTableCell.SetCreatedAtColor(testColor1);
-		ZendeskSDK.ZDKRequestListTableCell.SetCellBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRequestListTableCell.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRequestListTableCell.SetVerticalMargin(0);
-		ZendeskSDK.ZDKRequestListTableCell.SetDescriptionTimestampMargin(0);
-		ZendeskSDK.ZDKRequestListTableCell.SetLeftInset(0);
-		ZendeskSDK.ZDKRequestListTableCell.SetSeparatorInset(0, 0, 0, 0);
-
-		ZendeskSDK.ZDKRequestListTable.SetCellSeparatorColor(testColor1);
-		ZendeskSDK.ZDKRequestListTable.SetTableBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRequestListTable.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRequestListTable.SetSectionIndexColor(testColor1);
-		ZendeskSDK.ZDKRequestListTable.SetSectionIndexBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRequestListTable.SetSectionIndexTrackingBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRequestListTable.SetSeparatorColor(testColor1);
-		ZendeskSDK.ZDKRequestListTable.SetSeparatorInset(0, 0, 0, 0);
-
-		ZendeskSDK.ZDKRequestCommentAttachmentTableCell.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRequestCommentAttachmentTableCell.SetSeparatorInset(0, 0, 0, 0);
-
-		ZendeskSDK.ZDKRequestCommentAttachmentLoadingTableCell.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKRequestCommentAttachmentLoadingTableCell.SetSeparatorInset(0, 0, 0, 0);
-
-		ZendeskSDK.ZDKEndUserCommentTableCell.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKEndUserCommentTableCell.SetBodyFont("system", 14);
-		ZendeskSDK.ZDKEndUserCommentTableCell.SetTimestampFont("system", 14);
-		ZendeskSDK.ZDKEndUserCommentTableCell.SetBodyColor(testColor1);
-		ZendeskSDK.ZDKEndUserCommentTableCell.SetTimestampColor(testColor1);
-		ZendeskSDK.ZDKEndUserCommentTableCell.SetCellBackground(testColor1);
-		ZendeskSDK.ZDKEndUserCommentTableCell.SetSeparatorInset(0, 0, 0, 0);
-
-		ZendeskSDK.ZDKCreateRequestView.SetTextEntryFont("system", 14);
-		ZendeskSDK.ZDKCreateRequestView.SetPlaceholderTextColor(testColor1);
-		ZendeskSDK.ZDKCreateRequestView.SetTextEntryColor(testColor1);
-		ZendeskSDK.ZDKCreateRequestView.SetTextEntryBackgroundColor(testColor1);
-		ZendeskSDK.ZDKCreateRequestView.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKCreateRequestView.SetAttachmentButtonBorderColor(testColor1);
-		ZendeskSDK.ZDKCreateRequestView.SetAttachmentButtonBackground(testColor1);
-		ZendeskSDK.ZDKCreateRequestView.SetAttachmentButtonCornerRadius(0);
-		ZendeskSDK.ZDKCreateRequestView.SetAttachmentButtonBorderWidth(0);
-		ZendeskSDK.ZDKCreateRequestView.SetAutomaticallyHideNavBarOnLandscape(1);
-		ZendeskSDK.ZDKCreateRequestView.SetAttachmentActionSheetStyle (UIACTIONSHEETSTYLE.UIACTIONSHEETSTYLEDEFAULT);
-		ZendeskSDK.ZDKCreateRequestView.SetSpinnerUIActivityIndicatorViewStyle(UIACTIVITYINDICATORVIEWSTYLE.UIACTIVITYINDICATORVIEWSTYLEGRAY);
-		ZendeskSDK.ZDKCreateRequestView.SetSpinnerColor(testColor1);
-		ZendeskSDK.ZDKCreateRequestView.SetAttachmentButtonImage ("testimagename", "png");
-
-		ZendeskSDK.ZDKCommentsListLoadingTableCell.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKCommentsListLoadingTableCell.SetLeftInset(0);
-		ZendeskSDK.ZDKCommentsListLoadingTableCell.SetCellBackground(testColor1);
-		ZendeskSDK.ZDKCommentsListLoadingTableCell.SetSeparatorInset(0, 0, 0, 0);
-
-		ZendeskSDK.ZDKCommentInputView.SetAttachmentButtonBackgroundColor(testColor1);
-		ZendeskSDK.ZDKCommentInputView.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKCommentInputView.SetTopBorderColor(testColor1);
-		ZendeskSDK.ZDKCommentInputView.SetTextEntryColor(testColor1);
-		ZendeskSDK.ZDKCommentInputView.SetTextEntryBackgroundColor(testColor1);
-		ZendeskSDK.ZDKCommentInputView.SetTextEntryBorderColor(testColor1);
-		ZendeskSDK.ZDKCommentInputView.SetSendButtonColor(testColor1);
-		ZendeskSDK.ZDKCommentInputView.SetAreaBackgroundColor(testColor1);
-		ZendeskSDK.ZDKCommentInputView.SetTextEntryFont("system", 14);
-		ZendeskSDK.ZDKCommentInputView.SetSendButtonFont("system", 14);
-
-		ZendeskSDK.ZDKAttachmentView.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKAttachmentView.SetCloseButtonBackgroundColor(testColor1);
-
-		ZendeskSDK.ZDKAgentCommentTableCell.SetBackgroundColor(testColor1);
-		ZendeskSDK.ZDKAgentCommentTableCell.SetAvatarSize (40);
-		ZendeskSDK.ZDKAgentCommentTableCell.SetAgentNameFont("system", 14);
-		ZendeskSDK.ZDKAgentCommentTableCell.SetBodyFont("system", 14);
-		ZendeskSDK.ZDKAgentCommentTableCell.SetTimestampFont("system", 14);
-		ZendeskSDK.ZDKAgentCommentTableCell.SetAgentNameColor(testColor1);
-		ZendeskSDK.ZDKAgentCommentTableCell.SetBodyColor(testColor1);
-		ZendeskSDK.ZDKAgentCommentTableCell.SetTimestampColor(testColor1);
-		ZendeskSDK.ZDKAgentCommentTableCell.SetCellBackground(testColor1);
-		ZendeskSDK.ZDKAgentCommentTableCell.SetSeparatorInset(0, 0, 0, 0);
+		#endif
 	}
 
 	void RunProviderTests() {
@@ -379,7 +194,7 @@ public class ZendeskTester: MonoBehaviour
 
 		string[] tags = new string[0];
 		string[] attachments = new string[0];
-		ZDKCreateRequest req = new ZDKCreateRequest("test@zendesk.com", "Test Subject", "Test Description", tags);
+		ZDKCreateRequest req = new ZDKCreateRequest("test@example.com", "Test Subject", "Test Description", tags);
 		ZendeskSDK.ZDKRequestProvider.CreateRequest(req, (result, error) => {
 			if (error != null) {
 				Debug.Log("ERROR: ZDKRequestProvider.CreateRequest - " + error.Description);
@@ -389,7 +204,7 @@ public class ZendeskTester: MonoBehaviour
 			}
 		});
 
-		req = new ZDKCreateRequest("test@zendesk.com", "Test Subject", "Test Description", tags, attachments);
+		req = new ZDKCreateRequest("test@example.com", "Test Subject", "Test Description", tags, attachments);
 		ZendeskSDK.ZDKRequestProvider.CreateRequest(req, (result, error) => {
 			if (error != null) {
 				Debug.Log("ERROR: ZDKRequestProvider.CreateRequest - " + error.Description);
@@ -417,7 +232,7 @@ public class ZendeskTester: MonoBehaviour
 			}
 		});
 
-		ZendeskSDK.ZDKRequestProvider.GetComments("Test RequestID", (result, error) => {
+		ZendeskSDK.ZDKRequestProvider.GetComments("{requestId}", (result, error) => {
 			if (error != null) {
 				Debug.Log("ERROR: ZDKRequestProvider.GetComments - " + error.Description);
 			}
@@ -426,7 +241,7 @@ public class ZendeskTester: MonoBehaviour
 			}
 		});
 
-		ZendeskSDK.ZDKRequestProvider.AddComment("Test Comment", "Test RequestID", (result, error) => {
+		ZendeskSDK.ZDKRequestProvider.AddComment("Test Comment", "{requestId}", (result, error) => {
 			if (error != null) {
 				Debug.Log("ERROR: ZDKRequestProvider.AddComment - " + error.Description);
 			}
@@ -435,7 +250,7 @@ public class ZendeskTester: MonoBehaviour
 			}
 		});
 
-		ZendeskSDK.ZDKRequestProvider.AddComment("Test Comment", "Test RequestID", attachments, (result, error) => {
+		ZendeskSDK.ZDKRequestProvider.AddComment("Test Comment", "{requestId}", attachments, (result, error) => {
 			if (error != null) {
 				Debug.Log("ERROR: ZDKRequestProvider.AddComment2 - " + error.Description);
 			}
@@ -444,7 +259,7 @@ public class ZendeskTester: MonoBehaviour
 			}
 		});
 
-		ZendeskSDK.ZDKRequestProvider.GetRequest("1", (result, error) => {
+		ZendeskSDK.ZDKRequestProvider.GetRequest("{requestId}", (result, error) => {
 			if (error != null) {
 				Debug.Log("ERROR: ZDKRequestProvider.GetRequest - " + error.Description);
 			}
@@ -502,7 +317,7 @@ public class ZendeskTester: MonoBehaviour
 		});
 
 		ZDKHelpCenterSearch helpCenterSearch = new ZDKHelpCenterSearch();
-		helpCenterSearch.SectionId = 123456789;
+		helpCenterSearch.SectionIds = new [] { "123L" };
 		ZendeskSDK.ZDKHelpCenterProvider.SearchArticles(helpCenterSearch, (result, error) => {
 			if (error != null) {
 				Debug.Log("ERROR: ZDKHelpCenterProvider.SearchArticles - " + error.Description);
@@ -523,7 +338,7 @@ public class ZendeskTester: MonoBehaviour
 
 		ZendeskSDK.ZDKHelpCenterProvider.GetArticles(labels, (result, error) => {
 			if (error != null) {
-				Debug.Log("ERROR: ZDKHelpCenterProvider.GetArticles2 - " + error.Description);
+				Debug.Log("ERROR: ZDKHelpCenterProvider.GetArticles - " + error.Description);
 			}
 			else {
 				Debug.Log("ZDKHelpCenterProvider.GetArticles2 Successful Callback - " + MakeResultString(result));
@@ -536,7 +351,7 @@ public class ZendeskTester: MonoBehaviour
 		getArticlesQuery.SortBy = SortBy.Title;
 		ZendeskSDK.ZDKHelpCenterProvider.GetArticles(getArticlesQuery, (result, error) => {
 			if (error != null) {
-				Debug.Log("ERROR: ZDKHelpCenterProvider.GetArticles3 - " + error.Description);
+				Debug.Log("ERROR: ZDKHelpCenterProvider.GetArticles - " + error.Description);
 			}
 			else {
 				Debug.Log("ZDKHelpCenterProvider.GetArticles3 Successful Callback - " + MakeResultString(result));
@@ -553,7 +368,7 @@ public class ZendeskTester: MonoBehaviour
 		});
 		ZendeskSDK.ZDKHelpCenterProvider.GetFlatArticles(getArticlesQuery, (result, error) => {
 			if (error != null) {
-				Debug.Log("ERROR: ZDKHelpCenterProvider.GetFlatArticles2 - " + error.Description);
+				Debug.Log("ERROR: ZDKHelpCenterProvider.GetFlatArticles - " + error.Description);
 			}
 			else {
 				Debug.Log("ZDKHelpCenterProvider.GetFlatArticles2 Successful Callback - " + MakeResultString(result));
@@ -752,7 +567,7 @@ public class ZendeskTester: MonoBehaviour
 	}
 
 	void runUploadImageAndAttachToCreateRequestTest() {
-		string url = "http://example.com/images/upload.png";
+		string url = "https://officesnapshots.com/wp-content/uploads/2014/09/ZendeskSF_Photo%C2%A9BruceDamonte_18.jpg";
 		WWW www = new WWW (url);
 		StartCoroutine (WaitForRequest (www));
 	}
@@ -773,7 +588,7 @@ public class ZendeskTester: MonoBehaviour
 				attachments[0] = (string) result["uploadToken"];
 				#endif
 
-				ZDKCreateRequest req = new ZDKCreateRequest("test@zendesk.com",
+				ZDKCreateRequest req = new ZDKCreateRequest("test@example.com",
 					"Test Attachments1",
 					"Test Description1",
 					tags,
@@ -805,8 +620,7 @@ public class ZendeskTester: MonoBehaviour
 			ZendeskSDK.ZDKUploadProvider.UploadAttachment(stringifiedImageData, "TestAttachment.png", "image/png", (result, error) => {
 				if (error != null) {
 					Debug.Log("ERROR: ZDKUploadProvider.UploadAttachment - " + error.Description);
-				}
-				else {
+				} else {
 					Debug.Log("UploadAttachmentCallbackRan: " + MakeResultString(result));
 
 					string[] tags = new string[0];
@@ -814,23 +628,10 @@ public class ZendeskTester: MonoBehaviour
 
 					#if UNITY_ANDROID
 					attachments[0] = (string) result["token"];
+					Debug.Log(attachments[0]);
 					#else
 					attachments[0] = (string) result["uploadToken"];
 					#endif
-
-					ZDKCreateRequest req = new ZDKCreateRequest("test@example.com",
-						"Test Attachments2",
-						"Test Description2",
-						tags,
-						attachments);
-					ZendeskSDK.ZDKRequestProvider.CreateRequest(req, (result2, error2) => {
-						if (error2 != null) {
-							Debug.Log("ERROR: ZDKRequestProvider.CreateRequest - " + error2.Description);
-						}
-						else {
-							Debug.Log("CreateRequest Successful Callback - " + MakeResultString(result2));
-						}
-					});
 				}
 			});
 		} else {

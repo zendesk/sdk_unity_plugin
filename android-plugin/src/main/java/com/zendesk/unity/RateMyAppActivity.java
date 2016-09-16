@@ -9,8 +9,10 @@ import android.view.MotionEvent;
 import com.unity3d.player.UnityPlayer;
 import com.zendesk.logger.Logger;
 import com.zendesk.sdk.feedback.ZendeskFeedbackConfiguration;
-import com.zendesk.sdk.feedback.impl.ZendeskFeedbackConnector;
-import com.zendesk.sdk.network.impl.ZendeskRequestService;
+
+import com.zendesk.sdk.feedback.ZendeskFeedbackConnector;
+import com.zendesk.sdk.network.SubmissionListener;
+import com.zendesk.sdk.network.impl.ZendeskConfig;
 import com.zendesk.sdk.rating.impl.RateMyAppDontAskAgainButton;
 import com.zendesk.sdk.rating.impl.RateMyAppSendFeedbackButton;
 import com.zendesk.sdk.rating.impl.RateMyAppStoreButton;
@@ -110,7 +112,7 @@ public class RateMyAppActivity extends AppCompatActivity {
         return (RMAConfig)i.getSerializableExtra(EXTRA_CONFIG_OBJECT);
     }
 
-    private ZendeskRequestService.SubmissionListener feedbackListener = new ZendeskRequestService.SubmissionListener() {
+    private SubmissionListener feedbackListener = new SubmissionListener() {
         @Override
         public void onSubmissionStarted() {
         }
@@ -134,25 +136,28 @@ public class RateMyAppActivity extends AppCompatActivity {
     private RateMyAppSendFeedbackButton buildSendFeedbackButton(final RMAConfig config) {
         //Feedbackbutton with additional information if present in the config object
         //if not they will be null
-        return new RateMyAppSendFeedbackButton(this,
-                new ZendeskFeedbackConnector(this.getApplicationContext(),
-                        new ZendeskFeedbackConfiguration() {
-                            @Override
-                            public List<String> getTags() {
-                                return (config.tags == null) ? null : Arrays.asList(config.tags);
-                            }
 
-                            @Override
-                            public String getAdditionalInfo() {
-                                return config.additionalInfo;
-                            }
+        ZendeskFeedbackConnector feedbackConnector = ZendeskFeedbackConnector.defaultConnector(
+                this,
+                new ZendeskFeedbackConfiguration() {
+                    @Override
+                    public List<String> getTags() {
+                        return (config.tags == null) ? null : Arrays.asList(config.tags);
+                    }
 
-                            @Override
-                            public String getRequestSubject() {
-                                return config.requestSubject;
-                            }
-                        }));
+                    @Override
+                    public String getAdditionalInfo() {
+                        return config.additionalInfo;
+                    }
 
+                    @Override
+                    public String getRequestSubject() {
+                        return config.requestSubject;
+                    }
+                },
+                ZendeskConfig.INSTANCE.getMobileSettings().getContactZendeskTags());
+
+        return new RateMyAppSendFeedbackButton(this, feedbackConnector);
     }
 
     @Override

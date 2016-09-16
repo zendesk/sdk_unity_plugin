@@ -29,10 +29,6 @@ public class UnityComponent {
         return UnityPlayer.currentActivity;
     }
 
-    public void onResume(){
-        ZendeskInitializer.onResume();
-    }
-
     protected Gson gson() {
         if (_gson == null) {
             _gson = new GsonBuilder().registerTypeAdapter(Date.class, makeDateTimeSerializer()).create();

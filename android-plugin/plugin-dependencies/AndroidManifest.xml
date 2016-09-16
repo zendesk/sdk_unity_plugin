@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.zendesk.unity.sdk">
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="24"/>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        tools:replace="android:theme,android:label"
+        android:theme="@style/ZendeskSdkTheme" >
+        <activity android:name="com.unity3d.player.UnityPlayerActivity"
+            android:label="@string/app_name"
+            android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen">
+            <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+            applicationId is merged correctly in the belvedere library, but this is still required
+            in order to view attachments in full screen.
+        -->
+        <provider
+            android:name="com.zendesk.belvedere.BelvedereFileProvider"
+            android:authorities="{applicationId}.belvedere.attachments"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/belvedere_attachment_storage" />
+        </provider>
+
+    </application>
+</manifest>

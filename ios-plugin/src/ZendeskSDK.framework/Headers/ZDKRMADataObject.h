@@ -22,7 +22,7 @@
  * The dialog options are specified with a combination of these actions.
  *
  * Each action is mapped to localizable string key which is used for the
- * title of the coresponding option in the dialog view:
+ * title of the corresponding option in the dialog view:
  *
  * ios.RMA.dialog.rateApp.button
  *
@@ -41,7 +41,7 @@ typedef NS_ENUM(NSInteger, ZDKRMAAction) {
     ZDKRMARateApp        = 1,
 
     /**
-     * Enumeration for sending feedbcak.
+     * Enumeration for sending feedback.
      */
     ZDKRMASendFeedback   = 2,
 
@@ -76,19 +76,19 @@ typedef NS_ENUM(NSInteger, ZDKRMAAction) {
 /**
  * The number of times a user has visited the view in which ZDKRMA is to be displayed.
  */
-@property (nonatomic, retain) NSNumber *visitCount;
+@property (nonatomic, strong) NSNumber *visitCount;
 
 
 /**
  * The date of the first time ZDKRMA showInView was called.
  */
-@property (nonatomic, retain) NSDate *initialCheckDate;
+@property (nonatomic, strong) NSDate *initialCheckDate;
 
 
 /**
- * The date of the users intereaction with the ZDKRMA dialog.
+ * The date of the users interaction with the ZDKRMA dialog.
  */
-@property (nonatomic, retain) NSDate *dateOfActionChosen;
+@property (nonatomic, strong) NSDate *dateOfActionChosen;
 
 
 /**
@@ -96,13 +96,13 @@ typedef NS_ENUM(NSInteger, ZDKRMAAction) {
  * was an error sending the feedback.
  *
  */
-@property (nonatomic, retain) NSString *requestText;
+@property (nonatomic, copy) NSString *requestText;
 
 /**
- * The app version of at the time of intereaction.
+ * The app version of at the time of interaction.
  *
  */
-@property (nonatomic, retain) NSString *appVersion;
+@property (nonatomic, copy) NSString *appVersion;
 
 
 /**
