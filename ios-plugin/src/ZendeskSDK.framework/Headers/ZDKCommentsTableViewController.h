@@ -15,15 +15,17 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "ZDKRotationForwarding.h"
 
 @class ZDKRequest, ZDKCommentsTableViewDataSource;
 
-@interface ZDKCommentsTableViewController : UIViewController
+@interface ZDKCommentsTableViewController : UIViewController <ZDKRotationForwarding>
 
-@property (nonatomic, readonly) ZDKCommentsTableViewDataSource *datasource;
+@property (nonatomic, strong, readonly) ZDKCommentsTableViewDataSource *datasource;
 
-@property (nonatomic, readonly) UITableView *commentsView;
+@property (nonatomic, strong, readonly) UITableView *commentsView;
 
+@property (nonatomic, assign) id<ZDKRotationForwarding> rotationEventDelegate;
 
 /**
  * Init with provided request.

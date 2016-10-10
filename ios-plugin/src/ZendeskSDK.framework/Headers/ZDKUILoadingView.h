@@ -14,15 +14,13 @@
  *
  */
 
-#import <ZendeskSDK/ZendeskSDK.h>
-
 @interface ZDKUILoadingView : UIView
 
 
 /**
  * Loading indicator.
  */
-@property (nonatomic, readonly) UIActivityIndicatorView *spinner;
+@property (nonatomic, strong, readonly) UIActivityIndicatorView *spinner;
 
 
 @end

@@ -32,42 +32,6 @@
  */
 @property (nonatomic, strong, readonly) UILabel *title;
 
-/**
- * Background color for the view.
- */
-@property (nonatomic, strong) UIColor *viewBackgroundColor UI_APPEARANCE_SELECTOR;
-
-
-/**
- * Attatchment file size label font.
- */
-@property (nonatomic, strong) UIFont *fileSizeLabelFont UI_APPEARANCE_SELECTOR;
-
-/**
- *  Attatchment file size label colour.
- */
-@property (nonatomic, strong) UIColor *fileSizeLabelColor UI_APPEARANCE_SELECTOR;
-
-/**
- * Attatchment file size label background colour.
- */
-@property (nonatomic, strong) UIColor *fileSizeLabelBackground UI_APPEARANCE_SELECTOR;
-
-/**
- * Title label font.
- */
-@property (nonatomic, strong) UIFont *titleLabelFont UI_APPEARANCE_SELECTOR;
-
-/**
- * Title label colour.
- */
-@property (nonatomic, strong) UIColor *titleLabelColor UI_APPEARANCE_SELECTOR;
-
-/**
- * Title label background colour.
- */
-@property (nonatomic, strong) UIColor *titleLabelBackground UI_APPEARANCE_SELECTOR;
-
 #pragma mark - Methods
 
 /**

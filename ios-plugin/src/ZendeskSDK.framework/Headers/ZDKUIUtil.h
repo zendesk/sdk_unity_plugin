@@ -22,24 +22,26 @@
 /**
  *  Gets the UI_APPEARANCE_SELECTOR value for a class.
  *
- *  @param class    The appearance value will come from this class.
+ *  @param viewClass    The appearance value will come from this class.
  *  @param selector The appearance selector
  *
  *  @return An appearance value or nil if none have been set.
  */
-+ (id) appearanceForClass:(Class)class selector:(SEL)selector;
++ (id)appearanceValueForClass:(Class)viewClass selector:(SEL)selector;
 
 
 /**
- *  Gets the UI_APPEARANCE_SELECTOR value for a class returning a default value if none have been set.
+ *  Get the UI_APPEARANCE_SELECTOR value for a class when contained in a given class
  *
- *  @param class        The appearance value will come from this class.
- *  @param selector     The appearance selector
- *  @param defaultValue The default value to use if no appearance value has been set.
+ *  @param viewClass      The appearance value will come from this class.
+ *  @param containerClass The containing class.
+ *  @param selector       The appearance selector
  *
- *  @return An appearance value.
+ *  @return An appearance value or nil if none have been set.
+ *
+ *  @since 1.6.0.1
  */
-+ (id) appearanceForClass:(Class)class selector:(SEL)selector defaultValue:(id)defaultValue;
++ (id)appearanceValueForClass:(Class)viewClass whenContainedIn:(Class <UIAppearanceContainer>)containerClass selector:(SEL)selector;
 
 
 /**
@@ -50,49 +52,37 @@
  *
  *  @return The appearance value or nil if none has been set.
  */
-+ (id) appearanceForView:(UIView*)view selector:(SEL)selector;
-
-
-/**
- *  Gets the UI_APPEARANCE_SELECTOR value for a view returning a default if none has been set.
- *
- *  @param view         The appearance value will come from this view.
- *  @param selector     The appearance selector.
- *  @param defaultValue A default value to use if no appearance value has been set.
- *
- *  @return An appearance value.
- */
-+ (id) appearanceForView:(UIView*)view selector:(SEL)selector defaultValue:(id)defaultValue;
++ (id)appearanceValueForView:(UIView *)view selector:(SEL)selector;
 
 
 /**
  *  Checks to see if the majorVersionNumber is less than the current device version
  *
- *  @param majorVersionNumber is a single integer, eg: 7
+ *  @param majorVersionNumber is a single integer, e.g.: 7
  *
  *  @return YES if the current device number is less than majorVersionNumber.
  */
-+ (BOOL) isOlderVersion:(NSNumber *) majorVersionNumber;
++ (BOOL) isOlderVersion:(NSString *) majorVersionNumber;
 
 
 /**
  * isNewVersion checks to see if the majorVersionNumber is greater than the current device version
- * @param majorVersionNumber is a single integer, eg: 7
+ * @param majorVersionNumber is a single integer, e.g.: 7
  */
-+ (BOOL) isNewerVersion:(NSNumber *) majorVersionNumber;
++ (BOOL) isNewerVersion:(NSString *) majorVersionNumber;
 
 
 /**
  * isSameVersion checks to see if the majorVersionNumber is the same as the current device version
- * @param majorVersionNumber is a single integer, eg: 7
+ * @param majorVersionNumber is a single integer, e.g.: 7
  */
 + (BOOL) isSameVersion:(NSNumber *) majorVersionNumber;
 
 
 /**
- * The height of a seporator for retina and none retina screens.
+ * The height of a separator for retina and none retina screens.
  *
- * @return Height of seporator.
+ * @return Height of separator.
  */
 + (CGFloat) separatorHeightForScreenScale;
 
@@ -152,6 +142,22 @@
 + (UIImage *)fixOrientationOfImage:(UIImage*)image;
 
 
+/**
+ *  Checks if the host app is a landscape only app and will enable or disable the attachments 
+ *  button accordingly.
+ *
+ *  @param viewController ViewController to check to enable attachments
+ *
+ *
+ *  @return Returns YES if attchments should be enabled. This is a combination of server config and if the app
+ *          supports portrait orientation, as UIImagePicker will crash if it cannot rotate into portrait
+ *
+ *  @since 1.5.4.1
+ */
++ (BOOL) shouldEnableAttachments:(UIViewController *)viewController;
+
+
+
 @end
 
 CG_INLINE CGRect
@@ -165,7 +171,7 @@ CGRectMakeCenteredInScreen(CGFloat width, CGFloat height)
     
     if (orientation == UIInterfaceOrientationLandscapeLeft ||
         orientation == UIInterfaceOrientationLandscapeRight) {
-        if([ZDKUIUtil isOlderVersion:@8])
+        if([ZDKUIUtil isOlderVersion:@"8.0"])
         {
             rect = CGRectMake(CGRectGetMidY(screen) - (width * 0.5f),
                               CGRectGetMidX(screen) - (height * 0.5f), width, height);
@@ -251,24 +257,8 @@ ZDKUIOriginInWindow(UIView *view)
     do {
         superView = superView.superview;
     } while (superView.superview);
+    
     CGPoint point = [view convertPoint:view.bounds.origin toView:superView];
-    if ([ZDKUIUtil isNewerVersion:@(7)]) {
-        return point;
-    }
-    CGRect screenBounds = [UIScreen mainScreen].bounds;
-    switch ([[UIApplication sharedApplication] statusBarOrientation]) {
-        case UIInterfaceOrientationPortraitUpsideDown: {
-            return CGPointMake(screenBounds.size.width - point.x, screenBounds.size.height - point.y);
-        }
-        case UIInterfaceOrientationLandscapeLeft: {
-            return CGPointMake(screenBounds.size.height - point.y, point.x);
-        }
-        case UIInterfaceOrientationLandscapeRight: {
-            return CGPointMake(point.y, screenBounds.size.width - point.x);
-        }
-        default: {
-            return point;
-        }
-    }
+    return point;
 }
 
