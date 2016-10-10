@@ -5,188 +5,154 @@ using System.Runtime.InteropServices;
 
 namespace ZendeskSDK {
 
-	public class ZDKHelpCenter : ZDKBaseComponent {
+	/// <summary>
+	/// Appearance specifications for customizing the Zendesk interface on iOS.
+	///
+	/// IOSAppearance appearance = new IOSAppearance ();
+	///	appearance.StartWithBaseTheme ();
+	/// appearance.SetPrimaryTextColor(new ZenColor 0.0f, 1.0f, 0.0f));
+	///	appearance.ApplyTheme ();
+	///
+	/// See <a href="https://support.zendesk.com/hc/en-us/articles/220043467-Moving-from-appearance-selectors-to-ZDKTheme-properties-Support-SDK-for-iOS-v1-6-">Using ZDKTheme</a>
+	///
+	/// </summary>
+	public class IOSAppearance {
 
-		public class ContactConfiguration {
-
-			private string requestSubject;
-			private string[] tags;
-			private string additionalInfo;
-
-			public string RequestSubject {
-				get { return requestSubject; }
-				set { requestSubject = value; }
-			}
-
-			public string[] Tags {
-				get { return tags; }
-				set { tags = value; }
-			}
-
-			public string AdditionalInfo {
-				get { return additionalInfo; }
-				set { additionalInfo = value; }
-			}
+		public IOSAppearance() {
+			// Intentionally empty
 		}
 
-		public class HelpCenterOptions {
+		#if UNITY_IOS
+		[DllImport("__Internal")]
+		private static extern void _zendeskThemeStartWithBaseTheme();
+		[DllImport("__Internal")]
+		private static extern void _zendeskThemeApplyTheme();
+		[DllImport("__Internal")]
+		private static extern void _zendeskThemeSetPrimaryTextColor(float red, float green, float blue, float alpha);
+		[DllImport("__Internal")]
+		private static extern void _zendeskThemeSetSecondaryTextColor(float red, float green, float blue, float alpha);
+		[DllImport("__Internal")]
+		private static extern void _zendeskThemeSetPrimaryBackgroundColor(float red, float green, float blue, float alpha);
+		[DllImport("__Internal")]
+		private static extern void _zendeskThemeSetSecondaryBackgroundColor(float red, float green, float blue, float alpha);
+		[DllImport("__Internal")]
+		private static extern void _zendeskThemeSetEmptyBackgroundColor(float red, float green, float blue, float alpha);
+		[DllImport("__Internal")]
+		private static extern void _zendeskThemeSetMetaTextColor(float red, float green, float blue, float alpha);
+		[DllImport("__Internal")]
+		private static extern void _zendeskThemeSetSeparatorColor(float red, float green, float blue, float alpha);
+		[DllImport("__Internal")]
+		private static extern void _zendeskThemeSetInputFieldColor(float red, float green, float blue, float alpha);
+		[DllImport("__Internal")]
+		private static extern void _zendeskThemeSetInputFieldBackgroundColor(float red, float green, float blue, float alpha);
+		[DllImport("__Internal")]
+		private static extern void _zendeskThemeSetFontName(string fontName);
+		[DllImport("__Internal")]
+		private static extern void _zendeskThemeSetBoldFontName(string boldFontName);
 
-			private long[] categoryIds;
-			private long[] sectionIds;
-			private bool showContactUsButton;
-			private bool collapseSections;
-			private string[] labelNames;
-			private ContactConfiguration contactConfiguration;
-
-			public HelpCenterOptions() {
-				ShowContactUsButton = true;
-				CollapseSections = false;
-			}
-
-			public long[] IncludeCategoryIds {
-				get { return categoryIds; }
-				set { categoryIds = value; }
-			}
-
-			public long[] IncludeSectionIds {
-				get { return sectionIds; }
-				set { sectionIds = value; }
-			}
-
-			public bool ShowContactUsButton {
-				get { return showContactUsButton; }
-				set { showContactUsButton = true; }
-			}
-
-			public bool CollapseSections {
-				get { return collapseSections; }
-				set { collapseSections = value; }
-			}
-
-			public string[] IncludeLabelNames {
-				get { return labelNames; }
-				set { labelNames = value; }
-			}
-
-			public ContactConfiguration ContactConfiguration {
-				get { return contactConfiguration; }
-				set { contactConfiguration = value; }
-			}
-
-		}
-
-		private static ZDKHelpCenter _instance;
-
-		private static ZDKHelpCenter instance() {
-			if (_instance != null)
-				return _instance;
-			_instance = new ZDKHelpCenter();
-			return _instance;
-		}
-
-		override protected string GetIOsMethodPrefix() {
-			return "_zendeskHelpCenter";
+		/// <summary>
+		/// This method must be called before you change any colors
+		/// </summary>
+		public void StartWithBaseTheme() {
+			_zendeskThemeStartWithBaseTheme ();
 		}
 
 		/// <summary>
-		/// Displays the Help Center view
+		/// This method must be called to apply any changes that you have made
 		/// </summary>
-		public static void ShowHelpCenter() {
-			instance().Do("showHelpCenter");
+		public void ApplyTheme() {
+			_zendeskThemeApplyTheme();
 		}
 
 		/// <summary>
-		/// Displays the Help Center view
+		/// Sets the color of the primary text.
 		/// </summary>
-		public static void ShowHelpCenter(HelpCenterOptions options) {
-			#if UNITY_IPHONE
-			_ShowHelpCenterIos(options);
-			#elif UNITY_ANDROID
-			_ShowHelpCenterAndroid(options); 
-			#endif
-		}
-
-		private static void _ShowHelpCenterAndroid(HelpCenterOptions options) {
-			instance().DoAndroid("showHelpCenter",
-				options.CollapseSections,
-				options.ShowContactUsButton,
-				options.IncludeLabelNames,
-				options.IncludeSectionIds,
-				options.IncludeCategoryIds,
-				options.ContactConfiguration != null ? options.ContactConfiguration.Tags : null,
-				options.ContactConfiguration != null ? options.ContactConfiguration.AdditionalInfo : null,
-				options.ContactConfiguration != null ? options.ContactConfiguration.RequestSubject : null);
-		}
-
-		// corresponds to _zendeskHelpCenterShowHelpCenter
-		private static void _ShowHelpCenterIos(HelpCenterOptions options) {
-
-			bool includeCategories = options.IncludeCategoryIds != null && options.IncludeCategoryIds.Length > 0;
-			bool includeSections = options.IncludeSectionIds != null && options.IncludeSectionIds.Length > 0;
-
-			string[] ids = null;
-
-			if (includeCategories) {
-				ids = new string[options.IncludeCategoryIds.Length];
-
-				for (int i = 0; i < options.IncludeCategoryIds.Length; i++) {
-					ids[i] = options.IncludeCategoryIds[i].ToString();
-				}
-
-			} else if (includeSections) {
-				ids = new string[options.IncludeSectionIds.Length];
-
-				for (int i = 0; i < options.IncludeSectionIds.Length; i++) {
-					ids[i] = options.IncludeSectionIds[i].ToString();
-				}
-
-			}
-
-			bool includeAll = ids == null || ids.Length == 0;
-
-			if (options.ContactConfiguration != null) {
-				instance ().DoIOS ("configureZDKRequests", options.ContactConfiguration.RequestSubject,
-				options.ContactConfiguration.Tags, options.ContactConfiguration.Tags != null ? options.ContactConfiguration.Tags.Length : 0,
-				options.ContactConfiguration.AdditionalInfo);
-			}
-
-			// Will this conflict with the signature of Android?
-			instance().DoIOS("showHelpCenterWithOptions",
-				options.IncludeLabelNames,
-				options.IncludeLabelNames != null ? options.IncludeLabelNames.Length : 0,
-				includeAll,
-				includeCategories,
-				includeSections,
-				ids,
-				ids != null ? ids.Length : 0,
-				!options.ShowContactUsButton);
+		/// <param name="color">Color.</param>
+		public void SetPrimaryTextColor(ZenColor color) {
+			_zendeskThemeSetPrimaryTextColor(color.Red, color.Green, color.Blue, color.Alpha);
 		}
 
 		/// <summary>
-		/// Displays a specific article. In Android it does this by using the the id of the article.
-		/// In iOS it does this by using the article json returned from a callback to get articles.
+		/// Sets the color of the secondary text.
 		/// </summary>
-		/// <param name="informationString"> Android: article id. iOS: article json string</param>
-		public static void ViewSpecificArticle(string informationString){
-			instance().Do("viewArticle", informationString);
+		/// <param name="color">Color.</param>
+		public void SetSecondaryTextColor(ZenColor color) {
+			_zendeskThemeSetSecondaryTextColor(color.Red, color.Green, color.Blue, color.Alpha);
 		}
 
-		#if UNITY_IPHONE
+		/// <summary>
+		/// Sets the color of the primary background.
+		/// </summary>
+		/// <param name="color">Color.</param>
+		public void SetPrimaryBackgroundColor(ZenColor color) {
+			_zendeskThemeSetPrimaryBackgroundColor(color.Red, color.Green, color.Blue, color.Alpha);
+		}
 
-		[DllImport("__Internal")]
-		private static extern void _zendeskHelpCenterShowHelpCenter();
+		/// <summary>
+		/// Sets the color of the secondary background.
+		/// </summary>
+		/// <param name="color">Color.</param>
+		public void SetSecondaryBackgroundColor(ZenColor color) {
+			_zendeskThemeSetSecondaryBackgroundColor(color.Red, color.Green, color.Blue, color.Alpha);
+		}
 
-		[DllImport("__Internal")]
-		private static extern void _zendeskHelpCenterShowHelpCenterWithOptions(
-			string[] labels, int labelsLength, bool includeAll, bool includeCategories,
-			bool includeSections, string[] ids, int idsLength, bool hideContactSupport);
+		/// <summary>
+		/// Sets the empty color of the background.
+		/// </summary>
+		/// <param name="color">Color.</param>
+		public void SetEmptyBackgroundColor(ZenColor color) {
+			_zendeskThemeSetEmptyBackgroundColor(color.Red, color.Green, color.Blue, color.Alpha);
+		}
 
-		[DllImport("__Internal")]
-		private static extern void _zendeskHelpCenterViewArticle(string jsonData);
+		/// <summary>
+		/// Sets the color of the meta text.
+		/// </summary>
+		/// <param name="color">Color.</param>
+		public void SetMetaTextColor(ZenColor color) {
+			_zendeskThemeSetMetaTextColor(color.Red, color.Green, color.Blue, color.Alpha);
+		}
 
-		[DllImport("__Internal")]
-		private static extern void _zendeskHelpCenterConfigureZDKRequests(string requestSubject, String[] tags, int tagsLength, String additionalData);
+		/// <summary>
+		/// Sets the color of the separator.
+		/// </summary>
+		/// <param name="color">Color.</param>
+		public void SetSeparatorColor(ZenColor color) {
+			_zendeskThemeSetSeparatorColor(color.Red, color.Green, color.Blue, color.Alpha);
+		}
+
+		/// <summary>
+		/// Sets the color of the input field.
+		/// </summary>
+		/// <param name="color">Color.</param>
+		public void SetInputFieldColor(ZenColor color) {
+			_zendeskThemeSetInputFieldColor(color.Red, color.Green, color.Blue, color.Alpha);
+		}
+
+		/// <summary>
+		/// Sets the color of the input field background.
+		/// </summary>
+		/// <param name="color">Color.</param>
+		public void SetInputFieldBackgroundColor(ZenColor color) {
+			_zendeskThemeSetInputFieldBackgroundColor(color.Red, color.Green, color.Blue, color.Alpha);
+		}
+
+		/// <summary>
+		/// Sets the name of the font.
+		/// </summary>
+		/// <param name="fontName">Font name.</param>
+		public void SetFontName(string fontName) {
+			_zendeskThemeSetFontName(fontName);
+		}
+
+		/// <summary>
+		/// Sets the name of the bold font.
+		/// </summary>
+		/// <param name="boldFontName">Bold font name.</param>
+		public void SetBoldFontName(string boldFontName) {
+			_zendeskThemeSetBoldFontName(boldFontName);
+		}
 
 		#endif
 	}
 }
+

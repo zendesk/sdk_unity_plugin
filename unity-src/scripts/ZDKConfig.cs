@@ -51,11 +51,12 @@ namespace ZendeskSDK {
 		}
 		
 		/// <summary>
-		/// Configure the Zendesk Unity SDK with a GameObject attached to your active scene.
-		/// This should be called any time you change scenes and want to continue using Zendesk features.
+		/// Initialize the specified gameObject, zendeskUrl, applicationId and oauthClientId.
 		/// </summary>
-		/// <param name="gameObject">A GameObject that is attached to your active scene.
-		/// 	This object will persist scene changes because DontDestroyOnLoad will be called on it.</param>
+		/// <param name="gameObject">Game object. This object will persist scene changes because DontDestroyOnLoad will be called on it.</param>
+		/// <param name="zendeskUrl">Zendesk URL.</param>
+		/// <param name="applicationId">Application identifier.</param>
+		/// <param name="oauthClientId">Oauth client identifier.</param>
 		public static void Initialize(GameObject gameObject, String zendeskUrl, String applicationId, String oauthClientId) {
 			SharedGameObject = gameObject;
 			UnityEngine.Object.DontDestroyOnLoad(gameObject);
