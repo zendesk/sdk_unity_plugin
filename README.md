@@ -5,8 +5,6 @@ This is a Unity plugin that wraps the iOS and Android Zendesk SDKs. It also allo
 
 ## Third Party Packages
 
-- mod_pbxproj.py - Apache License, Copyright 2012 Calvin Rien
-- Urban Airship Unity SDK - Apache License, Copyright 2015 Urban Airship and Contributors
 
 ## Requirements
 
