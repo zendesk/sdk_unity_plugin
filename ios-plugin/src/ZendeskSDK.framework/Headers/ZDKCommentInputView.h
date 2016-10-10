@@ -62,70 +62,18 @@
 @interface ZDKCommentInputView : UIView
 
 
-@property (nonatomic, readonly) ZDKUITextView *textView;
-
-
-@property (nonatomic, readonly) UIButton *sendButton;
-
 /**
- *  Delegete for ZDKCommentInputView.
+ *  Create a Comment Input View
+ *
+ *  @param attachmentEnabled is attachement enabled
  */
-@property (nonatomic, assign) id<ZDKCommentInputViewDelegate> delegate;
+- (instancetype)initWithAttachemntEnabled:(BOOL)attachmentEnabled;
 
 
-/**
- * Color of border line at top of text entry area.
- */
-@property (nonatomic, strong) UIColor *topBorderColor UI_APPEARANCE_SELECTOR;
+@property (nonatomic, strong, readonly) ZDKUITextView *textView;
 
 
-/**
- * Font for the text entry view and it's placeholder.
- */
-@property (nonatomic, strong) UIFont *textEntryFont UI_APPEARANCE_SELECTOR;
-
-
-/**
- * Color of the text entry text.
- */
-@property (nonatomic, strong) UIColor *textEntryColor UI_APPEARANCE_SELECTOR;
-
-
-/**
- * Text entry box background color.
- */
-@property (nonatomic, strong) UIColor *textEntryBackgroundColor UI_APPEARANCE_SELECTOR;
-
-
-/**
- * Text entry box border color.
- */
-@property (nonatomic, strong) UIColor *textEntryBorderColor UI_APPEARANCE_SELECTOR;
-
-
-/**
- * Send button font.
- */
-@property (nonatomic, strong) UIFont *sendButtonFont UI_APPEARANCE_SELECTOR;
-
-
-/**
- * Send button text color.
- */
-@property (nonatomic, strong) UIColor *sendButtonColor UI_APPEARANCE_SELECTOR;
-
-
-/**
- * Comment entry area background color.
- */
-@property (nonatomic, strong) UIColor *areaBackgroundColor UI_APPEARANCE_SELECTOR;
-
-
-/**
- *  Background color of attachment buttton.
- */
-@property (nonatomic, strong) UIColor *attachmentButtonBackgroundColor UI_APPEARANCE_SELECTOR;
-
+@property (nonatomic, strong, readonly) UIButton *sendButton;
 
 /**
  *  Returns the preferred height for the input view.
@@ -133,5 +81,6 @@
  *  @return the preferred height. 
  */
 - (CGFloat) preferredHeight;
+
 
 @end
