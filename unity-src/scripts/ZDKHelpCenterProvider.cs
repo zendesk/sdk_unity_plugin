@@ -41,6 +41,7 @@ namespace ZendeskSDK {
 		override protected string GetAndroidClass() {
 			return "com.zendesk.unity.providers.HelpCenterProvider";
 		}
+
 		override protected string GetIOsMethodPrefix() {
 			return "_zendeskHelpCenterProvider";
 		}
@@ -101,14 +102,15 @@ namespace ZendeskSDK {
 		/// <param name="helpCenterSearch">The search to perform</param>
 		/// <param name="callback">The callback which will be called upon a successful or an erroneous response.</param>
 		public static void SearchArticles(ZDKHelpCenterSearch helpCenterSearch, Action<ArrayList,ZDKError> callback) {
-			if (helpCenterSearch.LabelNames == null)
-				helpCenterSearch.LabelNames = new string[0];
-			if (helpCenterSearch.SideLoads == null)
-				helpCenterSearch.SideLoads = new string[0];
+
 			instance().Call("searchArticlesUsingHelpCenterSearch", callback,
-			                helpCenterSearch.Query, helpCenterSearch.LabelNames, helpCenterSearch.LabelNames.Length,
-			                helpCenterSearch.Locale, helpCenterSearch.SideLoads, helpCenterSearch.SideLoads.Length,
-			                helpCenterSearch.CategoryId, helpCenterSearch.SectionId, helpCenterSearch.Page, helpCenterSearch.ResultsPerPage);
+			                helpCenterSearch.Query, 
+							helpCenterSearch.LabelNames, helpCenterSearch.LabelNames != null ? helpCenterSearch.LabelNames.Length : 0,
+			                helpCenterSearch.Locale, 
+							helpCenterSearch.SideLoads, helpCenterSearch.SideLoads != null ? helpCenterSearch.SideLoads.Length : 0,
+							helpCenterSearch.CategoryIds, helpCenterSearch.CategoryIds != null ? helpCenterSearch.CategoryIds.Length : 0,  
+							helpCenterSearch.SectionIds, helpCenterSearch.SectionIds != null ? helpCenterSearch.SectionIds.Length : 0,
+							helpCenterSearch.Page, helpCenterSearch.ResultsPerPage);
 		}
 
 		public enum AttachmentType {
@@ -243,8 +245,10 @@ namespace ZendeskSDK {
 		                                                                                            string locale,
 		                                                                                            string[] sideLoads,
 		                                                                                            int sideLoadsLength,
-		                                                                                            int categoryId,
-		                                                                                            int sectionId,
+																									string[] categoryIds,
+																									int categoryIdsLength,
+																									string[] sectionIds,
+																									int sectionIdsLength,
 		                                                                                            int page,
 		                                                                                            int resultsPerPage);
 		[DllImport("__Internal")]
