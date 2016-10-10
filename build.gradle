@@ -4,50 +4,12 @@ task clean(type: Delete) {
     delete "$buildDir/unity-plugin"
 }
 
-task buildUA << {
-    // Android Plugin
-    copy {
-        from file("${project.findProject(":ua-unity-android-plugin").buildDir}/unity-plugin")
-        into file("$buildDir/unity-plugin")
-    }
-
-    // iOS Plugin
-    copy {
-        from file("${project.findProject(":ua-unity-ios-plugin").buildDir}/unity-plugin")
-        into file("$buildDir/unity-plugin")
-    }
-}
-
 task build << {
-    // Copy the plugin src
+    // Copy the c# plugin source
     copy {
         from file("unity-src/scripts")
-        into file("$buildDir/unity-plugin/Assets/Zendesk/Scripts")
-    }
-
-    // Copy the plugin editor
-    copy {
-        from file("unity-src/editor")
-        into file("$buildDir/unity-plugin/Assets/Zendesk/Editor")
-    }
-
-    // Android Plugin
-    copy {
-        from file("${project.findProject(":android-plugin").buildDir}/unity-plugin")
-        into file("$buildDir/unity-plugin")
-    }
-
-    // iOS Plugin
-    copy {
-        from file("${project.findProject(":ios-plugin").buildDir}/unity-plugin")
-        into file("$buildDir/unity-plugin")
+        into file("$buildDir/unity-plugin/Zendesk/Scripts")
     }
 }
 
-if (useUrbanAirshipPush == "true") {
-    println "We are packaging UA!"
-    build.dependsOn("buildUA")
-}
-
-buildUA.dependsOn("clean", "ua-unity-ios-plugin:build", "ua-unity-android-plugin:packagePlugin")
 build.dependsOn("clean", "android-plugin:assemble", "ios-plugin:build")

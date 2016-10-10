@@ -1,5 +1,3 @@
-import java.util.regex.Pattern
-
 // build file for android-plugin component of the Zendesk Unity SDK
 
 apply plugin: 'com.android.library'
@@ -10,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.1'
+        classpath 'com.android.tools.build:gradle:2.1.3'
     }
 }
 
@@ -22,14 +20,14 @@ repositories {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.0"
 
     defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 22
-
-        versionName "1.4.1.1"
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionName "1.7.0.1"
+        vectorDrawables.useSupportLibrary = true
     }
     lintOptions {
         abortOnError false
@@ -38,151 +36,25 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile fileTree(dir: 'libs-package', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.1.0'
-    compile 'com.google.android.gms:play-services-gcm:8.3.0'
-    compile group: 'com.zendesk', name: 'sdk', version: '1.4.2.2'
-    compile files('libs/classes.jar')
-}
 
-
-def getAndroidSDKDir() {
-    // From gradle.properties
-    if (project.hasProperty('androidSDKDir')) {
-        return androidSDKDir;
-    }
-
-    // Try to get the Android SDK directory from local.properties file
-    File localPropertiesFile = new File(project.rootDir, "local.properties")
-    if (localPropertiesFile.exists()) {
-        def localProperties = new Properties()
-        localProperties.load(localPropertiesFile.newDataInputStream())
-
-        def sdkDir = localProperties.getProperty("sdk.dir");
-        if (sdkDir != null) {
-            return sdkDir;
-        }
-    }
-
-    return System.getenv("ANDROID_HOME")
-}
-
-task cleanPlugin(type: Delete) {
-    delete "$buildDir/unity-plugin"
-}
-
-def convertAar(String aarPath, String destinationPath) {
-    // Unpack the resources and classes.jar
-    copy {
-        from zipTree(file(aarPath))
-        into file(destinationPath)
-        include "classes.jar"
-    }
-    copy {
-        from zipTree(file(aarPath))
-        into file(destinationPath)
-        include "res/**"
-        filter { String line ->
-            line.replaceAll(Pattern.quote("ZDK_URL"), zdkUrl)
-                    .replaceAll(Pattern.quote("ZDK_APP_ID"), zdkAppId)
-                    .replaceAll(Pattern.quote("ZDK_OAUTH"), zdkOauth)
-                    .replaceAll(Pattern.quote("ZDK_USE_PUSH"), usePushNotifications == "true" ? "true" : "false")
-                    .replaceAll(Pattern.quote("ZDK_USE_UA_PUSH"), useUrbanAirshipPush == "true" ? "true" : "false")
-                    .replaceAll(Pattern.quote("GCM_SENDER"), gcmSender)
-        }
-    }
-
-    // Unpack the manifest and do applicationId placeholders
-    copy {
-        from zipTree(file(aarPath))
-        into file(destinationPath)
-        include "AndroidManifest.xml"
-    }
-
-    // Move the classes.jar file into the libs directory. Exclude Manifest*.class files.
-    task(destinationPath, type: Jar) {
-        from zipTree(file("$destinationPath/classes.jar"))
-        destinationDir file("$destinationPath/libs")
-        archiveName "${file(destinationPath).name}.jar"
-        exclude '**/Manifest.class', '**/Manifest$*.class'
-    }.execute()
-
-    // Generate a Project.properties file
-    def propertiesFile = file("$destinationPath/project.properties")
-    propertiesFile.text = "target=android-22\n"
-    propertiesFile.text += "android.library=true"
-
-    // Delete the classes.jar
-    delete "$destinationPath/classes.jar"
+    compile group: 'com.unity', name: 'player', version: '1.0.0.1'
+    compile group: 'com.zendesk', name: 'sdk', version: '1.7.1.1'
 }
 
 task packagePlugin <<  {
 
-    // Get the Android SDK directory.
-    def sdkDir = getAndroidSDKDir()
-    if (sdkDir == null) {
-        throw new StopExecutionException("Unable to locate Android SDK directory.");
-    }
-
-    // Copy the retrieved zendesk library, and modify it to be compatible with the Unity build system
+    // AAR dependencies
     copy {
-        from file("build/intermediates/exploded-aar/com.zendesk/sdk/1.4.2.2")
-        into file("$buildDir/unity-plugin/Assets/Plugins/Android/zendesk-lib")
-        exclude "assets","aidl","aapt","R.txt"
-        rename ("classes.jar", "zendesk-lib.jar")
-    }
-    file("$buildDir/unity-plugin/Assets/Plugins/Android/zendesk-lib/jars").renameTo(file("$buildDir/unity-plugin/Assets/Plugins/Android/zendesk-lib/libs"))
-    def propertiesFile = file("$buildDir/unity-plugin/Assets/Plugins/Android/zendesk-lib/project.properties")
-    propertiesFile.text = "target=android-22\n"
-    propertiesFile.text += "android.library=true"
-
-    // Convert the plugin
-    convertAar("$buildDir/outputs/aar/android-plugin-release.aar", "$buildDir/unity-plugin/Assets/Plugins/Android/zendesk-unity-plugin-lib")
-
-    // If we are using GCM push (NOT Urban Airship), there is some additional setup
-    if (usePushNotifications == "true" && useUrbanAirshipPush != "true") {
-        // Copy the Google Play Services library project from the Android SDK dir
-        copy {
-            from file("$sdkDir/extras/google/google_play_services/libproject/google-play-services_lib")
-            into file("$buildDir/unity-plugin/Assets/Plugins/Android/google-play-services-lib")
-        }
-
-        // Copy the alternative manifest and do applicationId placeholders
-        copy {
-            from file("src/main")
-            into file("$buildDir/unity-plugin/Assets/Plugins/Android/zendesk-unity-plugin-lib")
-            include("AndroidManifestGCM.xml")
-            rename ("AndroidManifestGCM.xml", "AndroidManifest.xml")
-            filter { String line ->
-                line.replaceAll(Pattern.quote("\${applicationId}"), androidApplicationId)
-            }
-        }
+        from "$rootDir/android-plugin/plugin-dependencies"
+        into "$rootProject.buildDir/unity-plugin/Plugins/Android"
     }
 
-    // Copy the Appcompat library project from the Android SDK dir
+    // The aar from this project
     copy {
-        from file("$sdkDir/extras/android/support/v7/appcompat/")
-        into file("$buildDir/unity-plugin/Assets/Plugins/Android/appcompat-v7-lib")
-    }
-
-    // Copy the Zendesk project assets
-    copy {
-        from file("assets")
-        into file("$buildDir/unity-plugin/Assets/Plugins/Android/assets")
-    }
-
-    // Copy the library dependents
-    copy {
-        from file("libs-package")
-        into file("$buildDir/unity-plugin/Assets/Plugins/Android/zendesk-unity-plugin-lib/libs")
-    }
-
-    copy {
-        from file(".")
-        into file("$buildDir/unity-plugin/Assets/Plugins/Android")
-        include "AndroidManifest.xml"
+        from "$buildDir/outputs/aar/$project.name-release.aar"
+        into "$rootProject.buildDir/unity-plugin/Plugins/Android"
     }
 }
 
-packagePlugin.dependsOn('cleanPlugin')
+packagePlugin.dependsOn('clean')
 assemble.dependsOn packagePlugin
