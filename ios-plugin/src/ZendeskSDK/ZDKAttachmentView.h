@@ -23,15 +23,11 @@
  */
 @interface ZDKAttachmentView : UIView
 
-@property (nonatomic, strong) UIColor *backgroundColor UI_APPEARANCE_SELECTOR;
-
-@property (nonatomic, strong) UIColor *closeButtonBackgroundColor UI_APPEARANCE_SELECTOR;
-
 
 /**
  *  Collection view for attachments.
  */
-@property (nonatomic, readonly) UICollectionView *attachmentsCollectionView;
+@property (nonatomic, strong, readonly) UICollectionView *attachmentsCollectionView;
 
 
 /**
