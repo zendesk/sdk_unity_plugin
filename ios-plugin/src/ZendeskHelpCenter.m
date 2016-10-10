@@ -7,37 +7,64 @@
 
 #pragma mark - ZDKHelpCenter
 
+
 void _zendeskHelpCenterShowHelpCenter() {
     [ZDKHelpCenter setNavBarConversationsUIType: ZDKNavBarConversationsUITypeLocalizedLabel];
     ZendeskModalNavigationController *modalNavController = [[ZendeskModalNavigationController alloc] init];
-    [ZDKHelpCenter showHelpCenterWithNavController:modalNavController];
+    ZDKHelpCenterOverviewContentModel *defaultModel = [ZDKHelpCenterOverviewContentModel defaultContent];
+    [ZDKHelpCenter pushHelpCenterOverview:modalNavController withContentModel:defaultModel];
+
     UIViewController *rootViewController = [modalNavController.viewControllers firstObject];
     rootViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
                                                                                            style:UIBarButtonItemStyleBordered
                                                                                           target:modalNavController
                                                                                           action:@selector(close:)];
+
     [UnityGetGLViewController() presentViewController:modalNavController animated:YES completion:nil];
 }
 
-void _zendeskHelpCenterShowHelpCenterWithOptions(BOOL listCats, int listSections, int listArticles, char *listLabels[], int listLabelsLength, BOOL showContactUsButton, char *requestSubject) {
-    [ZDKHelpCenter setNavBarConversationsUIType: showContactUsButton ? ZDKNavBarConversationsUITypeLocalizedLabel : ZDKNavBarConversationsUITypeNone];
-    
-    ZendeskModalNavigationController *modalNavController = [[ZendeskModalNavigationController alloc] init];
-    
-    if (listSections != 0) {
-        [ZDKHelpCenter showHelpCenterWithNavController:modalNavController filterByCategoryId:@(listSections).stringValue categoryName:nil layoutGuide:ZDKLayoutRespectTop];
-    } else if (listArticles != 0) {
-        [ZDKHelpCenter showHelpCenterWithNavController:modalNavController filterBySectionId:@(listArticles).stringValue sectionName:nil layoutGuide:ZDKLayoutRespectTop];
-    } else if (listLabelsLength > 0) {
-        NSMutableArray * newStrings = @[].mutableCopy;
-        for (int i = 0; i < listLabelsLength; i++) {
-            [newStrings addObject:GetStringParam(listLabels[i])];
+
+void _zendeskHelpCenterShowHelpCenterWithOptions(char* labels[], int labelsLength, BOOL includeAll,
+                                      BOOL includeCategories, BOOL includeSections, char* ids[],
+                                      int idsLength, BOOL hideContactSupport) {
+
+    ZDKHelpCenterOverviewContentModel *defaultModel = [ZDKHelpCenterOverviewContentModel defaultContent];
+
+    // Populate labels
+    if (labels && labelsLength > 0) {
+        NSMutableArray *labelsArray = [NSMutableArray new];
+
+        for (int i = 0; i < labelsLength; i++) {
+            [labelsArray addObject:GetStringParam(labels[i])];
         }
-        [ZDKHelpCenter showHelpCenterWithNavController:modalNavController filterByArticleLabels:[newStrings copy]];
-    } else { // if (listCats)
-        [ZDKHelpCenter showHelpCenterWithNavController:modalNavController];
+
+        defaultModel.labels = labelsArray;
     }
-    
+
+    if (includeAll) {
+        defaultModel.groupType = ZDKHelpCenterOverviewGroupTypeDefault;
+    } else if (includeCategories) {
+        defaultModel.groupType = ZDKHelpCenterOverviewGroupTypeCategory;
+    } else if (includeSections) {
+        defaultModel.groupType = ZDKHelpCenterOverviewGroupTypeSection;
+    }
+
+    if (ids && idsLength > 0) {
+        NSMutableArray *idsArray = [NSMutableArray new];
+
+        for (int i = 0; i < idsLength; i++) {
+            [idsArray addObject:GetStringParam(ids[i])];
+        }
+
+        defaultModel.groupIds = idsArray;
+    }
+
+    defaultModel.hideContactSupport = hideContactSupport;
+
+    [ZDKHelpCenter setNavBarConversationsUIType: ZDKNavBarConversationsUITypeLocalizedLabel];
+    ZendeskModalNavigationController *modalNavController = [[ZendeskModalNavigationController alloc] init];
+    [ZDKHelpCenter pushHelpCenterOverview:modalNavController withContentModel:defaultModel];
+
     UIViewController *rootViewController = [modalNavController.viewControllers firstObject];
     rootViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
                                                                                            style:UIBarButtonItemStyleBordered
@@ -46,20 +73,6 @@ void _zendeskHelpCenterShowHelpCenterWithOptions(BOOL listCats, int listSections
     [UnityGetGLViewController() presentViewController:modalNavController animated:YES completion:nil];
 }
 
-void _zendeskHelpCenterShowHelpCenterFilterByArticleLabels(char *charArray[], int length) {
-    NSMutableArray * newStrings = @[].mutableCopy;
-    for (int i = 0; i < length; i++) {
-        [newStrings addObject:GetStringParam(charArray[i])];
-    }
-    ZendeskModalNavigationController *modalNavController = [[ZendeskModalNavigationController alloc] init];
-    [ZDKHelpCenter showHelpCenterWithNavController:modalNavController filterByArticleLabels:[newStrings copy]];
-    UIViewController *rootViewController = [modalNavController.viewControllers firstObject];
-    rootViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
-                                                                                           style:UIBarButtonItemStyleBordered
-                                                                                          target:modalNavController
-                                                                                          action:@selector(close:)];
-    [UnityGetGLViewController() presentViewController:modalNavController animated:YES completion:nil];
-}
 
 void _zendeskHelpCenterViewArticle(char * jsonData){
     NSString * jsonString = GetStringParam(jsonData);
@@ -87,4 +100,29 @@ void _zendeskHelpCenterViewArticle(char * jsonData){
                                                                                           target:navController
                                                                                           action:@selector(close:)];
     [UnityGetGLViewController() presentViewController:navController animated:YES completion:nil];
+}
+
+void _zendeskHelpCenterConfigureZDKRequests(char* requestSubject, char* tags[], int tagsLength, char* additionalInfo) {
+
+    [ZDKRequests configure:^(ZDKAccount *account, ZDKRequestCreationConfig *requestCreationConfig) {
+
+        if (requestSubject) {
+            requestCreationConfig.subject = GetStringParam(requestSubject);
+        }
+
+        if (tags && tagsLength > 0) {
+            NSMutableArray *nsTags = [NSMutableArray new];
+
+            for (int i = 0; i < tagsLength; i++) {
+                [nsTags addObject:GetStringParam(tags[i])];
+            }
+
+            requestCreationConfig.tags = nsTags;
+        }
+
+        if (additionalInfo) {
+            requestCreationConfig.additionalRequestInfo = GetStringParam(additionalInfo);
+        }
+
+    }];
 }

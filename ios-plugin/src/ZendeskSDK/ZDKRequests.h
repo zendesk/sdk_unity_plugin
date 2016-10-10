@@ -16,11 +16,20 @@
 
 
 #import <Foundation/Foundation.h>
-#import "ZDKAPIDispatcher.h"
+
+
 #import "ZDKCreateRequestUIDelegate.h"
 #import "ZDKUIViewController.h"
 
+
+
 @class ZDKRequestListTable;
+@class ZDKAccount;
+
+
+typedef void (^ZDKRequestSuccess) (id result);
+typedef void (^ZDKRequestError) (NSError *error);
+
 
 #pragma mark Request creation config
 
@@ -40,20 +49,20 @@
 /**
  * Tags to be included when creating a request.
  */
-@property (strong) NSArray *tags;
+@property (copy) NSArray *tags;
 
 
 /**
  * Additional free text to be appended to the request description.
  */
-@property (strong) NSString *additionalRequestInfo;
+@property (copy) NSString *additionalRequestInfo;
 
 /**
  *  Request subject.
  *
  *  @since 1.3.0.1
  */
-@property (strong) NSString *subject;
+@property (copy) NSString *subject;
 
 
 /**
@@ -106,66 +115,44 @@ typedef void (^ZDSDKConfigBlock) (ZDKAccount *account, ZDKRequestCreationConfig 
  */
 + (void) configure:(ZDSDKConfigBlock)config;
 
-
 /**
- *  Displays a simple request creation modal. The modal is presented on top the view controller
- *  that is passed in.
+ *  Presents a simple request creation on top of the provided view controller modally.
  *
- *  @param navController The UINavigationController from which to pressent the request creation view.
+ *  @param viewController A view controller frow which to present on.
+ *
+ *  @since 1.6.0.1
  */
-+ (void) showRequestCreationWithNavController:(UINavigationController*)navController;
-
++ (void) presentRequestCreationWithViewController:(UIViewController *)viewController;
 
 /**
- *  Displays a simple request creation modal. The modal is presented on top the view controller
- *  that is passed in.
+ *  Presents a request list view controller modally on top of the provided view controller modally.
  *
- *  @param navController The UINavigationController from which to pressent the request creation view.
- *  @param success       A block that is executed on successfull submission of a request.
- *  @param error         A block that is executed when an error occurs during submission of a request.
+ *  @param viewController A view controller frow which to present on.
+ *
+ *  @since 1.6.0.1
  */
-+ (void) showRequestCreationWithNavController:(UINavigationController*)navController
-                                  withSuccess:(ZDKAPISuccess)success
-                                     andError:(ZDKAPIError)error;
-
++ (void) presentRequestListWithViewController:(UIViewController *)viewController;
 
 /**
- *  Displays a request list view controller modally. 
+ *  Pushes a request list view controller on top of the navigation stack.
  *
- *  @param navController A navigation controller from which to push the request list view.
- */
-+ (void) presentRequestListWithNavController:(UINavigationController *)navController;
-
-
-/**
- *  Displays a request list view controller.
- *
- *  @param navController A navigation controller from which to push the request list view.
- */
-+ (void) showRequestListWithNavController:(UINavigationController *)navController;
-
-
-/**
- *  Displays a request list view controller.
- *
- *  @since 1.2.0.1
- *
- *  @param navController A navigation controller from which to push the request list view.
+ *  @param navController The UINavitgationController which to push from.
  *  @param aGuide        Should the request list respect top and bottom layout guide? Pass in
  *                       one of the const values, ZDKLayoutRespectAll, ZDKLayoutRespectNone,
  *                       ZDKLayoutRespectTop and ZDKLayoutRespectBottom.
+ *
+ *  @since 1.6.0.1
  */
-+ (void) showRequestListWithNavController:(UINavigationController *)navController layoutGuide:(ZDKLayoutGuide)aGuide;
-
++ (void) pushRequestListWithNavigationController:(UINavigationController *)navController layoutGuide:(ZDKLayoutGuide)aGuide;
 
 /**
- * Create a new request list component for use, initially the component will have a CGRectZero frame.
+ *  Pushes a request list view controller on top of the navigation stack.
  *
- * @param observer event observer for receiving notification of table updates
- * @param selector the selector to be invoked on table update events
- * @return a new request list component
+ *  @param navController The UINavitgationController which to push from.
+ *
+ *  @since 1.6.0.1
  */
-+ (ZDKRequestListTable*) newRequestListWith:(id)observer andSelector:(SEL)selector __deprecated_msg(" As of version 1.1.1.1");
++ (void) pushRequestListWithNavigationController:(UINavigationController *)navController;
 
 
 /**
@@ -182,6 +169,5 @@ typedef void (^ZDSDKConfigBlock) (ZDKAccount *account, ZDKRequestCreationConfig 
  *  @param uiType A ZDKNavBarCreateRequestUIType.
  */
 + (void) setNavBarCreateRequestUIType:(ZDKNavBarCreateRequestUIType)uiType;
-
 
 @end

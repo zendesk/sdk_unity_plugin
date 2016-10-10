@@ -17,17 +17,19 @@
 #import <UIKit/UIKit.h>
 
 #import "ZDKUIViewController.h"
+#import "ZDKRotationForwarding.h"
+
 
 @class ZDKRequest;
 
 
-@interface ZDKCommentsViewController : ZDKUIViewController
+@interface ZDKCommentsViewController : ZDKUIViewController <ZDKRotationForwarding>
 
 
 /**
- *  The orignional request for the comment stream.
+ *  The original request for the comment stream.
  */
-@property (nonatomic, readonly) ZDKRequest *request;
+@property (nonatomic, strong, readonly) ZDKRequest *request;
 
 
 /**
@@ -37,13 +39,11 @@
  *
  *  @return A new instance of ZDKCommentsViewController.
  */
-- (instancetype) initWithRequest:(ZDKRequest *)aRequest;
-
+- (instancetype)initWithRequest:(ZDKRequest *)aRequest;
 
 /**
  *  Dismiss the controller that was presented modally.
  */
 - (void) dismiss;
-
 
 @end

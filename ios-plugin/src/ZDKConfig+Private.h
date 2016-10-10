@@ -1,9 +1,9 @@
 /*
  *
- *  ZDKAnonymousIdentity.h
+ *  ZDKConfig+Private.h
  *  ZendeskSDK
  *
- *  Created by Zendesk on 19/11/2014.  
+ *  Created by Zendesk on 29/10/2014.
  *
  *  Copyright (c) 2014 Zendesk. All rights reserved.
  *
@@ -14,15 +14,15 @@
  *
  */
 
-#import <Foundation/Foundation.h>
-#import "ZDKIdentity.h"
-#import "ZDKCoding.h"
+#import "ZendeskSDK.h"
 
-@interface ZDKAnonymousIdentity : ZDKCoding <ZDKIdentity>
 
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *email;
-@property (nonatomic, strong) NSString *externalId;
 
+@interface ZDKConfig ()
+@property (nonatomic, copy) NSMutableArray *userAgentHeaderSuffixes;
+
+// user agent headers must be added after "init" is called as they get wiped in the "init" method
+- (BOOL)addUserAgentHeaderSuffixWithKey:(NSString *)key value:(NSString *)value;
+- (void)clearUserAgentSuffixes;
 
 @end
