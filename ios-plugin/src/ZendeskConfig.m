@@ -8,6 +8,11 @@
 #pragma mark - ZDKConfig
 
 // should be called before _zendeskConfigInitialize
+
+void _zendeskConfigInitialize(char* zendeskUrl, char* applicationId, char* oauthClientId) {
+    [[ZDKConfig instance] initializeWithAppId:GetStringParam(applicationId) zendeskUrl:GetStringParam(zendeskUrl) clientId:GetStringParam(oauthClientId)];
+}
+
 void _zendeskConfigSetUserLocale(char *locale) {
     [ZDKConfig instance].userLocale = GetStringParam(locale);
 }
