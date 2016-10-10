@@ -43,13 +43,13 @@ namespace ZendeskSDK {
 		/// This models the "category" parameter.  This specifies that the search will be restricted to content that is in the given
 		/// category.
 		/// </summary>
-		public int CategoryId;
+		public string[] CategoryIds;
 
 		/// <summary>
 		/// This models the "section" parameter.  This specifies that the search will be restricted to content that is in the given 
 		/// section.
 		/// </summary>
-		public int SectionId;
+		public string[] SectionIds;
 
 		/// <summary>
 		/// This models the "page" parameter. This specifies what page of results to return.  This is closely tied to the resultsPerPage
@@ -68,8 +68,8 @@ namespace ZendeskSDK {
 			LabelNames = null;
 			Locale = null;
 			SideLoads = null;
-			CategoryId = -1;
-			SectionId = -1;
+			CategoryIds = null;
+			SectionIds = null;
 			Page = -1;
 			ResultsPerPage = -1;
 		}
