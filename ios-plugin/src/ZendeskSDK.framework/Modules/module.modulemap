@@ -1,6 +1,0 @@
-framework module ZendeskSDK {
-  umbrella header "ZendeskSDK.h"
-
-  export *
-  module * { export * }
-}

@@ -1,54 +1,19 @@
-import java.util.regex.Pattern
-
 // build file for ios-plugin component of the Zendesk Unity SDK
 
 task clean(type: Delete) {
-    delete "$buildDir/unity-plugin"
+    delete "$buildDir"
 }
 
 task build << {
-    // Copy the plugin src
-    if (useUrbanAirshipPush == "true") {
-        copy {
-            from file("setup-src")
-            into file("$buildDir/unity-plugin/Assets/Plugins/iOS")
-            filter { String line ->
-                line.replaceAll(Pattern.quote("ZDK_URL"), zdkUrl)
-                        .replaceAll(Pattern.quote("ZDK_APP_ID"), zdkAppId)
-                        .replaceAll(Pattern.quote("ZDK_OAUTH"), zdkOauth)
-                        .replaceAll(Pattern.quote("PUSH_DEFINED_NOTHING"), "PUSH_DEFINED_UA")
-                        .replaceAll(Pattern.quote("USE_PUSH_REGULAR"), "NO")
-                        .replaceAll(Pattern.quote("USE_PUSH_URBANAIRSHIP"), "YES")
-            }
-        }
-    } else if (usePushNotifications == "true") {
-        copy {
-            from file("setup-src")
-            into file("$buildDir/unity-plugin/Assets/Plugins/iOS")
-            filter { String line ->
-                line.replaceAll(Pattern.quote("ZDK_URL"), zdkUrl)
-                        .replaceAll(Pattern.quote("ZDK_APP_ID"), zdkAppId)
-                        .replaceAll(Pattern.quote("ZDK_OAUTH"), zdkOauth)
-                        .replaceAll(Pattern.quote("USE_PUSH_REGULAR"), "YES")
-                        .replaceAll(Pattern.quote("USE_PUSH_URBANAIRSHIP"), "NO")
-            }
-        }
-    } else {
-        copy {
-            from file("setup-src")
-            into file("$buildDir/unity-plugin/Assets/Plugins/iOS")
-            filter { String line ->
-                line.replaceAll(Pattern.quote("ZDK_URL"), zdkUrl)
-                        .replaceAll(Pattern.quote("ZDK_APP_ID"), zdkAppId)
-                        .replaceAll(Pattern.quote("ZDK_OAUTH"), zdkOauth)
-                        .replaceAll(Pattern.quote("USE_PUSH_REGULAR"), "NO")
-                        .replaceAll(Pattern.quote("USE_PUSH_URBANAIRSHIP"), "NO")
-            }
-        }
+
+    copy {
+        from file("setup-src")
+        into file("$rootProject.buildDir/unity-plugin/Plugins/iOS")
     }
+
     copy {
         from file("src")
-        into file("$buildDir/unity-plugin/Assets/Plugins/iOS")
+        into file("$rootProject.buildDir/unity-plugin/Plugins/iOS")
     }
 }
 

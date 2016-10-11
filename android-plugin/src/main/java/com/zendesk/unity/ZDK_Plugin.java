@@ -4,25 +4,30 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.unity3d.player.UnityPlayer;
 import com.zendesk.logger.Logger;
+import com.zendesk.sdk.feedback.WrappedZendeskFeedbackConfiguration;
 import com.zendesk.sdk.feedback.ZendeskFeedbackConfiguration;
-import com.zendesk.sdk.feedback.impl.BaseZendeskFeedbackConfiguration;
 import com.zendesk.sdk.feedback.ui.ContactZendeskActivity;
-import com.zendesk.sdk.model.CustomField;
+import com.zendesk.sdk.model.access.AnonymousIdentity;
+import com.zendesk.sdk.model.access.Identity;
+import com.zendesk.sdk.model.access.JwtIdentity;
 import com.zendesk.sdk.model.helpcenter.Article;
-import com.zendesk.sdk.model.network.AnonymousIdentity;
-import com.zendesk.sdk.model.network.Identity;
-import com.zendesk.sdk.model.network.JwtIdentity;
+import com.zendesk.sdk.model.request.CustomField;
+import com.zendesk.sdk.network.impl.UserAgentHeaderUtil;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
-import com.zendesk.sdk.network.impl.ZendeskGsonProvider;
-import com.zendesk.sdk.network.impl.ZendeskHelpCenterProvider;
 import com.zendesk.sdk.requests.RequestActivity;
 import com.zendesk.sdk.support.SupportActivity;
 import com.zendesk.sdk.support.ViewArticleActivity;
 import com.zendesk.service.ErrorResponse;
 import com.zendesk.service.ZendeskCallback;
+import com.zendesk.util.CollectionUtils;
 import com.zendesk.util.StringUtils;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +38,8 @@ import java.util.Map;
  * Zendesk Plugin
  */
 public class ZDK_Plugin extends UnityComponent {
+
+    private static final String LOG_TAG = "ZDK_Plugin";
 
     public static ZDK_Plugin _instance;
     public static Object instance(){
@@ -60,8 +67,17 @@ public class ZDK_Plugin extends UnityComponent {
     // ZDKConfig
     // ##### ##### ##### ##### ##### ##### ##### #####
 
-    public void onResume() {
-        ZendeskInitializer.onResume();
+
+    public void initialize(String zendeskUrl, String applicationId, String oauthClientId) {
+
+        Activity activity = UnityPlayer.currentActivity;
+        if (activity == null) {
+            Log.e(LOG_TAG, "initialize: Unity activity is null!!");
+            return;
+        }
+
+        ZendeskConfig.INSTANCE.init(activity.getApplication(), zendeskUrl, applicationId, oauthClientId);
+        UserAgentHeaderUtil.addUnitySuffix();
     }
 
     //authenticate anonymous identity with details
@@ -83,8 +99,8 @@ public class ZDK_Plugin extends UnityComponent {
     }
 
     public void setCustomFields(String jsonFields) {
-        Map<String, String> fields = ZendeskGsonProvider.INSTANCE.getZendeskGson()
-                .fromJson(jsonFields, Map.class);
+
+        Map<String, String> fields = getGson().fromJson(jsonFields, Map.class);
 
         List<CustomField> customFields = new ArrayList<>(fields.entrySet().size());
         for (Map.Entry<String, String> field: fields.entrySet()) {
@@ -94,8 +110,7 @@ public class ZDK_Plugin extends UnityComponent {
     }
 
     public String getCustomFields() {
-        return ZendeskGsonProvider.INSTANCE.getZendeskGson()
-                .toJson(ZendeskConfig.INSTANCE.getCustomFields());
+        return getGson().toJson(ZendeskConfig.INSTANCE.getCustomFields());
     }
 
     public void setUserLocale(String locale) {
@@ -123,9 +138,6 @@ public class ZDK_Plugin extends UnityComponent {
     public void showHelpCenter(){
         if(!checkInitialized())
             return;
-
-        checkForContactConfiguration();
-
         getActivity().runOnUiThread(new Runnable() {
             public void run() {
                 new SupportActivity.Builder()
@@ -135,74 +147,63 @@ public class ZDK_Plugin extends UnityComponent {
         });
     }
 
-    private void checkForContactConfiguration() {
-        if (ZendeskConfig.INSTANCE.getContactConfiguration() == null) {
-            ZendeskConfig.INSTANCE.setContactConfiguration(new BaseZendeskFeedbackConfiguration() {
+    public void showHelpCenter(boolean collapseCategories, final boolean showContactUsButton, String[] labelNames, long[] sectionIds, long[] categoryIds, final String[] tags, final String additionalInfo, final String requestSubject) {
+
+        if(!checkInitialized()) {
+            return;
+        }
+
+        final SupportActivity.Builder builder = new SupportActivity.Builder();
+
+        builder
+                .withCategoriesCollapsed(collapseCategories)
+                .showContactUsButton(showContactUsButton)
+                .withLabelNames(labelNames)
+                .withArticlesForSectionIds(sectionIds)
+                .withArticlesForCategoryIds(categoryIds);
+
+
+        if (StringUtils.hasLength(additionalInfo) || StringUtils.hasLength(requestSubject) || CollectionUtils.isNotEmpty(tags)) {
+
+            builder.withContactConfiguration(new ZendeskFeedbackConfiguration() {
+                @Override
+                public List<String> getTags() {
+                    return tags == null ? new ArrayList<String>() : Arrays.asList(tags);
+                }
+
+                @Override
+                public String getAdditionalInfo() {
+                    return additionalInfo;
+                }
+
                 @Override
                 public String getRequestSubject() {
-                    return "App ticket";
+                    return requestSubject;
                 }
             });
         }
-    }
-
-    public void showHelpCenterWithOptions(final boolean listCats, final int listSections, final int listArticles,
-                               final String[] listLabels, int listLabelsLenth, final boolean showContactUsButton){
-        if(!checkInitialized())
-            return;
-
-        checkForContactConfiguration();
 
         getActivity().runOnUiThread(new Runnable() {
+
+            @Override
             public void run() {
-                SupportActivity.Builder b = new SupportActivity.Builder();
-                if (listCats)
-                    b.listCategories();
-                else if (listSections != 0)
-                    b.listSections(listSections);
-                else if (listArticles != 0)
-                    b.listArticles(listArticles);
-                else if (listLabels != null)
-                    b.listArticlesByLabels(listLabels);
-                b.showContactUsButton(showContactUsButton)
-                        .show(getActivity());
+                builder.show(getActivity());
             }
         });
-    }
 
-    public void setContactConfiguration(String[] tags, int tagsLength, final String additionalRequestInfo,
-                                  final String requestSubject) {
-
-        final ArrayList<String> listTags = new ArrayList<String>(Arrays.asList(tags));
-
-        ZendeskConfig.INSTANCE.setContactConfiguration(new ZendeskFeedbackConfiguration() {
-            @Override
-            public List<String> getTags() {
-                return listTags;
-            }
-
-            @Override
-            public String getAdditionalInfo() {
-                return additionalRequestInfo;
-            }
-
-            @Override
-            public String getRequestSubject() {
-                return requestSubject;
-            }
-        });
     }
 
     private boolean checkInitialized() {
-        if (ZendeskInitializer.isInitialized())
+        if (ZendeskConfig.INSTANCE.isInitialized()) {
             return true;
-        Log.e("Zendesk Unity", "Zendesk SDK must be initialized before doing anything else! Did you call ZendeskSDK.ZDKConfig.Initialize(gameObject)?");
+        }
+        Log.e("Zendesk Unity", "Zendesk SDK must be initialized before doing anything else! Did you call ZendeskSDK.ZDKConfig.Initialize(...)?");
         return false;
     }
 
     public void viewArticle(final String id){
         Long idLong = Long.valueOf(id);
-        com.zendesk.sdk.network.HelpCenterProvider provider = new ZendeskHelpCenterProvider();
+        com.zendesk.sdk.network.HelpCenterProvider provider = ZendeskConfig.INSTANCE.provider().helpCenterProvider();
 
         provider.getArticle(idLong, new ZendeskCallback<Article>() {
             @Override
@@ -226,26 +227,38 @@ public class ZDK_Plugin extends UnityComponent {
         if(!checkInitialized())
             return;
 
-        checkForContactConfiguration();
-
         getActivity().runOnUiThread(new Runnable() {
             public void run() {
-
-                Intent requestIntent = new Intent(getActivity().getApplicationContext(), ContactZendeskActivity.class);
-                getActivity().startActivity(requestIntent);
+                ContactZendeskActivity.startActivity(getActivity(), null);
             }
         });
     }
 
-    public void showRequestList(){
+    public void showRequestCreationWithConfig(final String requestSubject, final String[] tags, final String additionalInfo){
         if(!checkInitialized())
             return;
 
         getActivity().runOnUiThread(new Runnable() {
             public void run() {
 
-                Intent requestIntent = new Intent(getActivity().getApplicationContext(), RequestActivity.class);
-                getActivity().startActivity(requestIntent);
+                ContactZendeskActivity.startActivity(getActivity(), new WrappedZendeskFeedbackConfiguration(
+                        new ZendeskFeedbackConfiguration() {
+                            @Override
+                            public List<String> getTags() {
+                                return tags == null ? null : Arrays.asList(tags);
+                            }
+
+                            @Override
+                            public String getAdditionalInfo() {
+                                return additionalInfo;
+                            }
+
+                            @Override
+                            public String getRequestSubject() {
+                                return requestSubject;
+                            }
+                        }
+                ));
             }
         });
     }
@@ -307,11 +320,10 @@ public class ZDK_Plugin extends UnityComponent {
     }
 
 
-    // ##### ##### ##### ##### ##### ##### ##### #####
-    // String Util
-    // ##### ##### ##### ##### ##### ##### ##### #####
-
-    public String csvStringFromArray(String[] strings, int length){
-        return StringUtils.toCsvString(strings);
+    private Gson getGson() {
+        return new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .excludeFieldsWithModifiers(Modifier.TRANSIENT)
+                .create();
     }
 }

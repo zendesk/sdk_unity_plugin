@@ -15,12 +15,7 @@ public class ZendeskExample: MonoBehaviour
 		ZendeskSDK.ZDKConfig.Initialize (gameObject); // DontDestroyOnLoad automatically called on your supplied gameObject
 		ZendeskSDK.ZDKConfig.AuthenticateJwtUserIdentity ("<UserId>");
 	}
-	
-	/** must include this method for android to behave properly */
-	void OnApplicationPause(bool pauseStatus) {
-		ZendeskSDK.ZDKConfig.OnApplicationPause (pauseStatus);
-	}
-	
+
 	/** must include this method for any zendesk callbacks to work */
 	void OnZendeskCallback(string results) {
 		ZDKConfig.CallbackResponse (results);
@@ -43,10 +38,6 @@ public class ZendeskExample: MonoBehaviour
 
 		if (GUILayout.Button ("Request Creation")) {
 			ZendeskSDK.ZDKRequests.ShowRequestCreation ();
-		}
-
-		if (GUILayout.Button ("Requests List")) {
-			ZendeskSDK.ZDKRequests.ShowRequestList ();
 		}
 
 		if (GUILayout.Button ("Rate My App")) {

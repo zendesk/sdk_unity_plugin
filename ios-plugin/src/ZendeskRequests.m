@@ -7,18 +7,30 @@
 
 #pragma mark - ZDKRequests
 
-void _zendeskRequestsShowRequestCreation() {
-    [ZDKRequests showRequestCreationWithNavController:(UINavigationController*)UnityGetGLViewController()];
+void _zendeskRequestsConfigureZDKRequests(char* requestSubject, char* tags[], int tagsLength, char* additionalInfo) {
+
+    [ZDKRequests configure:^(ZDKAccount *account, ZDKRequestCreationConfig *requestCreationConfig) {
+
+         if (requestSubject) {
+             requestCreationConfig.subject = GetStringParam(requestSubject);
+         }
+
+         if (tags && tagsLength > 0) {
+             NSMutableArray *nsTags = [NSMutableArray new];
+
+             for (int i = 0; i < tagsLength; i++) {
+                 [nsTags addObject:GetStringParam(tags[i])];
+             }
+
+             requestCreationConfig.tags = nsTags;
+         }
+
+         if (additionalInfo) {
+             requestCreationConfig.additionalRequestInfo = GetStringParam(additionalInfo);
+         }
+    }];
 }
 
-void _zendeskRequestsShowRequestList() {
-    ZendeskModalNavigationController *modalNavController = [[ZendeskModalNavigationController alloc] init];
-    [ZDKRequests showRequestListWithNavController:modalNavController];
-    UIViewController *rootViewController = [modalNavController.viewControllers firstObject];
-    rootViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
-                                                                                           style:UIBarButtonItemStyleBordered
-                                                                                          target:modalNavController
-                                                                                          action:@selector(close:)];
-    
-    [UnityGetGLViewController() presentViewController:modalNavController animated:YES completion:nil];
+void _zendeskRequestsShowRequestCreation() {
+    [ZDKRequests presentRequestCreationWithViewController:UnityGetGLViewController()];
 }
