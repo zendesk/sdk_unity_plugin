@@ -78,11 +78,6 @@
 #import "ZDKUITextViewDelegate.h"
 #import "ZDKUIUtil.h"
 #import "ZDKUIViewController.h"
-
-#if MODULES_DISABLED
 #import <ZendeskProviderSDK/ZendeskProviderSDK.h>
-#else
-@import ZendeskProviderSDK;
-#endif
 
 #endif
