@@ -4,7 +4,6 @@
 //
 
 #import "ZendeskCore.h"
-#import "ZendeskUnityPlugin.h"
 
 #pragma mark - ZDKPush
 

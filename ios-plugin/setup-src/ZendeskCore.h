@@ -9,6 +9,9 @@
 #import "ZendeskJSON.h"
 
 
+FOUNDATION_EXPORT NSString * const UnityPluginVersionNumber;
+FOUNDATION_EXPORT NSString * const UnityHeaderName;
+
 extern void UnitySendMessage(const char *className, const char *methodName, const char *param);
 
 // Converts C style string to NSString
