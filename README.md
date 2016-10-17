@@ -1,26 +1,21 @@
 Zendesk Unity3D Plugin
-==========================
+======================
 
-This is a Unity plugin that wraps the iOS and Android Zendesk SDKs. It also allows optional inclusion of the Urban Airship Unity SDK to assist with push notification features.
-
-## Third Party Packages
-
+This is a Unity plugin that wraps the iOS and Android Zendesk SDKs.
 
 ## Requirements
 
 - OSX or Linux operating system (The plugin is not supported on Windows)
-- Unity 5.0+
+- Unity 5.0+ for iOS, Unity 5.5+ for Android
 - Xcode 7.0+ (if building for iOS)
-- Android SDK with the latest support repo and libraries installed. (Required to build the plugin, even if you are just using iOS)
+- Android SDK with the latest support repository and libraries installed. (Required to build the plugin, even if you are just using iOS)
 - Note that you must have the "Android Support Library" installed. You can download this using the Android SDK Manager. 
-If you don't see this as an available option, make sure you are using the standalone SDK Manager (not the Android Studio one),
-and tick the "Obsolete" checkbox.
 
 ## Basics
 
 1. Import the Zendesk Unity SDK into your Unity project
 
-    * Update gradle.properties with your app's configuration and build preferences.
+    * Import the `sdk_unity_plugin` project into Android Studio.
     * Build the plugin with `./gradlew build`
     * Copy the output of build/unity-plugin/ into your Unity app.
 
@@ -34,27 +29,24 @@ and tick the "Obsolete" checkbox.
 3. Creating your own class that uses Zendesk
 
     * To use the Zendesk SDK in Unity, you must create a class that extends `MonoBehaviour` and attach it to a `GameObject` in your scene.
-    * Include the following three methods in your class:
+    * Include the following two methods in your class:
 
-        c#
-        /** initialize zendesk in the Awake() method of the GameObject a script of yours is attached to */
-        void Awake() {
-            ZendeskSDK.ZDKConfig.Initialize (gameObject); // DontDestroyOnLoad automatically called on your supplied gameObject
-        }
-
-        /** must include this method for android to behave properly */
-        void OnApplicationPause(bool pauseStatus) {
-            ZendeskSDK.ZDKConfig.OnApplicationPause (pauseStatus);
-        }
+    ```c#
+    // initialize Zendesk and set an identity. See ZendeskExample.cs for more information
+    void Awake() {
+        ZendeskSDK.ZDKConfig.Initialize (gameObject, "https://{subdomain}.zendesk.com", "{applicationId}", "{oauthClientId}"); // DontDestroyOnLoad automatically called on your supplied gameObject
+        ZendeskSDK.ZDKConfig.AuthenticateAnonymousIdentity();
+    }
     
-        /** must include this method for any zendesk callbacks to work */
-        void OnZendeskCallback(string results) {
-            ZendeskSDK.ZDKConfig.CallbackResponse (results);
-        }
-
+    // must include this method for any zendesk callbacks to work
+    void OnZendeskCallback(string results) {
+        ZendeskSDK.ZDKConfig.CallbackResponse (results);
+    }
+    ```
+    
 4. Android conflicts
 
-    * You may already have a file at `/Assets/Plugins/Android/AndroidManifest.xml`. If so, you will have to manually merge the items of that manifest with the one we supply in our plugin.  Specifically, your `<application>` tag must have the `android:theme="@style/ZendeskSdkTheme"` attribute, and your `UnityPlayerActivity` (or derived class) `<activity>` entry must have `<meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />` as a child tag.
+    * You may already have a file at `/Assets/Plugins/Android/AndroidManifest.xml`. If so, you will have to manually merge the items of that manifest with the one we supply in our plugin.  Specifically, your `<application>` tag must have the `android:theme="@style/UnityTheme"` attribute, and your `UnityPlayerActivity` (or derived class) `<activity>` entry must have `<meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />` as a child tag.
 
 ## App Configuration and Zendesk App Interfaces
 
@@ -62,7 +54,12 @@ Example C#:
 
     c#
     ZendeskSDK.ZDKHelpCenter.ShowHelpCenter();
-    ZendeskSDK.ZDKRequests.ShowRequestList();
+    ZendeskSDK.ZDKHelpCenter.ShowHelpCenter(options);
+    
+    ZendeskSDK.ZDKRequests.ShowRequestCreation
+    ZendeskSDK.ZDKRequests.ShowRequestCreationWithConfig(config)
+    
+    ZendeskSDK.ZDKRMA.Show();
     ZendeskSDK.ZDKRMA.ShowAlways();
 
 App configuration and the Zendesk App Help Center, Requests, and Rate My App interfaces 
@@ -74,7 +71,6 @@ can be found in the /Assets/Zendesk folder and are named:
 * ZDKRMA.cs
 * ZDKPush.cs
 * ZDKLogger.cs
-* ZDKDeviceInfo.cs
 
 ## Zendesk Data Providers
 
@@ -109,19 +105,21 @@ Enabling and disabling push notifications for the current user is pretty straigh
 
     c#
     if (!pushEnabled) {
-        ZendeskSDK.ZDKPush.Enable((result, error) => {
+        ZendeskSDK.ZDKPush.EnableWithIdentifier("{device-or-channel-identifier}", (result, error) => {
             if (error != null) {
                 Debug.Log("ERROR: ZDKPush.Enable - " + error.Description);
-            } else {
+            }
+            else {
                 pushEnabled = true;
                 Debug.Log("ZDKPush.Enable Successful Callback - " + MakeResultString(result));
             }
         });
     } else {
-        ZendeskSDK.ZDKPush.Disable((result, error) => {
+        ZendeskSDK.ZDKPush.Disable("device-or-channel-identifier", (result, error) => {
             if (error != null) {
                 Debug.Log("ERROR: ZDKPush.Disable - " + error.Description);
-            } else {
+            }
+            else {
                 pushEnabled = false;
                 Debug.Log("ZDKPush.Disable Successful Callback - " + MakeResultString(result));
             }
@@ -130,63 +128,51 @@ Enabling and disabling push notifications for the current user is pretty straigh
 
 There is an an example of this in the `ZendeskTester.cs` script file. 
 
-Notifications are a complex, OS-dependent feature. We provide straightforward implementations in the included iOS and Android plugins. 
-Feel free to modify these implementations by editing the Java and Objective-C code in the android-plugin, ios-plugin, and ua-unity-android-plugin subdirectories.
+Notifications are a complex, OS-dependent feature. We provide the interfaces for enabling and disabling push. To handle incoming push messages you will need to configure the Urban Airship Unity SDK or the GCM / APNS SDKs.
 
 ## Interface customization
 
 ### iOS
 
-Zendesk application customization can be specified through appearance customizations
-specified on Views in the Zendesk Plugin SDK, similar to the iOS SDK.
+Zendesk application customization can be specified with IOSAppearance. ZenColor supports rgb and rbga values.
 
 Example C#:
 
 ```c#
-ZendeskSDK.ZDKSupportView.SetBackgroundColor(new ZenColor(0.9f, 1.0f));
-ZendeskSDK.ZDKRMAFeedbackView.SetHeaderFont("system", 14);
-ZendeskSDK.ZDKCreateRequestView.SetAttachmentButtonCornerRadius(0);
-ZendeskSDK.ZDKCreateRequestView.SetAttachmentButtonBorderWidth(0);
+IOSAppearance appearance = new IOSAppearance ();
+appearance.StartWithBaseTheme ();
+
+appearance.SetPrimaryTextColor(new ZenColor (1.0f, 1.0f, 0f));
+appearance.SetSecondaryTextColor (new ZenColor (1.0f, 0f, 0f));
+appearance.SetPrimaryBackgroundColor(new ZenColor(0f, 0f, 1.0f));
+appearance.SetSecondaryBackgroundColor (new ZenColor (0f, 1f, 0f));
+appearance.SetMetaTextColor (new ZenColor (0.5f, 0f, 0f));
+appearance.SetEmptyBackgroundColor (new ZenColor (0.5f, 0.5f, 0f));
+appearance.SetSeparatorColor (new ZenColor (0.5f, 0f, 0.5f));
+appearance.SetInputFieldColor (new ZenColor(0.5f, 0.7f, 0.2f));
+appearance.SetInputFieldBackgroundColor(new ZenColor(0.9f, 0.1f, 0.9f));
+
+appearance.ApplyTheme ();
 ```
 
-The appearance views can be found in the /Assets/Zendesk folder and are named:
-
-* ZDKAttachmentView.cs
-* ZDKCommentInputView.cs
-* ZDKCreateRequestView.cs
-* ZDKRequestCommentAttachmentLoadingTableCell.cs
-* ZDKRequestCommentAttachmentTableCell.cs
-* ZDKRequestCommentTableCell.cs
-* ZDKRequestListTable.cs
-* ZDKRequestListTableCell.cs
-* ZDKRMADialogView.cs
-* ZDKRMAFeedbackView.cs
-* ZDKSupportArticleTableViewCell.cs
-* ZDKSupportAttachmentCell.cs
-* ZDKSupportTableViewCell.cs
-* ZDKSupportView.sc
-* ZDKUIImageScrollView.cs
-* ZDKUILoadingView.cs
 
 ### Android
 
-Zendesk application customization can be specified through styles in the styles.xml file, similar to the Android
-SDK. You can use a set of defined styles to achieve the desired effect. Include your style changes in: 
+Zendesk application customization must be specified before the Android Unity plugin is created with `./gradlew build`.
 
-`/Assets/Plugins/Android/appcompat/res/values/styles.xml`
+Include your style changes in: 
 
-To add the style to the activity of your choice, make the additions in:
+`/sdk_unity_plugin/android-plugin/src/main/res/values/styles.xml`
 
-`/Assets/Plugins/Android/AndroidManifest.xml`
+The default `styles.xml` defines a theme called `UnityTheme`. This is then referenced by the `AndroidManifest.xml` file in your Unity project at `/Assets/Plugins/Android`.
 
 To find defined styles and examples, see:
 
-https://developer.zendesk.com/embeddables/docs/android/customization
+https://developer.zendesk.com/embeddables/docs/android/customize_the_look
 
 ## Help Center Appearance Customization 
 
-Custom Help Center articles are styled with CSS that can be specified
-in the following files once the plugin has been installed.
+Custom Help Center articles are styled with CSS that can be specified in the following files.
 
 ### iOS
 
@@ -194,41 +180,36 @@ in the following files once the plugin has been installed.
 
 ### Android
 
-`/Assets/Plugins/Android/assets/help_center_article_style.css`
+On Android, this file must be edited before you create the plugin with `./gradlew build`
+
+`/sdk_unity_plugin/android-plugin/src/main/res/assets/help_center_article_style.css`
 
 ## String and Localization Customization
 
-Custom strings and localizations can be specified in the following files
-once the plugin has been installed.
+Custom strings and localizations can be specified in the following files. To change the default strings in your application, add replacements to the string you wish to modify. Make sure to include placeholders in the replacement of any strings that contain them.
 
 ### iOS
 
-Strings are specified in plist files, one for each Locale. Each locale is a separate [Locale] folder.
+Strings are specified in plist files, one for each Locale. Each locale is a separate `[Locale]` folder.
 
 `/Assets/Plugins/iOS/ZendeskSDKStrings.bundle/[Locale].lproj/Localizable.strings`
 
+To find list of strings, see:
+
+https://developer.zendesk.com/embeddables/docs/ios/localize_text
+
 ### Android
 
-Strings are specified in xml files, one for each Locale. Each locale is a separate [Locale] folder. To change the 
-default strings in your application, add replacements to the string you wish to modify. Make sure to include
-placeholders in the replacement of any strings that contain them. Add the string replacements in:
+Strings are specified in xml files, one for each Locale. Each locale is a separate `[Locale]` folder. On Android, these files must be edited before you create the plugin with `./gradlew build`
 
 `/Assets/Plugins/Android/zendesk-lib/res/values-[Locale]/strings.xml`
 
-
 To find list of strings, see:
 
-https://developer.zendesk.com/embeddables/docs/android/customization
+https://developer.zendesk.com/embeddables/docs/android/localize_text
 
 ## Known issues
-
-1. External ID on anonymous authentication for iOS will not be picked up by the server. Anonymous authentication will still work, but the external ID will not be recognised.
-2. Push notification deep-linking does not work. It will open the app, but won't deep-link to the ticket. 
-3. When creating a ticket using Rate My App on Android, the description of the issue is used for the subject line of the ticket. 
-4. On request creation on Android, rotating the screen during sending appears to cancel the ticket. The progress dialog will disappear and the ticket form will regain focus.
+ 
+1. When creating a ticket using Rate My App on Android, the description of the issue is used for the subject line of the ticket. 
+2. On request creation on Android, rotating the screen during sending appears to cancel the ticket. The progress dialog will disappear and the ticket form will regain focus.
 However, the ticket will still be successfully created, and will be present in the user's ticket list, though it will be missing any attachments added before the rotation.
-5. Urban Airship, as per their documentation for both [Android](http://docs.urbanairship.com/platform/android.html#retrieving-your-channel-id) 
-and [iOS](http://docs.urbanairship.com/platform/ios.html#retrieving-your-channel-id), can return a `null` channel ID until the device has been properly set up with the Urban Airship services. 
-Restarting the app is usually enough to fix this. Unfortunately, it's quite inconsistent. 
-In some cases (particularly when testing multiple builds and/or configurations on the same device), a more thorough clean is required. Reinstalling the plugin from scratch is usually enough to do this.   
-6. The UI provided in these versions of the native SDKs and plugin do not work on iOS 10.
