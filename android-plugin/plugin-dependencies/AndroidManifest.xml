@@ -13,7 +13,7 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         tools:replace="android:theme,android:label"
-        android:theme="@style/ZendeskSdkTheme" >
+        android:theme="@style/UnityTheme" >
         <activity android:name="com.unity3d.player.UnityPlayerActivity"
             android:label="@string/app_name"
             android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen">
@@ -25,8 +25,9 @@
         </activity>
 
         <!--
-            applicationId is merged correctly in the belvedere library, but this is still required
-            in order to view attachments in full screen.
+            applicationId is merged correctly in the belvedere library, but Unity does not currently
+            use what you specify in Android > Player Settings > Bundle Identifier. Replace {applicationId}
+            with your actual applicationId here.
         -->
         <provider
             android:name="com.zendesk.belvedere.BelvedereFileProvider"
