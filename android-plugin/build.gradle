@@ -61,15 +61,15 @@ dependencies {
 
 task packagePlugin <<  {
 
-    tasks.stripCssFromAndroidSdk.execute()
-
-    print tasks.stripCssFromAndroidSdk.output()
-
     // AAR dependencies
     copy {
         from "$rootDir/android-plugin/plugin-dependencies"
         into "$rootProject.buildDir/unity-plugin/Plugins/Android"
     }
+
+    // Strips css from sdk aar artifact, replaced by the css file in src/main/assets
+    tasks.stripCssFromAndroidSdk.execute()
+    print tasks.stripCssFromAndroidSdk.output()
 
     // The aar from this project
     copy {
@@ -86,6 +86,10 @@ task packagePlugin <<  {
  *
  * This is unlikely to be required when using the gradle build system, which is an option in
  * Unity 5.5 and later.
+ *
+ * This will not work on Windows. If you are trying to build on Windows, then do not call this
+ * task from packagePlugin, and instead delete 'assets/help_center_article_style.css' from
+ * $rootProject.buildDir/unity-plugin/Plugins/Android/sdk-a.b.c.d.aar
  */
 task stripCssFromAndroidSdk(type:Exec) {
 
@@ -95,7 +99,8 @@ task stripCssFromAndroidSdk(type:Exec) {
     */
     // ignoreExitValue true
 
-    commandLine 'bash', '-c', 'zip -d plugin-dependencies/sdk-[0-9].[0-9].[0-9].[0-9].aar assets/help_center_article_style.css'
+    workingDir "$rootProject.buildDir/unity-plugin/Plugins/Android"
+    commandLine 'bash', '-c', 'zip -d sdk-[0-9].[0-9].[0-9].[0-9].aar assets/help_center_article_style.css'
 
     standardOutput = new ByteArrayOutputStream()
 
