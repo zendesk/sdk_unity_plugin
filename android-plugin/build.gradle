@@ -35,13 +35,35 @@ android {
 }
 
 dependencies {
+
+    /*
+        This is the unity player which is hosted on our Artifactory server. Unity will fail to
+        build if it is included locally because it results in duplicate definitions for particular
+        Unity player activities.
+     */
+    compile group: 'com.unity', name: 'player', version: '1.0.0.1'
+
+    /*
+        Any jar dependencies should be placed in libs. this will result in the Zendesk Unity plugin
+        being generated as an aar with this inlined. It's a partially fat AAR.
+     */
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile group: 'com.unity', name: 'player', version: '1.0.0.1'
-    compile group: 'com.zendesk', name: 'sdk', version: '1.7.1.1'
+    /*
+        This version of the Zendesk SDK should match the versions in plugin-dependencies. For example,
+        if this version is a.b.c.d, then plugin dependencies should contain:
+
+        sdk-a.b.c.d.aar
+        sdk-providers-a.b.c.d.aar
+     */
+    compile group: 'com.zendesk', name: 'sdk', version: '1.7.2.1'
 }
 
 task packagePlugin <<  {
+
+    tasks.stripCssFromAndroidSdk.execute()
+
+    print tasks.stripCssFromAndroidSdk.output()
 
     // AAR dependencies
     copy {
@@ -56,5 +78,32 @@ task packagePlugin <<  {
     }
 }
 
+/**
+ * If a non-gradle build system is being used within Unity, then we have to remove the Guide CSS
+ * file from the sdk artifact. AAPT will fail if we do not do this. bash -c is being invoked
+ * because we want the sdk artifact to be globbed to prevent removing css files from other
+ * artifacts.
+ *
+ * This is unlikely to be required when using the gradle build system, which is an option in
+ * Unity 5.5 and later.
+ */
+task stripCssFromAndroidSdk(type:Exec) {
+
+    /*
+        ignoreExitValue can be uncommented to get detailed error messaging if the zip task fails.
+        If the code is 12 then it is likely that zip cannot find the file, or the file has alread
+    */
+    // ignoreExitValue true
+
+    commandLine 'bash', '-c', 'zip -d plugin-dependencies/sdk-[0-9].[0-9].[0-9].[0-9].aar assets/help_center_article_style.css'
+
+    standardOutput = new ByteArrayOutputStream()
+
+    ext.output = {
+        return standardOutput.toString();
+    }
+}
+
 packagePlugin.dependsOn('clean')
 assemble.dependsOn packagePlugin
+
