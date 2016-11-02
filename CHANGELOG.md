@@ -1,10 +1,15 @@
-# v.1.4.1.1
+# v1.7.0.1
+
+* Updates native iOS SDK to [1.7.5.1](https://developer.zendesk.com/embeddables/docs/ios/version_information)
+* Updates native Android SDK to [1.7.2.1](https://developer.zendesk.com/embeddables/docs/android/version_information)
+
+# v1.4.1.1
 * Fix crashes for iOS7 and below when initializing the SDK.
 * Fix issue of incorrectly mapping ticket email to ticket Subject, ticket Subject to ticket description, and ticket description to ticket email.
 
-# v.1.4.0.1
+# v1.4.0.1
 
-* **Native SDKs updated: plugin now uses Zendesk Android SDK v1.4.2.2 and iOS SDK v.1.4.2.1. Please see the changelogs for these products to read about any under-the-hood improvements.**
+* **Native SDKs updated: plugin now uses Zendesk Android SDK v1.4.2.2 and iOS SDK v1.4.2.1. Please see the changelogs for these products to read about any under-the-hood improvements.**
     * https://developer.zendesk.com/embeddables/docs/android/release_notes
     * https://developer.zendesk.com/embeddables/docs/ios/release_notes
 * ZDKConfig changes:
@@ -23,7 +28,7 @@
 *  Fixes to push notifications on iOS.
 *  `ZendeskTester` updated with more examples.
 
-# v.1.3
+# v1.3
 
 * **Native SDKs updated: plugin now uses Zendesk Android SDK v1.4.1.1 and iOS SDK v1.4.1.4. Please see the changelogs for these products to read about any under-the-hood improvements.**
     * https://developer.zendesk.com/embeddables/docs/android/release_notes
@@ -45,17 +50,17 @@
     * ZDKConfig.SetDebugLoggingiOS removed, replaced with ZDKLogger.Enable and ZDKLogger.SetLogLevelIOS
     * new methods added: SetCoppaEnabled, SetUserLocale
 
-# v.1.2
+# v1.2
 
 * Added ViewArticle method to the Help Center Provider.
 * Added Alpha color and background color for Rate My App view.
 * Update README to state that Unity 5.0 is required.
 
-# v.1.1
+# v1.1
 
 * Android - Fix upload provider to work with image files
 * Fix conflicts with Chartboost Unity Plugin
 
-# v.1.0
+# v1.0
 
 * Initial release
