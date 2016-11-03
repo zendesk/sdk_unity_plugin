@@ -13,7 +13,7 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         tools:replace="android:theme,android:label"
-        android:theme="@style/ZendeskSdkTheme" >
+        android:theme="@style/UnityTheme" >
         <activity android:name="com.unity3d.player.UnityPlayerActivity"
             android:label="@string/app_name"
             android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen">
@@ -25,19 +25,51 @@
         </activity>
 
         <!--
-            applicationId is merged correctly in the belvedere library, but this is still required
-            in order to view attachments in full screen.
+            Depending on which build system that you use in Unity, you will have to uncomment one of the two
+            providers below.
         -->
+
+        <!--
+        	In Unity 5.5b, when using the gradle build system,  applicationId is merged correctly in the
+        	belvedere library, which handles all image picking, storage, and retrieval in the SDK.
+
+            {applicationId} is not merged correctly when this Manifest is processed, so you cannot use the {applicationId}
+            placeholder. Instead, uncomment out the following provider, and replace APPLICATION_ID with your applicationId.
+
+            For example, if your applicationId is 'com.example.myapp', then the android:authorities line will look like this:
+
+            android:authorities="com.example.myapp.belvedere.attachments"
+        -->
+        <!--
         <provider
+        	tools:replace="android:authorities"
             android:name="com.zendesk.belvedere.BelvedereFileProvider"
-            android:authorities="{applicationId}.belvedere.attachments"
+            android:authorities="APPLICATION_ID.belvedere.attachments"
             android:exported="false"
-            android:grantUriPermissions="true"
-            tools:replace="android:authorities">
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/belvedere_attachment_storage" />
         </provider>
+        -->
+
+        <!--
+        	In unity 5.x, when using the standard build system, no placeholder expansion support is available. Belvedere requires
+        	placeholder support to configure itself automatically, so you will have to override it's provider with the one below
+        -->
+        <!--
+        <provider
+        	tools:merge="override"
+        	tools:replace="android:authorities"
+            android:name="com.zendesk.belvedere.BelvedereFileProvider"
+            android:authorities="APPLICATION_ID.belvedere.attachments"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/belvedere_attachment_storage" />
+        </provider>
+        -->
 
     </application>
 </manifest>
