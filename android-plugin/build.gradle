@@ -95,7 +95,8 @@ task stripCssFromAndroidSdk(type:Exec) {
 
     /*
         ignoreExitValue can be uncommented to get detailed error messaging if the zip task fails.
-        If the code is 12 then it is likely that zip cannot find the file, or the file has alread
+        If the code is 12 then it is likely that zip cannot find the file, or the file has already
+        had the css file removed from it.
     */
     // ignoreExitValue true
 
