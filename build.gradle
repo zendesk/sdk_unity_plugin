@@ -12,4 +12,5 @@ task build << {
     }
 }
 
+clean.dependsOn("android-plugin:clean", "ios-plugin:clean")
 build.dependsOn("clean", "android-plugin:assemble", "ios-plugin:build")
