@@ -101,7 +101,20 @@ task stripCssFromAndroidSdk(type:Exec) {
     // ignoreExitValue true
 
     workingDir "$rootProject.buildDir/unity-plugin/Plugins/Android"
+
+    // This will work on Unix based systems with bash and zip available
     commandLine 'bash', '-c', 'zip -d sdk-[0-9].[0-9].[0-9].[0-9].aar assets/help_center_article_style.css'
+
+    /*
+        On Windows we don't have zip.exe out of the box, so you will have to install zip.exe or
+        7za.exe as per README.md and then do something like this instead of the commandLine above
+     */
+
+    // zip.exe
+    // commandLine 'zip.exe', '-d', 'sdk-1.7.2.1', 'assets/help_center_article_style.css'
+
+    // 7za.exe
+    // commandLine '7za.exe', 'd', 'sdk-1.7.2.1', 'assets/help_center_article_style.css'
 
     standardOutput = new ByteArrayOutputStream()
 

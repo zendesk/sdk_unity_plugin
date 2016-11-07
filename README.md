@@ -1,14 +1,32 @@
 Zendesk Unity3D Plugin
 ======================
 
-This is a Unity plugin that wraps the iOS and Android Zendesk SDKs.
+This is a Unity plugin that wraps the iOS and Android Zendesk Support SDKs.
 
 ## Requirements
 
-- OSX or Linux operating system (The plugin is not supported on Windows)
-- Unity 5.0+
-- Xcode 8.0+ (if building for iOS)
-- Android SDK with the latest support repository and libraries installed. (Required to build the plugin, even if you are just using iOS)
+- Unity 5.x
+
+### OS requirements
+
+The Android build script, `./android-plugin/build.gradle`, requires the `zip` command which is commonly
+distributed on Linux and Unix based systems, including Mac OS.
+
+`zip.exe` is not distributed on Windows machines and must be [installed](http://gnuwin32.sourceforge.net/packages/zip.htm) and added to the PATH. 
+
+Alternatively, the 7zip command line application, `7za.exe`, can be used to perform the same task. More details are in the `stripCssFromAndroidSdk` task in `./android-plugin/build.gradle`.
+
+### iOS requirements
+
+- Xcode 8.0+
+- Android requirements also have to be met, even if only building the iOS plugin.
+
+### Android requirements
+
+Most requirements will be downloaded automatically. You will have to ensure that some components are up to date in the Android SDK Manager.
+
+- Android SDK Build-tools 24.0.0 
+- Latest version of Android Support Repository
 
 ## Basics
 
@@ -43,9 +61,11 @@ This is a Unity plugin that wraps the iOS and Android Zendesk SDKs.
     }
     ```
     
-4. Android conflicts
+4. Android manifest
 
+    * [MUST DO] One of the `<provider>` elements must be uncommented for the plugin to build correctly. See the documentation in `/Assets/Plugins/Android/AndroidManifest.xml`
     * You may already have a file at `/Assets/Plugins/Android/AndroidManifest.xml`. If so, you will have to manually merge the items of that manifest with the one we supply in our plugin.  Specifically, your `<application>` tag must have the `android:theme="@style/UnityTheme"` attribute, and your `UnityPlayerActivity` (or derived class) `<activity>` entry must have `<meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />` as a child tag.
+    
 
 ## App Configuration and Zendesk App Interfaces
 
@@ -181,7 +201,7 @@ Custom Help Center articles are styled with CSS that can be specified in the fol
 
 On Android, this file must be edited before you create the plugin with `./gradlew build`
 
-`/sdk_unity_plugin/android-plugin/src/main/res/assets/help_center_article_style.css`
+`/sdk_unity_plugin/android-plugin/src/main/assets/help_center_article_style.css`
 
 ## String and Localization Customization
 

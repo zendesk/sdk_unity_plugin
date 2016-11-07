@@ -30,8 +30,8 @@
         -->
 
         <!--
-        	In Unity 5.5b, when using the gradle build system,  applicationId is merged correctly in the
-        	belvedere library, which handles all image picking, storage, and retrieval in the SDK.
+            In Unity 5.5b+, when using the gradle build system,  applicationId is merged correctly in the
+            Belvedere library, which handles all image picking, storage, and retrieval in the SDK.
 
             {applicationId} is not merged correctly when this Manifest is processed, so you cannot use the {applicationId}
             placeholder. Instead, uncomment out the following provider, and replace APPLICATION_ID with your applicationId.
@@ -54,7 +54,7 @@
         -->
 
         <!--
-        	In unity 5.x, when using the standard build system, no placeholder expansion support is available. Belvedere requires
+        	In unity 5.x+, when using the standard build system, no placeholder expansion support is available. Belvedere requires
         	placeholder support to configure itself automatically, so you will have to override it's provider with the one below
         -->
         <!--
