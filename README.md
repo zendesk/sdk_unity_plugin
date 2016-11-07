@@ -35,6 +35,9 @@ Most requirements will be downloaded automatically. You will have to ensure that
     * Import the `sdk_unity_plugin` project into Android Studio.
     * Build the plugin with `./gradlew build`
     * Copy the output of build/unity-plugin/ into your Unity app.
+    
+    You may see some errors like this: `Could not create texture from Assets/Plugins/iOS/ZendeskSDK.bundle/{name}.png: File could not be read`.
+    These are safe to ignore and will disappear when you build the project for iOS. You also need to ensure that the `MessageUI` framework has been added in Unity, or the project that it exports to XCode. The `MessageUI` framework is found in `ZendeskSDK.framework > Inspector > Rarely used frameworks`
 
 2. Viewing the samples
 
