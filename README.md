@@ -19,12 +19,14 @@ Alternatively, the 7zip command line application, `7za.exe`, can be used to perf
 ### iOS requirements
 
 - Xcode 8.0+
+- iOS 8 to 10
 - Android requirements also have to be met, even if only building the iOS plugin.
 
 ### Android requirements
 
 Most requirements will be downloaded automatically. You will have to ensure that some components are up to date in the Android SDK Manager.
 
+- Android API 15 (4.0.3) and above.
 - Android SDK Build-tools 24.0.0
 - Latest version of Android Support Repository
 
