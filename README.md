@@ -1,7 +1,7 @@
 Zendesk Unity3D Plugin
 ======================
 
-This is a Unity plugin that wraps the iOS and Android Zendesk Support SDKs.
+This is a Unity plugin that wraps the iOS and Android Zendesk Support SDKs. Review the [CHANGELOG](./CHANGELOG.md) for details about upgrading from previous versions.
 
 ## Requirements
 
@@ -12,20 +12,22 @@ This is a Unity plugin that wraps the iOS and Android Zendesk Support SDKs.
 The Android build script, `./android-plugin/build.gradle`, requires the `zip` command which is commonly
 distributed on Linux and Unix based systems, including Mac OS.
 
-`zip.exe` is not distributed on Windows machines and must be [installed](http://gnuwin32.sourceforge.net/packages/zip.htm) and added to the PATH. 
+`zip.exe` is not distributed on Windows machines and must be [installed](http://gnuwin32.sourceforge.net/packages/zip.htm) and added to the PATH.
 
 Alternatively, the 7zip command line application, `7za.exe`, can be used to perform the same task. More details are in the `stripCssFromAndroidSdk` task in `./android-plugin/build.gradle`.
 
 ### iOS requirements
 
 - Xcode 8.0+
+- iOS 8 to 10
 - Android requirements also have to be met, even if only building the iOS plugin.
 
 ### Android requirements
 
 Most requirements will be downloaded automatically. You will have to ensure that some components are up to date in the Android SDK Manager.
 
-- Android SDK Build-tools 24.0.0 
+- Android API 15 (4.0.3) and above.
+- Android SDK Build-tools 24.0.0
 - Latest version of Android Support Repository
 
 ## Basics
@@ -35,7 +37,7 @@ Most requirements will be downloaded automatically. You will have to ensure that
     * Import the `sdk_unity_plugin` project into Android Studio.
     * Build the plugin with `./gradlew build`
     * Copy the output of build/unity-plugin/ into your Unity app.
-    
+
     You may see some errors like this: `Could not create texture from Assets/Plugins/iOS/ZendeskSDK.bundle/{name}.png: File could not be read`.
     These are safe to ignore and will disappear when you build the project for iOS. You also need to ensure that the `MessageUI` framework has been added in Unity, or the project that it exports to XCode. The `MessageUI` framework is found in `ZendeskSDK.framework > Inspector > Rarely used frameworks`
 
@@ -57,18 +59,18 @@ Most requirements will be downloaded automatically. You will have to ensure that
         ZendeskSDK.ZDKConfig.Initialize (gameObject, "https://{subdomain}.zendesk.com", "{applicationId}", "{oauthClientId}"); // DontDestroyOnLoad automatically called on your supplied gameObject
         ZendeskSDK.ZDKConfig.AuthenticateAnonymousIdentity();
     }
-    
+
     // must include this method for any zendesk callbacks to work
     void OnZendeskCallback(string results) {
         ZendeskSDK.ZDKConfig.CallbackResponse (results);
     }
     ```
-    
+
 4. Android manifest
 
     * [MUST DO] One of the `<provider>` elements must be uncommented for the plugin to build correctly. See the documentation in `/Assets/Plugins/Android/AndroidManifest.xml`
     * You may already have a file at `/Assets/Plugins/Android/AndroidManifest.xml`. If so, you will have to manually merge the items of that manifest with the one we supply in our plugin.  Specifically, your `<application>` tag must have the `android:theme="@style/UnityTheme"` attribute, and your `UnityPlayerActivity` (or derived class) `<activity>` entry must have `<meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />` as a child tag.
-    
+
 
 ## App Configuration and Zendesk App Interfaces
 
@@ -77,14 +79,14 @@ Example C#:
     c#
     ZendeskSDK.ZDKHelpCenter.ShowHelpCenter();
     ZendeskSDK.ZDKHelpCenter.ShowHelpCenter(options);
-    
+
     ZendeskSDK.ZDKRequests.ShowRequestCreation
     ZendeskSDK.ZDKRequests.ShowRequestCreationWithConfig(config)
-    
+
     ZendeskSDK.ZDKRMA.Show();
     ZendeskSDK.ZDKRMA.ShowAlways();
 
-App configuration and the Zendesk App Help Center, Requests, and Rate My App interfaces 
+App configuration and the Zendesk App Help Center, Requests, and Rate My App interfaces
 can be found in the /Assets/Zendesk folder and are named:
 
 * ZDKConfig.cs
@@ -111,7 +113,7 @@ Example C#:
     ZendeskSDK.ZDKRequestProvider.GetAllRequests((results, error) => {
         if (error != null) {
             Debug.Log("ERROR: ZDKRequestProvider.GetAllRequests - " + error.Description);
-        } 
+        }
         else {
             Debug.Log("GetAllRequests returned results");
             foreach(Hashtable request in results) {
@@ -119,7 +121,7 @@ Example C#:
             }
         }
     });
-    
+
 
 ## Push notifications
 
@@ -148,7 +150,7 @@ Enabling and disabling push notifications for the current user is pretty straigh
         });
     }
 
-There is an an example of this in the `ZendeskTester.cs` script file. 
+There is an an example of this in the `ZendeskTester.cs` script file.
 
 Notifications are a complex, OS-dependent feature. We provide the interfaces for enabling and disabling push. To handle incoming push messages you will need to configure the Urban Airship Unity SDK or the GCM / APNS SDKs.
 
@@ -182,7 +184,7 @@ appearance.ApplyTheme ();
 
 Zendesk application customization must be specified before the Android Unity plugin is created with `./gradlew build`.
 
-Include your style changes in: 
+Include your style changes in:
 
 `/sdk_unity_plugin/android-plugin/src/main/res/values/styles.xml`
 
@@ -192,7 +194,7 @@ To find defined styles and examples, see:
 
 https://developer.zendesk.com/embeddables/docs/android/customize_the_look
 
-## Help Center Appearance Customization 
+## Help Center Appearance Customization
 
 Custom Help Center articles are styled with CSS that can be specified in the following files.
 
@@ -231,7 +233,7 @@ To find list of strings, see:
 https://developer.zendesk.com/embeddables/docs/android/localize_text
 
 ## Known issues
- 
-1. When creating a ticket using Rate My App on Android, the description of the issue is used for the subject line of the ticket. 
+
+1. When creating a ticket using Rate My App on Android, the description of the issue is used for the subject line of the ticket.
 2. On request creation on Android, rotating the screen during sending appears to cancel the ticket. The progress dialog will disappear and the ticket form will regain focus.
 However, the ticket will still be successfully created, and will be present in the user's ticket list, though it will be missing any attachments added before the rotation.
