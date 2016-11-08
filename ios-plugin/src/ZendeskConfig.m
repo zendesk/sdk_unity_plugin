@@ -4,10 +4,18 @@
 //
 
 #import "ZendeskCore.h"
+#import "ZDKConfig+Private.h"
 
 #pragma mark - ZDKConfig
 
-// should be called before _zendeskConfigInitialize
+NSString * const UnityPluginVersionNumber = @"1.7.0.1";
+NSString * const UnityHeaderName = @"Unity";
+
+void _zendeskConfigInitialize(char* zendeskUrl, char* applicationId, char* oauthClientId) {
+    [[ZDKConfig instance] initializeWithAppId:GetStringParam(applicationId) zendeskUrl:GetStringParam(zendeskUrl) clientId:GetStringParam(oauthClientId)];
+    [[ZDKConfig instance] addUserAgentHeaderSuffixWithKey:UnityHeaderName value:UnityPluginVersionNumber];
+}
+
 void _zendeskConfigSetUserLocale(char *locale) {
     [ZDKConfig instance].userLocale = GetStringParam(locale);
 }

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.zendesk.unity.sdk">
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="24"/>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        tools:replace="android:theme,android:label"
+        android:theme="@style/UnityTheme" >
+        <activity android:name="com.unity3d.player.UnityPlayerActivity"
+            android:label="@string/app_name"
+            android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen">
+            <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+            Depending on which build system that you use in Unity, you will have to uncomment one of the two
+            providers below.
+        -->
+
+        <!--
+            In Unity 5.5b+, when using the gradle build system,  applicationId is merged correctly in the
+            Belvedere library, which handles all image picking, storage, and retrieval in the SDK.
+
+            {applicationId} is not merged correctly when this Manifest is processed, so you cannot use the {applicationId}
+            placeholder. Instead, uncomment out the following provider, and replace APPLICATION_ID with your applicationId.
+
+            For example, if your applicationId is 'com.example.myapp', then the android:authorities line will look like this:
+
+            android:authorities="com.example.myapp.belvedere.attachments"
+        -->
+        <!--
+        <provider
+        	tools:replace="android:authorities"
+            android:name="com.zendesk.belvedere.BelvedereFileProvider"
+            android:authorities="APPLICATION_ID.belvedere.attachments"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/belvedere_attachment_storage" />
+        </provider>
+        -->
+
+        <!--
+        	In unity 5.x+, when using the standard build system, no placeholder expansion support is available. Belvedere requires
+        	placeholder support to configure itself automatically, so you will have to override it's provider with the one below
+        -->
+        <!--
+        <provider
+        	tools:merge="override"
+        	tools:replace="android:authorities"
+            android:name="com.zendesk.belvedere.BelvedereFileProvider"
+            android:authorities="APPLICATION_ID.belvedere.attachments"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/belvedere_attachment_storage" />
+        </provider>
+        -->
+
+    </application>
+</manifest>

@@ -15,7 +15,6 @@
  */
 
 #import <UIKit/UIKit.h>
-#import "ZendeskSDKConstants.h"
 
 
 /**
@@ -100,7 +99,7 @@
 
 /**
  * A simple table view with limited rows for displaying the options associated with ZDKRMA.
- * The table height determins the height of the individual rows and table header. The header and row
+ * The table height determines the height of the individual rows and table header. The header and row
  * height is calculated dividing the number of rows plus the header
  */
 @interface ZDKRMADialogView : UITableView <UITableViewDataSource, UITableViewDelegate> {
@@ -115,17 +114,7 @@
  * ZDKRMA. The actions in the array will be displayed in the dialog form top to bottom in the
  * order they were supplied to arrayWithZDKRMAActions:.
  */
-@property (nonatomic, retain) NSArray *rows;
-
-
-@property (nonatomic, strong) UIColor *headerBackgroundColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *headerColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *separatorLineColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *buttonBackgroundColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *buttonSelectedBackgroundColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIColor *buttonColor UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIFont *headerFont UI_APPEARANCE_SELECTOR;
-@property (nonatomic, strong) UIFont *buttonFont UI_APPEARANCE_SELECTOR;
+@property (nonatomic, copy) NSArray *rows;
 
 
 /**

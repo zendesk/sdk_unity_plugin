@@ -8,12 +8,11 @@
 #import "UnityAppController.h"
 #import "ZendeskJSON.h"
 
-#define ZENDESK_APP_ID (@"ZDK_APP_ID")
-#define ZENDESK_URL (@"ZDK_URL")
-#define ZENDESK_OAUTH (@"ZDK_OAUTH")
+
+FOUNDATION_EXPORT NSString * const UnityPluginVersionNumber;
+FOUNDATION_EXPORT NSString * const UnityHeaderName;
 
 extern void UnitySendMessage(const char *className, const char *methodName, const char *param);
-
 
 // Converts C style string to NSString
 #define GetStringParam(_x_) (_x_ != NULL) ? [NSString stringWithUTF8String:_x_] : [NSString stringWithUTF8String:""]

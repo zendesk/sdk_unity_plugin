@@ -1,8 +1,8 @@
 package com.zendesk.unity.providers;
 
-import com.zendesk.sdk.model.settings.MobileSettings;
+import com.zendesk.sdk.model.settings.SafeMobileSettings;
 import com.zendesk.sdk.network.SdkSettingsProvider;
-import com.zendesk.sdk.network.impl.ZendeskSdkSettingsProvider;
+import com.zendesk.sdk.network.impl.ZendeskConfig;
 import com.zendesk.unity.UnityComponent;
 
 public class SettingsProvider extends UnityComponent {
@@ -14,10 +14,10 @@ public class SettingsProvider extends UnityComponent {
     }
 
     public void getSettings(final String gameObjectName, String callbackId){
-        SdkSettingsProvider provider = new ZendeskSdkSettingsProvider();
+        SdkSettingsProvider provider = ZendeskConfig.INSTANCE.provider().sdkSettingsProvider();
 
         provider.getSettings(
-                new ZendeskUnityCallback<MobileSettings>(gameObjectName, callbackId, "didSettingsProviderGetSettings"));
+                new ZendeskUnityCallback<SafeMobileSettings>(gameObjectName, callbackId, "didSettingsProviderGetSettings"));
     }
 
 }

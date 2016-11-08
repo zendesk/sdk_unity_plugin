@@ -17,17 +17,18 @@
 #import <UIKit/UIKit.h>
 
 #import "ZDKUIViewController.h"
+#import "ZDKArticleView.h"
+#import <MessageUI/MessageUI.h>
 
-@class ZDKArticleView, ZDKHelpCenterArticle;
 
+@class ZDKArticleView, ZDKHelpCenterArticle, ZDKHelpCenterArticleViewModel;
 
 /**
  *  View controller for an article view.
  *
  *  @since 0.9.3.1
  */
-@interface ZDKArticleViewController : ZDKUIViewController
-
+@interface ZDKArticleViewController : ZDKUIViewController<MFMailComposeViewControllerDelegate, ZDKHelpCentreArticleViewProtocol>
 
 /**
  * The article view.
@@ -46,5 +47,14 @@
  */
 - (instancetype) initWithArticle:(ZDKHelpCenterArticle *)article;
 
+/**
+ *  Initializes the article controller with an article view model which trigger a network call
+ *  to fetch the full article model.
+ *
+ *  @param articleViewModel An articleViewModel
+ *
+ *  @since 1.7.0.1
+ */
+- (instancetype) initWithArticleViewModel:(ZDKHelpCenterArticleViewModel *)articleViewModel;
 
 @end

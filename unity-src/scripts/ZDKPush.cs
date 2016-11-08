@@ -25,29 +25,35 @@ namespace ZendeskSDK {
 		override protected string GetIOsMethodPrefix() {
 			return "_zendeskPush";
 		}
-		
+
 		/// <summary>
-		/// Enable push notifications for the current device.
-		/// Uses the Urban Airship channel ID if this SDK was built with Urban Airship, otherwise uses the GCM/APN push ID.
-		/// An identity must be authenticated with ZDKConfig before calling this method.
+		/// Enables push when using GCM and webhooks
 		/// </summary>
-		public static void Enable(Action<Hashtable,ZDKError> callback) {
-			instance().Call("enable", callback);
+		public static void EnableWithIdentifier(String identifier, Action<Hashtable, ZDKError> callback) {
+			instance().Call("enablePushWithIdentifier", callback, identifier);
 		}
-		
+
 		/// <summary>
-		/// Disable push notifications for the current device.
+		/// Enables push when using Urban Airship
 		/// </summary>
-		public static void Disable(Action<Hashtable,ZDKError> callback) {
-			instance().Call("disable", callback);
+		public static void EnableWithUAChannelId(String identifier, Action<Hashtable, ZDKError> callback) {
+			instance().Call("enablePushWithUAChannelId", callback, identifier);
 		}
+
+        /// <summary>
+        /// Disable push notifications for the current device.
+        /// </summary>
+        public static void Disable(String identifier, Action<Hashtable, ZDKError> callback) {
+			instance().Call("disablePush", callback, identifier);
+        }
 		
 		#if UNITY_IPHONE
-		
 		[DllImport("__Internal")]
-		private static extern void _zendeskPushEnable(string gameObjectName, string callbackId);
+		private static extern void _zendeskPushEnablePushWithIdentifier(string gameObjectName, string callbackId, String identifier);
 		[DllImport("__Internal")]
-		private static extern void _zendeskPushDisable(string gameObjectName, string callbackId);
+		private static extern void _zendeskPushEnablePushWithUAChannelId(string gameObjectName, string callbackId, String identifier);
+		[DllImport("__Internal")]
+		private static extern void _zendeskPushDisablePush(string gameObjectName, string callbackId, String identifier);
 
 		#endif
 	}

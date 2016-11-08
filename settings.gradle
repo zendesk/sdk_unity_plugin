@@ -1,1 +1,1 @@
-include ':android-plugin', ':ios-plugin', ':ua-unity-android-plugin', ':ua-unity-ios-plugin'
+include ':android-plugin', ':ios-plugin'

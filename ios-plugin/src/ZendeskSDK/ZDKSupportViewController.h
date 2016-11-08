@@ -18,10 +18,12 @@
 #import "ZDKUIViewController.h"
 #import "ZDKHelpCenterConversationsUIDelegate.h"
 
-@class ZDKSupportView, ZDKHelpCenterCategory, ZDKHelpCenterSection;
+@class ZDKSupportView, ZDKHelpCenterCategory, ZDKHelpCenterSection, ZDKHelpCenterSearch, ZDKSupportViewController;
 
-
-
+__deprecated_msg("Deprecated as of 1.7.0.1, use ZDKHelpCenterOverviewController instead.")
+/**
+ *  Displays Help Center Categories, Sections, or Articles.
+ */
 @interface ZDKSupportViewController : ZDKUIViewController <UIScrollViewDelegate, UISearchBarDelegate>
 
 
@@ -29,6 +31,13 @@
  * The support view that displays help center content.
  */
 @property (nonatomic, strong) ZDKSupportView *supportView;
+
+/**
+ *  A search base which defines the scope of searches within the help center
+ *
+ *  @since 1.5.4.1
+ */
+@property (nonatomic, strong) ZDKHelpCenterSearch *search;
 
 /**
  *  Delegate for nav ban button UI. 
@@ -42,7 +51,7 @@
 - (instancetype) init;
 
 /**
- * Initializes the support view controller with the list of articles specifed in labels argument
+ * Initializes the support view controller with the list of articles specified in labels argument
  *
  * @param labels An array of article label_names. The articles associated with these labels will be shown
  */
