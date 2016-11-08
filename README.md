@@ -3,6 +3,8 @@ Zendesk Unity3D Plugin
 
 This is a Unity plugin that wraps the iOS and Android Zendesk Support SDKs. Review the [CHANGELOG](./CHANGELOG.md) for details about upgrading from previous versions.
 
+This is an open source project, and is not directly supported by Zendesk. Check out the [CONTRIBUTING](./CONTRIBUTING.md) page to find out how you can make changes or report issues.
+
 ## Requirements
 
 - Unity 5.x
