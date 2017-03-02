@@ -239,3 +239,4 @@ https://developer.zendesk.com/embeddables/docs/android/localize_text
 1. When creating a ticket using Rate My App on Android, the description of the issue is used for the subject line of the ticket.
 2. On request creation on Android, rotating the screen during sending appears to cancel the ticket. The progress dialog will disappear and the ticket form will regain focus.
 However, the ticket will still be successfully created, and will be present in the user's ticket list, though it will be missing any attachments added before the rotation.
+3. Unity 3D fails to detect the Android SDK correctly when Android SDK Tools 25.3.1 is installed. Tracked on [code.google.com](https://code.google.com/p/android/issues/detail?id=235455). 
