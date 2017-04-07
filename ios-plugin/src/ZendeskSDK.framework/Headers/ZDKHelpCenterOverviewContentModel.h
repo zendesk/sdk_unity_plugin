@@ -7,9 +7,9 @@
  *
  *  Copyright © 2016 Zendesk. All rights reserved.
  *
- *  By downloading or using the Zendesk Mobile SDK, You agree to the Zendesk Terms
- *  of Service https://www.zendesk.com/company/terms and Application Developer and API License
- *  Agreement https://www.zendesk.com/company/application-developer-and-api-license-agreement and
+ *  By downloading or using the Zendesk Mobile SDK, You agree to the Zendesk Master
+ *  Subscription Agreement https://www.zendesk.com/company/customers-partners/#master-subscription-agreement and Application Developer and API License
+ *  Agreement https://www.zendesk.com/company/customers-partners/#application-developer-api-license-agreement and
  *  acknowledge that such terms govern Your use of and access to the Mobile SDK.
  *
  */
@@ -56,7 +56,7 @@ typedef NS_ENUM(NSUInteger, ZDKHelpCenterOverviewGroupType) {
 @property (nonatomic, assign) ZDKNavBarConversationsUIType navBarConversationsUIType;
 
 /**
- *  Hide the right bar button.
+ *  Hide the `Contact Support` button that is displayed upon an empty search in Help Center
  */
 @property (nonatomic, assign) BOOL hideContactSupport;
 

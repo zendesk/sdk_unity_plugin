@@ -6,6 +6,7 @@ import com.zendesk.sdk.model.request.CommentsResponse;
 import com.zendesk.sdk.model.request.CreateRequest;
 import com.zendesk.sdk.model.request.EndUserComment;
 import com.zendesk.sdk.model.request.Request;
+import com.zendesk.sdk.model.request.fields.TicketForm;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
 import com.zendesk.unity.UnityComponent;
 
@@ -83,6 +84,20 @@ public class RequestProvider extends UnityComponent {
         com.zendesk.sdk.network.RequestProvider provider = ZendeskConfig.INSTANCE.provider().requestProvider();
         provider.addComment(requestId, endUserComment,
                 new ZendeskUnityCallback<Comment>(gameObjectName, callbackId, "didRequestProviderAddCommentWithAttachments"));
+    }
+
+    public void getTicketFormWithIds(final String gameObjectName, String callbackId, int[] ticketFormsIds, int formsCount){
+        
+        Long[] result = new Long[formsCount];
+        for (int i = 0; i < formsCount; i++) {
+            result[i] = Long.valueOf(ticketFormsIds[i]);
+        }
+
+        ArrayList<Long> ids = new ArrayList<>(Arrays.asList(result));
+
+        com.zendesk.sdk.network.RequestProvider provider = ZendeskConfig.INSTANCE.provider().requestProvider();
+        provider.getTicketFormsById(ids,
+                        new ZendeskUnityCallback<List<TicketForm>>(gameObjectName, callbackId, "didRequestProviderGetTicketFormWithIds"));
     }
 
 }

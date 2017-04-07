@@ -63,6 +63,18 @@ void _zendeskRequestProviderAddComment(char * gameObjectName, char * callbackId,
               withCallback:callback];
 }
 
+void _zendeskRequestProviderGetTicketFormWithIds(char * gameObjectName, char * callbackId, int ticketFormsIds[], int formsCount) {
+    ZDKRequestProvider *provider = [ZDKRequestProvider new];
+    ZDKDefCallback(NSArray<ZDKTicketForm*>*, [result toJSONString], "didRequestProviderGetTicketFormWithIds")
+
+    NSMutableArray *formIds = @[].mutableCopy;
+    for (int i = 0 ; i < formsCount ; i ++) {
+        [formIds addObject:[NSNumber numberWithInt:ticketFormsIds[i]]];
+    }
+
+    [provider getTicketFormWithIds:formIds callback:callback];
+}
+
 void _zendeskRequestProviderAddCommentWithAttachments(char * gameObjectName, char * callbackId, char * comment, char * requestId, char *attachmentsArray[], int attachmentsLength) {
     NSMutableArray * attachments = @[].mutableCopy;
     for (int i = 0; i < attachmentsLength; i++) {
