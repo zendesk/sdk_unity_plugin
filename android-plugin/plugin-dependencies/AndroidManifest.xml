@@ -4,7 +4,7 @@
     package="com.zendesk.unity.sdk">
     <uses-sdk
         android:minSdkVersion="15"
-        android:targetSdkVersion="24"/>
+        android:targetSdkVersion="25"/>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
