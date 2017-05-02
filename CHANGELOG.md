@@ -1,3 +1,14 @@
+# v1.9.2.1
+
+## Support SDK versions
+* Updates native iOS Support SDK to [1.9.2.1](https://developer.zendesk.com/embeddables/docs/ios/version_information).
+* Updates native Android Support SDK to [1.9.2.1](https://developer.zendesk.com/embeddables/docs/android/version_information)
+
+## Ticket forms Api
+
+* Added an API provider to fetch the contents of ticket forms.     
+[Learn more](https://support.zendesk.com/hc/en-us/articles/115003181667-Build-your-own-dynamic-ticket-forms-with-the-Support-SDK) about the how to build your own dynamic ticket forms with the Support SDK.
+
 # v1.7.0.1
 
 ## Support SDK versions

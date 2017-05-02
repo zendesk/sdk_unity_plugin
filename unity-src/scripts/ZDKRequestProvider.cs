@@ -140,6 +140,17 @@ namespace ZendeskSDK {
 			instance().Call("addCommentWithAttachments", callback, comment, requestId, attachments, attachments.Length);
 		}
 
+		/// <summary>
+		/// Gets ticketforms from a  list of ids.
+		/// </summary>
+		/// <param name="ticketForms">List of ticket form ids to get.</param>
+		/// <param name="callback">Callback that will deliver a List of Ticket Forms.</param>
+		public static void GetTicketForms(int[] ticketForms, Action<ArrayList,ZDKError> callback) {
+			if (ticketForms == null)
+				ticketForms = new int[0];			
+			instance().Call("getTicketFormWithIds", callback, ticketForms, ticketForms.Length);
+		}
+
 		#if UNITY_IPHONE
 
 		[DllImport("__Internal")]
@@ -156,6 +167,8 @@ namespace ZendeskSDK {
 		private static extern void _zendeskRequestProviderAddComment(string gameObjectName, string callbackId, string comment, string requestId);
 		[DllImport("__Internal")]
 		private static extern void _zendeskRequestProviderAddCommentWithAttachments(string gameObjectName, string callbackId, string comment, string requestId, string[] attachments, int attachmentsLength);
+		[DllImport("__Internal")]
+		private static extern void _zendeskRequestProviderGetTicketFormWithIds(string gameObjectName, string callbackId, int[] ticketFormsIds, int formsCount);
 
 		#endif
 	}

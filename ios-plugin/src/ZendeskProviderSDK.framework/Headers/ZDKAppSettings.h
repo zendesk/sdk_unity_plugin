@@ -7,9 +7,9 @@
  *
  *  Copyright (c) 2014 Zendesk. All rights reserved.
  *
- *  By downloading or using the Zendesk Mobile SDK, You agree to the Zendesk Terms
- *  of Service https://www.zendesk.com/company/terms and Application Developer and API License
- *  Agreement https://www.zendesk.com/company/application-developer-and-api-license-agreement and
+ *  By downloading or using the Zendesk Mobile SDK, You agree to the Zendesk Master
+ *  Subscription Agreement https://www.zendesk.com/company/customers-partners/#master-subscription-agreement and Application Developer and API License
+ *  Agreement https://www.zendesk.com/company/customers-partners/#application-developer-api-license-agreement and
  *  acknowledge that such terms govern Your use of and access to the Mobile SDK.
  *
  */
@@ -17,7 +17,7 @@
 #import <Foundation/Foundation.h>
 #import "ZDKCoding.h"
 
-@class ZDKRateMyAppSettings, ZDKContactUsSettings, ZDKConversationsSettings, ZDKHelpCenterSettings;
+@class ZDKRateMyAppSettings, ZDKContactUsSettings, ZDKConversationsSettings, ZDKHelpCenterSettings, ZDKTicketFormsSettings;
 
 @interface ZDKAppSettings : ZDKCoding
 
@@ -52,6 +52,14 @@
  *  @since 0.9.3.1
  */
 @property (nonatomic, strong, readonly) ZDKHelpCenterSettings *helpCenterSettings;
+
+
+/**
+ * Settings model object associated with the remote configuration of Ticket Forms component within your Zendesk instance.
+ *
+ *  @since 1.9.0.1
+ */
+@property (nonatomic, strong, readonly) ZDKTicketFormsSettings *ticketFormsSettings;
 
 
 /**

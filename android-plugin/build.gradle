@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.3'
+        classpath 'com.android.tools.build:gradle:2.3.0'
     }
 }
 
@@ -20,13 +20,13 @@ repositories {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 24
-        versionName "1.7.0.1"
+        targetSdkVersion 25
+        versionName "1.9.2.1"
         vectorDrawables.useSupportLibrary = true
     }
     lintOptions {
@@ -44,26 +44,25 @@ dependencies {
     compile group: 'com.unity', name: 'player', version: '1.0.0.1'
 
     /*
-        Any jar dependencies should be placed in libs. this will result in the Zendesk Unity plugin
-        being generated as an aar with this inlined. It's a partially fat AAR.
+     * The dependencies of the SDK artifact will be copied to the output directory in the packagePlugin
+     * task.
      */
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
-    /*
-        This version of the Zendesk SDK should match the versions in plugin-dependencies. For example,
-        if this version is a.b.c.d, then plugin dependencies should contain:
-
-        sdk-a.b.c.d.aar
-        sdk-providers-a.b.c.d.aar
-     */
-    compile group: 'com.zendesk', name: 'sdk', version: '1.7.2.1'
+    compile group: 'com.zendesk', name: 'sdk', version: '1.9.2.1'
 }
 
 task packagePlugin <<  {
 
-    // AAR dependencies
+    // AndroidManifest.xml
     copy {
         from "$rootDir/android-plugin/plugin-dependencies"
+        into "$rootProject.buildDir/unity-plugin/Plugins/Android"
+    }
+
+    // AAR dependencies
+    copy {
+        from (configurations.compile) {
+            exclude 'player-*.jar' // Exclude the com.unity:player JAR
+        }
         into "$rootProject.buildDir/unity-plugin/Plugins/Android"
     }
 
