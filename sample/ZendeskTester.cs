@@ -182,6 +182,20 @@ public class ZendeskTester: MonoBehaviour
 			ZendeskSDK.ZDKRMA.Show (config);
 		}
 
+		if (GUILayout.Button ("Get Ticket Form", buttonWidth)) {
+			int [] x = new int[1];
+			// x[0] = <your ticket form id>;
+			
+			ZendeskSDK.ZDKRequestProvider.GetTicketForms(x, (result, error) => {
+				if (error != null) {
+					Debug.Log("ERROR: ZDKRequestProvider.GetTicketForms - " + error.Description);
+				}
+				else {
+					Debug.Log("ZDKRequestProvider.GetTicketForms Successful Callback - " + MakeResultString(result));
+				}
+			});
+		}
+
 		if (GUILayout.Button ("Run Provider Tests", buttonWidth)) {
 			RunProviderTests ();
 		}
