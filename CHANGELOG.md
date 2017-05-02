@@ -6,7 +6,7 @@
 
 ## Ticket forms Api
 
-* Added an API provider to fetch the contents of ticket forms. 
+* Added an API provider to fetch the contents of ticket forms.     
 [Learn more](https://support.zendesk.com/hc/en-us/articles/115003181667-Build-your-own-dynamic-ticket-forms-with-the-Support-SDK) about the how to build your own dynamic ticket forms with the Support SDK.
 
 # v1.7.0.1
