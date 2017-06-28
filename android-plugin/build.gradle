@@ -47,7 +47,7 @@ dependencies {
      * The dependencies of the SDK artifact will be copied to the output directory in the packagePlugin
      * task.
      */
-    compile group: 'com.zendesk', name: 'sdk', version: '1.9.2.1'
+    compile group: 'com.zendesk', name: 'sdk', version: '1.10.0.1'
 }
 
 task packagePlugin <<  {
@@ -100,9 +100,12 @@ task stripCssFromAndroidSdk(type:Exec) {
     // ignoreExitValue true
 
     workingDir "$rootProject.buildDir/unity-plugin/Plugins/Android"
+    println "$rootProject.buildDir/unity-plugin/Plugins/Android"
+
 
     // This will work on Unix based systems with bash and zip available
-    commandLine 'bash', '-c', 'zip -d sdk-[0-9].[0-9].[0-9].[0-9].aar assets/help_center_article_style.css'
+    commandLine 'bash', '-c', 'zip -d sdk-[0-9].[0-9]*.[0-9].[0-9].aar assets/help_center_article_style.css'
+
 
     /*
         On Windows we don't have zip.exe out of the box, so you will have to install zip.exe or
@@ -124,4 +127,3 @@ task stripCssFromAndroidSdk(type:Exec) {
 
 packagePlugin.dependsOn('clean')
 assemble.dependsOn packagePlugin
-

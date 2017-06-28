@@ -24,11 +24,14 @@ void _zendeskConfigSetCoppaEnabled(BOOL coppa) {
     [ZDKConfig instance].coppaEnabled = coppa;
 }
 
-void _zendeskConfigAuthenticateAnonymousIdentity(char * name, char * email, char * externalId) {
+void _zendeskConfigSetArticleVotingEnabled(BOOL articleVoting) {
+    [ZDKConfig instance].articleVotingEnabled = articleVoting;
+}
+
+void _zendeskConfigAuthenticateAnonymousIdentity(char * name, char * email) {
     ZDKAnonymousIdentity *identity = [ZDKAnonymousIdentity new];
     identity.name = GetStringParam(name);
     identity.email = GetStringParam(email);
-    identity.externalId = GetStringParam(externalId);
     [ZDKConfig instance].userIdentity = identity;
 }
 

@@ -21,12 +21,12 @@ namespace ZendeskSDK {
 		/// Used internally by Zendesk. Don't mess with this.
 		/// </summary>
 		public static Hashtable ActionCallbacks = new Hashtable();
-		
+
 		/// <summary>
 		/// Used internally by Zendesk. Don't mess with this.
 		/// </summary>
 		public static GameObject SharedGameObject;
-		
+
 		private class Nested {
 			static Nested(){}
 			internal static readonly ZDKConfig instance = new ZDKConfig();
@@ -35,12 +35,12 @@ namespace ZendeskSDK {
 		override protected string GetIOsMethodPrefix() {
 			return "_zendeskConfig";
 		}
-		
+
 		private bool checkInitialized() {
 			#if UNITY_ANDROID || UNITY_IPHONE
 			if (SharedGameObject != null) {
 				return true;
-			} 
+			}
 			else {
 				Debug.LogError("The Zendesk SDK needs to be inititalized with a Unity GameObject.");
 				return false;
@@ -49,7 +49,7 @@ namespace ZendeskSDK {
 			return true;
 			#endif
 		}
-		
+
 		/// <summary>
 		/// Initialize the specified gameObject, zendeskUrl, applicationId and oauthClientId.
 		/// </summary>
@@ -70,7 +70,7 @@ namespace ZendeskSDK {
 		public static void AuthenticateAnonymousIdentity() {
 			if (!Instance.checkInitialized())
 				return;
-			Instance.Do("authenticateAnonymousIdentity", null, null, null);
+			Instance.Do("authenticateAnonymousIdentity", null, null);
 		}
 
 		/// <summary>
@@ -78,11 +78,10 @@ namespace ZendeskSDK {
 		/// </summary>
 		/// <param name="name">Username</param>
 		/// <param name="email">Email Address</param>
-		/// <param name="externalId">Identifier</param>
-		public static void AuthenticateAnonymousIdentity(string name, string email, string externalId) {
+		public static void AuthenticateAnonymousIdentity(string name, string email) {
 			if (!Instance.checkInitialized())
 				return;
-			Instance.Do("authenticateAnonymousIdentity", name, email, externalId);
+			Instance.Do("authenticateAnonymousIdentity", name, email);
 		}
 
 		/// <summary>
@@ -115,7 +114,7 @@ namespace ZendeskSDK {
 				return;
 			Instance.DoIOS("reload");
 		}
-		
+
 		/// <summary>
 		/// Sets whether COPPA is enabled for the SDK.
 		/// </summary>
@@ -126,21 +125,30 @@ namespace ZendeskSDK {
 		}
 
 		/// <summary>
+		/// Sets whether article voting is enabled in Help Center for the SDK.
+		/// </summary>
+		public static void SetArticleVotingEnabled(bool enabled) {
+			if (!Instance.checkInitialized())
+				return;
+			Instance.Do("setArticleVotingEnabled", enabled);
+		}
+
+		/// <summary>
 		/// Sets the user's locale for the SDK. Best when called before Initialize.
 		/// </summary>
 		public static void SetUserLocale(string locale) {
 			Instance.Do("setUserLocale", locale);
 		}
-		
+
 		// Game Message Callbacks
-		
+
 		public static void CallbackResponse(string results) {
 			Hashtable resultsDict = (Hashtable)ZenJSON.Deserialize(results);
 			String methodName = resultsDict["methodName"] as String;
 			if (ActionCallbacks.ContainsKey(resultsDict["callbackId"])) {
 				Type[] parms = ActionCallbacks[resultsDict["callbackId"]].GetType().GetGenericArguments();
 				Type arg1 = parms[0];
-				
+
 				if (arg1 == typeof(byte[])) {
 					Action<byte[],ZDKError> callback = (Action<byte[],ZDKError>) ActionCallbacks[resultsDict["callbackId"]];
 					callback(parseByteArray(resultsDict), parseZDKError(resultsDict));
@@ -157,9 +165,9 @@ namespace ZendeskSDK {
 				Debug.Log("ERROR: " + methodName + " - Missing callbackId for action in results.  Key = " + resultsDict["callbackId"]);
 			}
 		}
-		
+
 		// Result parsers
-		
+
 		private static byte[] parseByteArray(Hashtable resultsDict) {
 			byte[] result = null;
 			if (resultsDict["result"] != null) {
@@ -167,7 +175,7 @@ namespace ZendeskSDK {
 			}
 			return result;
 		}
-		
+
 		private static ZDKError parseZDKError(Hashtable resultsDict) {
 			ZDKError error = null;
 			if (resultsDict["error"] != null) {
@@ -175,7 +183,7 @@ namespace ZendeskSDK {
 			}
 			return error;
 		}
-		
+
 		private static Hashtable parseHashtable(Hashtable resultsDict) {
 			Hashtable result = null;
 			if (resultsDict["result"] != null) {
@@ -183,7 +191,7 @@ namespace ZendeskSDK {
 			}
 			return result;
 		}
-		
+
 		private static ArrayList parseArrayList(Hashtable resultsDict) {
 			ArrayList result = null;
 			if (resultsDict["result"] != null) {
@@ -197,13 +205,15 @@ namespace ZendeskSDK {
 		[DllImport("__Internal")]
 		private static extern void _zendeskConfigInitialize(string zendeskUrl, string applicationId, string oauthClientId);
 		[DllImport("__Internal")]
-		private static extern void _zendeskConfigAuthenticateAnonymousIdentity(string name, string email, string externalId);
+		private static extern void _zendeskConfigAuthenticateAnonymousIdentity(string name, string email);
 		[DllImport("__Internal")]
 		private static extern void _zendeskConfigAuthenticateJwtUserIdentity(string jwtUserIdentity);
 		[DllImport("__Internal")]
 		private static extern void _zendeskConfigReload();
 		[DllImport("__Internal")]
 		private static extern void _zendeskConfigSetCoppaEnabled(bool enabled);
+		[DllImport("__Internal")]
+		private static extern void _zendeskConfigSetArticlevotingEnabled(bool enabled);
 		[DllImport("__Internal")]
 		private static extern void _zendeskConfigSetUserLocale(string locale);
 		[DllImport("__Internal")]

@@ -7,9 +7,9 @@
  *
  *  Copyright (c) 2014 Zendesk. All rights reserved.
  *
- *  By downloading or using the Zendesk Mobile SDK, You agree to the Zendesk Terms
- *  of Service https://www.zendesk.com/company/terms and Application Developer and API License
- *  Agreement https://www.zendesk.com/company/application-developer-and-api-license-agreement and
+ *  By downloading or using the Zendesk Mobile SDK, You agree to the Zendesk Master
+ *  Subscription Agreement https://www.zendesk.com/company/customers-partners/#master-subscription-agreement and Application Developer and API License
+ *  Agreement https://www.zendesk.com/company/customers-partners/#application-developer-api-license-agreement and
  *  acknowledge that such terms govern Your use of and access to the Mobile SDK.
  *
  */
@@ -35,6 +35,20 @@ typedef NS_ENUM(NSUInteger, ZDKNavBarConversationsUIType) {
     ZDKNavBarConversationsUITypeNone,
 };
 
+
+/**
+ Used to select where conversations nav bar button will be active.
+
+ - ZDKContactUsVisibilityArticleListAndArticle: The contact us nav bar button is visible in the article list and the article view.
+ - ZDKContactUsVisibilityArticleListOnly: The contact us nav bar button is only visible in the article list.
+ - ZDKContactUsVisibilityOff: The contact us nav bar button is not visible anywhere.
+ */
+typedef NS_ENUM(NSUInteger, ZDKContactUsVisibility) {
+    ZDKContactUsVisibilityArticleListAndArticle,
+    ZDKContactUsVisibilityArticleListOnly,
+    ZDKContactUsVisibilityOff,
+};
+
 @protocol ZDKHelpCenterConversationsUIDelegate <NSObject>
 
 
@@ -55,11 +69,21 @@ typedef NS_ENUM(NSUInteger, ZDKNavBarConversationsUIType) {
 
 
 /**
+ *  Determines where the coversations nav bar button will be displayed.
+ *
+ *  @return a ZDKContactUsVisibility value.
+ */
+- (ZDKContactUsVisibility) active;
+
+@optional
+
+/**
  *  To conform implementations should return a localized string for the right nav bar button title.
  *
  *  @return A localized string for the right nav bar button.
  */
 - (NSString *) conversationsBarButtonLocalizedLabel;
+
 
 
 @end

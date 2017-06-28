@@ -6,6 +6,7 @@ import com.zendesk.sdk.model.request.CommentsResponse;
 import com.zendesk.sdk.model.request.CreateRequest;
 import com.zendesk.sdk.model.request.EndUserComment;
 import com.zendesk.sdk.model.request.Request;
+import com.zendesk.sdk.model.request.RequestUpdates;
 import com.zendesk.sdk.model.request.fields.TicketForm;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
 import com.zendesk.unity.UnityComponent;
@@ -61,6 +62,7 @@ public class RequestProvider extends UnityComponent {
 
     public void getRequestWithId(final String gameObjectName, String callbackId, String requestId){
         com.zendesk.sdk.network.RequestProvider provider = ZendeskConfig.INSTANCE.provider().requestProvider();
+        
         provider.getRequest(requestId,
                 new ZendeskUnityCallback<Request>(gameObjectName, callbackId, "didRequestProviderGetRequestWithId"));
     }
@@ -98,6 +100,14 @@ public class RequestProvider extends UnityComponent {
         com.zendesk.sdk.network.RequestProvider provider = ZendeskConfig.INSTANCE.provider().requestProvider();
         provider.getTicketFormsById(ids,
                         new ZendeskUnityCallback<List<TicketForm>>(gameObjectName, callbackId, "didRequestProviderGetTicketFormWithIds"));
+    }
+    
+    public void getUpdatesForDevice(String gameObjectName, String callbackId) {
+        ZendeskConfig.INSTANCE.provider().requestProvider().getUpdatesForDevice(new ZendeskUnityCallback<RequestUpdates>(gameObjectName, callbackId, "didRequestProviderGetUpdatesForDevice"));
+    }
+    
+    public void markRequestAsRead(String requestId) {
+        ZendeskConfig.INSTANCE.storage().requestStorage().markRequestAsRead(requestId);
     }
 
 }

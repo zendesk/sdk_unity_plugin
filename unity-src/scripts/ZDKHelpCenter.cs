@@ -29,18 +29,24 @@ namespace ZendeskSDK {
 			}
 		}
 
+		public enum ContactUsButtonVisibility {
+			  Off, ArticleListOnly, ArticleListAndArticle
+		};
+
 		public class HelpCenterOptions {
 
 			private long[] categoryIds;
 			private long[] sectionIds;
-			private bool showContactUsButton;
+			private ContactUsButtonVisibility contactUsButtonVisibility;
 			private bool collapseSections;
 			private string[] labelNames;
 			private ContactConfiguration contactConfiguration;
+			private bool articleVoting;
 
 			public HelpCenterOptions() {
-				ShowContactUsButton = true;
+				ContactUsButtonVisibility = ContactUsButtonVisibility.ArticleListAndArticle;
 				CollapseSections = false;
+				ArticleVoting = true;
 			}
 
 			public long[] IncludeCategoryIds {
@@ -53,14 +59,19 @@ namespace ZendeskSDK {
 				set { sectionIds = value; }
 			}
 
-			public bool ShowContactUsButton {
-				get { return showContactUsButton; }
-				set { showContactUsButton = true; }
-			}
+			public ContactUsButtonVisibility ContactUsButtonVisibility {
+				get { return contactUsButtonVisibility; }
+				set { contactUsButtonVisibility = value; }
+ 			}
 
 			public bool CollapseSections {
 				get { return collapseSections; }
 				set { collapseSections = value; }
+			}
+
+			public bool ArticleVoting {
+		    get { return articleVoting; }
+		    set { articleVoting = value; }
 			}
 
 			public string[] IncludeLabelNames {
@@ -109,13 +120,14 @@ namespace ZendeskSDK {
 		private static void _ShowHelpCenterAndroid(HelpCenterOptions options) {
 			instance().DoAndroid("showHelpCenter",
 				options.CollapseSections,
-				options.ShowContactUsButton,
+				(int) options.ContactUsButtonVisibility,
 				options.IncludeLabelNames,
 				options.IncludeSectionIds,
 				options.IncludeCategoryIds,
 				options.ContactConfiguration != null ? options.ContactConfiguration.Tags : null,
 				options.ContactConfiguration != null ? options.ContactConfiguration.AdditionalInfo : null,
-				options.ContactConfiguration != null ? options.ContactConfiguration.RequestSubject : null);
+				options.ContactConfiguration != null ? options.ContactConfiguration.RequestSubject : null,
+				options.ArticleVoting);
 		}
 
 		// corresponds to _zendeskHelpCenterShowHelpCenter
@@ -149,8 +161,8 @@ namespace ZendeskSDK {
 				options.ContactConfiguration.Tags, options.ContactConfiguration.Tags != null ? options.ContactConfiguration.Tags.Length : 0,
 				options.ContactConfiguration.AdditionalInfo);
 			}
-
 			// Will this conflict with the signature of Android?
+			int contactUsInt = (int) options.ContactUsButtonVisibility;
 			instance().DoIOS("showHelpCenterWithOptions",
 				options.IncludeLabelNames,
 				options.IncludeLabelNames != null ? options.IncludeLabelNames.Length : 0,
@@ -159,7 +171,8 @@ namespace ZendeskSDK {
 				includeSections,
 				ids,
 				ids != null ? ids.Length : 0,
-				!options.ShowContactUsButton);
+				contactUsInt,
+				options.ArticleVoting);
 		}
 
 		/// <summary>
@@ -179,7 +192,7 @@ namespace ZendeskSDK {
 		[DllImport("__Internal")]
 		private static extern void _zendeskHelpCenterShowHelpCenterWithOptions(
 			string[] labels, int labelsLength, bool includeAll, bool includeCategories,
-			bool includeSections, string[] ids, int idsLength, bool hideContactSupport);
+			bool includeSections, string[] ids, int idsLength, int hideContactSupport, bool articleVoting);
 
 		[DllImport("__Internal")]
 		private static extern void _zendeskHelpCenterViewArticle(string jsonData);
