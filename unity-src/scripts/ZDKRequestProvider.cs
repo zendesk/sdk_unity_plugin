@@ -4,7 +4,7 @@ using System.Collections;
 using System.Runtime.InteropServices;
 
 namespace ZendeskSDK {
-	
+
 	public class ZDKCreateRequest {
 		/// <param name="tags">List of label that mark the request</param>
 		public string[] Tags;
@@ -22,24 +22,24 @@ namespace ZendeskSDK {
 //		public Hashtable Metadata; // String map of String,String maps
 //		public Hashtable CustomFields; // list of Long,String pairs
 //		public String Id;
-		
+
 		public ZDKCreateRequest() {
 			//
 		}
-		
+
 		public ZDKCreateRequest(string email, string subject, string description) {
 			this.Email = email;
 			this.Subject = subject;
 			this.Description = description;
 		}
-		
+
 		public ZDKCreateRequest(string email, string subject, string description, string[] tags) {
 			this.Email = email;
 			this.Subject = subject;
 			this.Description = description;
 			this.Tags = tags;
 		}
-		
+
 		public ZDKCreateRequest(string email, string subject, string description, string[] tags, string[] attachments) {
 			this.Email = email;
 			this.Subject = subject;
@@ -48,11 +48,11 @@ namespace ZendeskSDK {
 			this.Attachments = attachments;
 		}
 	}
-	
+
 	public class ZDKRequestProvider : ZDKBaseComponent {
-		
+
 		private static ZDKRequestProvider _instance;
-		
+
 		private static ZDKRequestProvider instance() {
 			if (_instance != null)
 				return _instance;
@@ -98,7 +98,7 @@ namespace ZendeskSDK {
 		public static void GetAllRequests(string status, Action<ArrayList,ZDKError> callback) {
 			instance().Call("getRequestsByStatus", callback, status);
 		}
-		
+
 		/// <summary>
 		/// Gets all comments for a request.
 		/// </summary>
@@ -107,7 +107,7 @@ namespace ZendeskSDK {
 		public static void GetComments(string requestId, Action<ArrayList,ZDKError> callback) {
 			instance().Call("getCommentsWithRequestId", callback, requestId);
 		}
-		
+
 		/// <summary>
 		/// Gets a particular request.
 		/// </summary>
@@ -147,8 +147,24 @@ namespace ZendeskSDK {
 		/// <param name="callback">Callback that will deliver a List of Ticket Forms.</param>
 		public static void GetTicketForms(int[] ticketForms, Action<ArrayList,ZDKError> callback) {
 			if (ticketForms == null)
-				ticketForms = new int[0];			
+				ticketForms = new int[0];
 			instance().Call("getTicketFormWithIds", callback, ticketForms, ticketForms.Length);
+		}
+
+		/// <summary>
+    /// Gets request updates for this device.
+    /// </summary>
+    /// <param name="callback">Callback that will deliver the request updates.</param>
+		public static void GetUpdatesForDevice(Action<Hashtable, ZDKError> callback) {
+		    instance().Call("getUpdatesForDevice", callback);
+  	}
+
+		public static void MarkRequestAsRead(string requestId) {
+			#if UNITY_IPHONE
+			instance().DoIOS("markRequestAsRead", requestId);
+			#elif UNITY_ANDROID
+			instance().DoAndroid("markRequestAsRead", requestId);
+			#endif
 		}
 
 		#if UNITY_IPHONE
@@ -169,6 +185,11 @@ namespace ZendeskSDK {
 		private static extern void _zendeskRequestProviderAddCommentWithAttachments(string gameObjectName, string callbackId, string comment, string requestId, string[] attachments, int attachmentsLength);
 		[DllImport("__Internal")]
 		private static extern void _zendeskRequestProviderGetTicketFormWithIds(string gameObjectName, string callbackId, int[] ticketFormsIds, int formsCount);
+		[DllImport("__Internal")]
+		private static extern void _zendeskRequestProviderGetUpdatesForDevice(string gameObjectName, string callbackId);
+		[DllImport("__Internal")]
+		private static extern void _zendeskRequestProviderMarkRequestAsRead(string requestId);
+
 
 		#endif
 	}

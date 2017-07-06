@@ -216,10 +216,15 @@ void _zendeskHelpCenterProviderDeleteVote(char * gameObjectName, char * callback
     [provider deleteVoteWithId:GetStringParam(voteId) withCallback:callback];
 }
 
-void _zendeskHelpCenterProviderSubmitRecordArticleView(char * gameObjectName, char * callbackId, char * articleId) {
+void _zendeskHelpCenterProviderSubmitRecordArticleView(char * gameObjectName, char * callbackId, char * articleId, char * htmlUrl, char * title) {
     ZDKHelpCenterProvider *provider = [[ZDKHelpCenterProvider alloc] initWithLocale:locale()];
     ZDKDefCallback(id, [ZendeskJSON ZDKGenericResponseToJSON:result], "didHelpCenterSubmitRecordArticleView")
-    [provider submitRecordArticleView:GetStringParam(articleId) withCallback:callback];
+    ZDKHelpCenterArticle *article = [ZDKHelpCenterArticle alloc];
+    article.sid = GetStringParam(articleId);
+    article.title = GetStringParam(title);
+    article.htmlUrl = GetStringParam(htmlUrl);
+    
+    [provider submitRecordArticleView:article withCallback:callback];
 }
 
 NSString* locale() {

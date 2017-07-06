@@ -3,6 +3,7 @@ package com.zendesk.unity.providers;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.zendesk.logger.Logger;
 import com.zendesk.sdk.model.helpcenter.Article;
 import com.zendesk.sdk.model.helpcenter.ArticleVote;
@@ -272,12 +273,17 @@ public class HelpCenterProvider extends UnityComponent {
                 new ZendeskUnityCallback<Void>(gameObjectName, callbackId, "didHelpCenterDeleteVote"));
     }
 
-    public void submitRecordArticleView(final String gameObjectName, String callbackId, final String id, final String localeId){
+    public void submitRecordArticleView(final String gameObjectName, String callbackId, final String id, final String htmlUrl, final String title, final String localeId){
         Locale locale = localeId != null ? new Locale(localeId) : null;
         com.zendesk.sdk.network.HelpCenterProvider provider = ZendeskConfig.INSTANCE.provider().helpCenterProvider();
 
-        provider.submitRecordArticleView(parseLong(id), locale,
-                new ZendeskUnityCallback<Void>(gameObjectName, callbackId, "didHelpCenterSubmitRecordArticleView"));
+        Article article = new Gson().fromJson(buildArticleJson(id, htmlUrl, title), Article.class);
+        provider.submitRecordArticleView(article, locale, new ZendeskUnityCallback<Void>(gameObjectName, callbackId, "didHelpCenterSubmitRecordArticleView"));
+    }
+    
+    private String buildArticleJson(String id, String htmlUrl, String title) {
+        String articleFormat = "{\"id\"%d, \"htmlUrl\":\"%s\", \"title\":\"%s\"}";
+        return String.format(Locale.US, articleFormat, id, htmlUrl, title);
     }
 
 }

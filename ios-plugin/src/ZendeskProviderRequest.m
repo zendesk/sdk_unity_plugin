@@ -7,6 +7,8 @@
 
 #pragma mark - ZDKRequestProvider
 
+id<ZDKRequestUpdatesProtocol> updatesDelegate;
+
 void _zendeskRequestProviderCreateRequest(char * gameObjectName, char * callbackId, char * subject, char * description, char * email, char *tagsArray[], int tagsLength, char *attachmentsArray[], int attachmentsLength) {
     NSMutableArray * tags = @[].mutableCopy;
     for (int i = 0; i < tagsLength; i++) {
@@ -73,6 +75,18 @@ void _zendeskRequestProviderGetTicketFormWithIds(char * gameObjectName, char * c
     }
 
     [provider getTicketFormWithIds:formIds callback:callback];
+}
+
+void _zendeskRequestProviderGetUpdatesForDevice(char * gameObjectName, char * callbackId) {
+    ZDKRequestProvider *provider = [ZDKRequestProvider new];
+    ZDKDefCallback(ZDKRequestUpdates*, [result toJSONString], "didRequestProviderGetUpdatesForDevice")
+    updatesDelegate = [provider getUpdatesForDevice:callback];
+}
+
+void _zendeskRequestProviderMarkRequestAsRead(char * requestId) {
+    if (updatesDelegate != nil) {
+        [updatesDelegate markRequestAsRead:GetStringParam(requestId)];
+    }
 }
 
 void _zendeskRequestProviderAddCommentWithAttachments(char * gameObjectName, char * callbackId, char * comment, char * requestId, char *attachmentsArray[], int attachmentsLength) {

@@ -125,29 +125,30 @@ public class ZendeskTester: MonoBehaviour
 
 		if (GUILayout.Button ("Show Help Center With Options", buttonWidth)) {
 
-			// Shows Help Center content with additional options
-			ZendeskSDK.ZDKHelpCenter.HelpCenterOptions options = new ZendeskSDK.ZDKHelpCenter.HelpCenterOptions ();
+			 // Shows Help Center content with additional options
+			 ZendeskSDK.ZDKHelpCenter.HelpCenterOptions options = new ZendeskSDK.ZDKHelpCenter.HelpCenterOptions ();
 
-			// Optional: Specify any category IDs that you wish to restrict your content to
-			// options.IncludeCategoryIds = new [] { 203260428L, 203260368L };
+			 // Optional: Specify any category IDs that you wish to restrict your content to
+			 // options.IncludeCategoryIds = new [] { 203260428L, 203260368L };
 
-			// Optional: Specify any section IDs that you wish to restrict your content to
-			// options.IncludeSectionIds = new [] { 205095568L, 205095528L };
+			 // Optional: Specify any section IDs that you wish to restrict your content to
+			 // options.IncludeSectionIds = new [] { 205095568L, 205095528L };
 
-			// Optional: Specify any label names that you wish to use to filter the content.
-			// options.IncludeLabelNames = new [] { "vip", "another_label" };
+			 // Optional: Specify any label names that you wish to use to filter the content.
+			 // options.IncludeLabelNames = new [] { "vip", "another_label" };
 
-			// Optional: Specify contact configuration
-			// ZDKHelpCenter.ContactConfiguration config = new ZDKHelpCenter.ContactConfiguration ();
-			// config.RequestSubject = "My printer is on fire!";
-			// config.Tags = new[] {"printer", "technical"};
-			// config.AdditionalInfo = " - Sent from Unity!";
-			// options.ContactConfiguration = config;
+			 // Optional: Specify contact configuration
+			 // ZDKHelpCenter.ContactConfiguration config = new ZDKHelpCenter.ContactConfiguration ();
+			 // config.RequestSubject = "My printer is on fire!";
+			 // config.Tags = new[] {"printer", "technical"};
+			 // config.AdditionalInfo = " - Sent from Unity!";
+			 // options.ContactConfiguration = config;
 
-			// Optional: Show / hide the contact us button
-			// options.ShowContactUsButton = false;
+			 // Optional: Show / hide the contact us button
+			 // options.ContactUsButtonVisibility = ZendeskSDK.ZDKHelpCenter.ContactUsButtonVisibility.ArticleListOnly;
+			 // options.ArticleVoting = false;
 
-			ZendeskSDK.ZDKHelpCenter.ShowHelpCenter (options);
+				ZendeskSDK.ZDKHelpCenter.ShowHelpCenter (options);
 		}
 
 		if (GUILayout.Button ("Show Request Creation", buttonWidth)) {
@@ -185,7 +186,7 @@ public class ZendeskTester: MonoBehaviour
 		if (GUILayout.Button ("Get Ticket Form", buttonWidth)) {
 			int [] x = new int[1];
 			// x[0] = <your ticket form id>;
-			
+
 			ZendeskSDK.ZDKRequestProvider.GetTicketForms(x, (result, error) => {
 				if (error != null) {
 					Debug.Log("ERROR: ZDKRequestProvider.GetTicketForms - " + error.Description);
@@ -314,6 +315,15 @@ public class ZendeskTester: MonoBehaviour
 			}
 			else {
 				Debug.Log("ZDKRequestProvider.GetRequest Successful Callback - " + MakeResultString(result));
+			}
+		});
+
+		ZendeskSDK.ZDKRequestProvider.GetUpdatesForDevice((result, error) => {
+			if (error != null) {
+				Debug.Log("ERROR: ZDKRequestProvider.GetUpdates - " + error.Description);
+			}
+			else {
+				Debug.Log("ZDKRequestProvider.GetUpdates Successful Callback - " + MakeResultString(result));
 			}
 		});
 
@@ -489,10 +499,10 @@ public class ZendeskTester: MonoBehaviour
 			}
 		});
 
-		ZendeskSDK.ZDKHelpCenterProvider.SubmitRecordArticleView("{id}", null, (result, error) => {
-			if (error != null) {
-				Debug.Log("ERROR: ZDKHelpCenterProvider.SubmitRecordArticleView - " + error.Description);
-			}
+		ZendeskSDK.ZDKHelpCenterProvider.SubmitRecordArticleView("{id}", "https://example.com", "Example", "fr-FR", (result, error) => {
+		 	if (error != null) {
+				Debug.Log("ERROR: ZDKHelpCenterProvider.SubmitRecordArticleView - " + error.Description); // TODO
+		 	}
 			else {
 				Debug.Log("ZDKHelpCenterProvider.SubmitRecordArticleView Successful Callback - " + MakeResultString(result));
 			}

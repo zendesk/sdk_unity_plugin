@@ -19,7 +19,7 @@ import com.zendesk.sdk.model.helpcenter.Article;
 import com.zendesk.sdk.model.request.CustomField;
 import com.zendesk.sdk.network.impl.UserAgentHeaderUtil;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
-import com.zendesk.sdk.requests.RequestActivity;
+import com.zendesk.sdk.support.ContactUsButtonVisibility;
 import com.zendesk.sdk.support.SupportActivity;
 import com.zendesk.sdk.support.ViewArticleActivity;
 import com.zendesk.service.ErrorResponse;
@@ -41,6 +41,10 @@ public class ZDK_Plugin extends UnityComponent {
 
     private static final String LOG_TAG = "ZDK_Plugin";
 
+    private static final int CONTACT_US_BUTTON_VISIBILITY_OFF = 0;
+    private static final int CONTACT_US_BUTTON_VISIBILITY_ARTICLE_LIST_ONLY = 1;
+    private static final int CONTACT_US_BUTTON_VISIBILITY_ARTICLE_LIST_ARTICLE_VIEW = 2;
+    
     public static ZDK_Plugin _instance;
     public static Object instance(){
         _instance = new ZDK_Plugin();
@@ -81,9 +85,8 @@ public class ZDK_Plugin extends UnityComponent {
     }
 
     //authenticate anonymous identity with details
-    public void authenticateAnonymousIdentity(String name, String email, String externalId){
+    public void authenticateAnonymousIdentity(String name, String email){
         Identity anonymousIdentity = new AnonymousIdentity.Builder().withEmailIdentifier(email)
-                .withExternalIdentifier(externalId)
                 .withNameIdentifier(name)
                 .build();
         ZendeskConfig.INSTANCE.setIdentity(anonymousIdentity);
@@ -141,26 +144,41 @@ public class ZDK_Plugin extends UnityComponent {
         getActivity().runOnUiThread(new Runnable() {
             public void run() {
                 new SupportActivity.Builder()
-                        .showContactUsButton(true)
                         .show(getActivity());
             }
         });
     }
 
     public void showHelpCenter(boolean collapseCategories, final boolean showContactUsButton, String[] labelNames, long[] sectionIds, long[] categoryIds, final String[] tags, final String additionalInfo, final String requestSubject) {
+        
+            showHelpCenter(collapseCategories, CONTACT_US_BUTTON_VISIBILITY_ARTICLE_LIST_ARTICLE_VIEW, labelNames, sectionIds, categoryIds, tags, additionalInfo, requestSubject, true);
+        }
+    
+    public void showHelpCenter(boolean collapseCategories, final int contactUsButtonVisibility,
+                                    String[] labelNames, long[] sectionIds, long[] categoryIds,
+                                    final String[] tags, final String additionalInfo, final String requestSubject,
+                                    boolean articleVoting) {
 
         if(!checkInitialized()) {
             return;
         }
 
         final SupportActivity.Builder builder = new SupportActivity.Builder();
+            
+        ContactUsButtonVisibility visibility = ContactUsButtonVisibility.ARTICLE_LIST_AND_ARTICLE;
+        if (contactUsButtonVisibility == CONTACT_US_BUTTON_VISIBILITY_OFF) {
+            visibility = ContactUsButtonVisibility.OFF;
+        } else if (contactUsButtonVisibility == CONTACT_US_BUTTON_VISIBILITY_ARTICLE_LIST_ONLY) {
+            visibility = ContactUsButtonVisibility.ARTICLE_LIST_ONLY;
+        }
 
         builder
                 .withCategoriesCollapsed(collapseCategories)
-                .showContactUsButton(showContactUsButton)
+                .withContactUsButtonVisibility(visibility)
                 .withLabelNames(labelNames)
                 .withArticlesForSectionIds(sectionIds)
-                .withArticlesForCategoryIds(categoryIds);
+                .withArticlesForCategoryIds(categoryIds)
+                .withArticleVoting(articleVoting);
 
 
         if (StringUtils.hasLength(additionalInfo) || StringUtils.hasLength(requestSubject) || CollectionUtils.isNotEmpty(tags)) {

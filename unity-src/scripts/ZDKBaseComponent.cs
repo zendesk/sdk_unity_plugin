@@ -7,12 +7,12 @@ using System.Runtime.InteropServices;
 namespace ZendeskSDK {
 
 	public abstract class ZDKBaseComponent {
-		
+
 		protected void Log(string message) {
 			if(Debug.isDebugBuild)
 				Debug.Log(GetLogTag() + "/" + message);
 		}
-		
+
 		protected virtual string GetLogTag() {
 			return GetType().Name;
 		}
@@ -22,7 +22,7 @@ namespace ZendeskSDK {
 		protected virtual string GetIOsMethodPrefix() {
 			return "_zendesk";
 		}
-		
+
 		#if UNITY_ANDROID
 		private AndroidJavaObject _provider;
 
@@ -34,7 +34,7 @@ namespace ZendeskSDK {
 			return _provider;
 		}
 		#endif
-		
+
 		/// <summary>
 		/// Call a native method requiring a callback that exists on iOS and Android
 		/// </summary>
@@ -43,7 +43,7 @@ namespace ZendeskSDK {
 		protected void Call<T>(String methodName, Action<T,ZDKError> callback, params object[] varargs) {
 			CallImpl(true, true, methodName, callback, varargs);
 		}
-		
+
 		/// <summary>
 		/// Call a native method requiring a callback that exists on iOS only
 		/// </summary>
@@ -52,7 +52,7 @@ namespace ZendeskSDK {
 		protected void CallIOS<T>(String methodName, Action<T,ZDKError> callback, params object[] varargs) {
 			CallImpl(true, false, methodName, callback, varargs);
 		}
-		
+
 		/// <summary>
 		/// Call a native method requiring a callback that exists on Android only
 		/// </summary>
@@ -61,11 +61,11 @@ namespace ZendeskSDK {
 		protected void CallAndroid<T>(String methodName, Action<T,ZDKError> callback, params object[] varargs) {
 			CallImpl(false, true, methodName, callback, varargs);
 		}
-		
+
 		private void CallImpl<T>(bool ios, bool android, String methodName, Action<T,ZDKError> callback, params object[] varargs) {
 			string methodNameCapped = methodName.Substring(0, 1).ToUpper() + methodName.Substring(1);
 			Log("Unity : " + GetLogTag() + ":" + methodNameCapped);
-			
+
 			#if UNITY_IPHONE
 			if (ios) {
 				Type thisType = this.GetType();
@@ -96,7 +96,7 @@ namespace ZendeskSDK {
 			}
 			#endif
 		}
-		
+
 		/// <summary>
 		/// Call a native method (with no callback) that exists on iOS and Android
 		/// </summary>
@@ -105,7 +105,7 @@ namespace ZendeskSDK {
 		protected void Do(String methodName, params object[] varargs) {
 			DoImpl(true, true, methodName, varargs);
 		}
-		
+
 		/// <summary>
 		/// Call a native method (with no callback) that exists on iOS only
 		/// </summary>
@@ -114,7 +114,7 @@ namespace ZendeskSDK {
 		protected void DoIOS(String methodName, params object[] varargs) {
 			DoImpl(true, false, methodName, varargs);
 		}
-		
+
 		/// <summary>
 		/// Call a native method (with no callback) that exists on Android only
 		/// </summary>
@@ -123,11 +123,11 @@ namespace ZendeskSDK {
 		protected void DoAndroid(String methodName, params object[] varargs) {
 			DoImpl(false, true, methodName, varargs);
 		}
-		
+
 		private void DoImpl(bool ios, bool android, String methodName, params object[] varargs) {
 			string methodNameCapped = methodName.Substring(0, 1).ToUpper() + methodName.Substring(1);
 			Log("Unity : " + GetLogTag() + ":" + methodNameCapped);
-			
+
 			#if UNITY_IPHONE
 			if (ios) {
 				Type thisType = this.GetType();
@@ -146,7 +146,7 @@ namespace ZendeskSDK {
 			}
 			#endif
 		}
-		
+
 		/// <summary>
 		/// Call a native method (with no callback) that exists on iOS and Android and return a value
 		/// </summary>
@@ -155,7 +155,7 @@ namespace ZendeskSDK {
 		protected T Get<T>(String methodName, params object[] varargs) {
 			return GetImpl<T>(true, true, methodName, varargs);
 		}
-		
+
 		/// <summary>
 		/// Call a native method (with no callback) that exists on iOS only and return a value
 		/// </summary>
@@ -164,7 +164,7 @@ namespace ZendeskSDK {
 		protected T GetIOS<T>(String methodName, params object[] varargs) {
 			return GetImpl<T>(true, false, methodName, varargs);
 		}
-		
+
 		/// <summary>
 		/// Call a native method (with no callback) that exists on Android only and return a value
 		/// </summary>
@@ -173,11 +173,11 @@ namespace ZendeskSDK {
 		protected T GetAndroid<T>(String methodName, params object[] varargs) {
 			return GetImpl<T>(false, true, methodName, varargs);
 		}
-		
+
 		private T GetImpl<T>(bool ios, bool android, String methodName, params object[] varargs) {
 			string methodNameCapped = methodName.Substring(0, 1).ToUpper() + methodName.Substring(1);
 			Log("Unity : " + GetLogTag() + ":" + methodNameCapped);
-			
+
 			#if UNITY_IPHONE
 			if (ios) {
 				Type thisType = this.GetType();
@@ -205,7 +205,7 @@ namespace ZendeskSDK {
 			return callbackId;
 		}
 		#endif
-		
+
 		public object doCall(MethodBase Method, object Target, object[] input) {
 			return Method.Invoke(Target, input);
 		}

@@ -4,9 +4,11 @@
 //
 
 #import "ZendeskCore.h"
+#import "ZDKHelpCenterDelegate.h"
 
 #pragma mark - ZDKHelpCenter
 
+ZDKHelpCenterDelegate *delegate;
 
 void _zendeskHelpCenterShowHelpCenter() {
     [ZDKHelpCenter setNavBarConversationsUIType: ZDKNavBarConversationsUITypeLocalizedLabel];
@@ -26,7 +28,7 @@ void _zendeskHelpCenterShowHelpCenter() {
 
 void _zendeskHelpCenterShowHelpCenterWithOptions(char* labels[], int labelsLength, BOOL includeAll,
                                       BOOL includeCategories, BOOL includeSections, char* ids[],
-                                      int idsLength, BOOL hideContactSupport) {
+                                      int idsLength, int hideContactSupport, BOOL articleVoting) {
 
     ZDKHelpCenterOverviewContentModel *defaultModel = [ZDKHelpCenterOverviewContentModel defaultContent];
 
@@ -58,10 +60,18 @@ void _zendeskHelpCenterShowHelpCenterWithOptions(char* labels[], int labelsLengt
 
         defaultModel.groupIds = idsArray;
     }
-
-    defaultModel.hideContactSupport = hideContactSupport;
-
-    [ZDKHelpCenter setNavBarConversationsUIType: ZDKNavBarConversationsUITypeLocalizedLabel];
+    
+    [ZDKConfig instance].articleVotingEnabled = articleVoting;
+    
+    if (hideContactSupport == 0) {
+        defaultModel.hideContactSupport = YES;
+    } else {
+        defaultModel.hideContactSupport = NO;
+    }
+    delegate = [[ZDKHelpCenterDelegate alloc] init];
+    delegate.whereActive = hideContactSupport;
+    [ZDKHelpCenter setUIDelegate:delegate];
+    
     ZendeskModalNavigationController *modalNavController = [[ZendeskModalNavigationController alloc] init];
     [ZDKHelpCenter pushHelpCenterOverview:modalNavController withContentModel:defaultModel];
 
