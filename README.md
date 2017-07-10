@@ -156,6 +156,12 @@ There is an an example of this in the `ZendeskTester.cs` script file.
 
 Notifications are a complex, OS-dependent feature. We provide the interfaces for enabling and disabling push. To handle incoming push messages you will need to configure the Urban Airship Unity SDK or the GCM / APNS SDKs.
 
+### Request Updates API
+
+In version 1.10.0.1 of the Support SDK, the [Request Updates API](https://developer.zendesk.com/embeddables/docs/android/show_open_requests#check-for-updates-on-your-requests) was added to allow querying for updates on requests without having to start the UI. Please note that the API is disabled when push notifications are enabled. Push integration should remove the need to query for request updates.
+
+See `ZDKRequestProvider.cs` for the Request Updates methods: `GetUpdatesForDevice` and `MarkRequestAsRead`.
+
 ## Interface customization
 
 ### iOS
