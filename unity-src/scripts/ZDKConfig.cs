@@ -213,7 +213,7 @@ namespace ZendeskSDK {
 		[DllImport("__Internal")]
 		private static extern void _zendeskConfigSetCoppaEnabled(bool enabled);
 		[DllImport("__Internal")]
-		private static extern void _zendeskConfigSetArticlevotingEnabled(bool enabled);
+		private static extern void _zendeskConfigSetArticleVotingEnabled(bool enabled);
 		[DllImport("__Internal")]
 		private static extern void _zendeskConfigSetUserLocale(string locale);
 		[DllImport("__Internal")]
