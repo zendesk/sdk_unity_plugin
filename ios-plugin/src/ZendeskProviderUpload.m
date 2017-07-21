@@ -16,13 +16,8 @@ void _zendeskUploadProviderUploadAttachment(char * gameObjectName, char * callba
         [contentTypeHolder rangeOfString:@"txt" options:NSCaseInsensitiveSearch].location != NSNotFound) {
         attachmentData = [GetStringParam(attachment) dataUsingEncoding:NSUTF8StringEncoding];
     }
-    else if ([contentTypeHolder rangeOfString:@"image" options:NSCaseInsensitiveSearch].location != NSNotFound ||
-             [contentTypeHolder rangeOfString:@"img" options:NSCaseInsensitiveSearch].location != NSNotFound) {
-        attachmentData = ZDKBase64DataFromString(GetStringParam(attachment));
-    }
     else {
-      NSLog(@"Warning: Upload type not recognized (%@), handling attachment as string", contentTypeHolder);
-      attachmentData = [GetStringParam(attachment) dataUsingEncoding:NSUTF8StringEncoding];
+        attachmentData = ZDKBase64DataFromString(GetStringParam(attachment));
     }
     
     ZDKDefCallback(ZDKUploadResponse*, [ZendeskJSON ZDKUploadResponseToJSON:result], "didUploadProviderUploadAttachment")
