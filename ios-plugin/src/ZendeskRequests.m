@@ -34,3 +34,7 @@ void _zendeskRequestsConfigureZDKRequests(char* requestSubject, char* tags[], in
 void _zendeskRequestsShowRequestCreation() {
     [ZDKRequests presentRequestCreationWithViewController:UnityGetGLViewController()];
 }
+
+void _zendeskRequestsShowRequestList() {
+    [ZDKRequests presentRequestListWithViewController:UnityGetGLViewController()];
+}

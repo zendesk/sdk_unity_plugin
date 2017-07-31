@@ -63,6 +63,13 @@ namespace ZendeskSDK {
 			instance().Do("showRequestCreation");
 		}
 
+		/// <summary>
+		/// Displays the request list screen.
+		/// </summary>
+		public static void ShowRequestList() {
+		    instance().Do("showRequestList");
+		}
+
 		public static void ShowRequestCreationWithConfig(ZendeskSDK.ZDKRequestCreationConfig config) {
 
 			if (config != null) {
@@ -82,6 +89,8 @@ namespace ZendeskSDK {
 		private static extern void _zendeskRequestsShowRequestCreation();
 		[DllImport("__Internal")]
 		private static extern void _zendeskRequestsConfigureZDKRequests(string requestSubject, string[] tags, int tagLength, string additionalInfo);
+		[DllImport("__Internal")]
+		private static extern void _zendeskRequestsShowRequestList();
 		#endif
 	}
 }
