@@ -232,4 +232,10 @@
     return [jsonObject toJSONString];
 }
 
++(NSNumber *)NSStringToNSNumber:(NSString *) numberAsString {
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    formatter.numberStyle = NSNumberFormatterDecimalStyle;
+    return [formatter numberFromString:numberAsString];
+}
+
 @end

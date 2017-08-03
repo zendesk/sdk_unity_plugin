@@ -27,4 +27,6 @@
 +(NSString *)ZDKPushRegistrationResponseToJSON:(ZDKPushRegistrationResponse *) response;
 +(NSString *)ZDKGenericResponseToJSON:(id) response;
 
++(NSNumber *)NSStringToNSNumber:(NSString *) numberAsString;
+
 @end

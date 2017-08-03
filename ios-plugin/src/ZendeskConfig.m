@@ -68,6 +68,10 @@ void _zendeskConfigSetCustomFields(char * customFieldData) {
     [ZDKConfig instance].customTicketFields = customFields;
 }
 
+void _zendeskConfigSetTicketFormId(char * ticketFormId) {
+    [ZDKConfig instance].ticketFormId = [ZendeskJSON NSStringToNSNumber:GetStringParam(ticketFormId)];
+}
+
 const char * _zendeskConfigGetCustomFields() {
     NSArray *customFields = [ZDKConfig instance].customTicketFields;
 
