@@ -8,7 +8,7 @@
 
 #pragma mark - ZDKConfig
 
-NSString * const UnityPluginVersionNumber = @"1.9.2.1";
+NSString * const UnityPluginVersionNumber = @"1.10.0.1";
 NSString * const UnityHeaderName = @"Unity";
 
 void _zendeskConfigInitialize(char* zendeskUrl, char* applicationId, char* oauthClientId) {
@@ -66,6 +66,10 @@ void _zendeskConfigSetCustomFields(char * customFieldData) {
     }];
 
     [ZDKConfig instance].customTicketFields = customFields;
+}
+
+void _zendeskConfigSetTicketFormId(char * ticketFormId) {
+    [ZDKConfig instance].ticketFormId = [ZendeskJSON NSStringToNSNumber:GetStringParam(ticketFormId)];
 }
 
 const char * _zendeskConfigGetCustomFields() {

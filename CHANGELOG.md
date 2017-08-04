@@ -1,3 +1,10 @@
+# v1.10.0.1
+
+## Support SDK versions
+
+* Updates native iOS Support SDK to [1.10.0.1](https://developer.zendesk.com/embeddables/docs/ios/version_information).
+* Updates native Android Support SDK to [1.10.0.1](https://developer.zendesk.com/embeddables/docs/android/version_information)
+
 # v1.9.2.1
 
 ## Support SDK versions

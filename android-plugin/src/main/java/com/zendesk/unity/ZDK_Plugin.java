@@ -337,6 +337,34 @@ public class ZDK_Plugin extends UnityComponent {
         });
     }
 
+    /**
+     *  Form id for ticket creation.
+     *
+     *  The ticket form id will be ignored if your Zendesk doesn't support it.  Currently
+     *  Enterprise and higher plans support this.
+     *
+     *  @param ticketFormId the form id for ticket creation
+     *
+     *  @see <a href="https://developer.zendesk.com/embeddables/docs/ios/providers#using-custom-fields-and-custom-forms">Custom fields and forms documentation</a>
+     *  @since 1.0.0.1
+     */
+    public void setTicketFormId(String ticketFormId) {
+        if (!checkInitialized()) {
+            return;
+        }
+
+        Long formId = null;
+
+        try {
+            formId = Long.valueOf(ticketFormId);
+        } catch (NumberFormatException e) {
+            Logger.e(LOG_TAG, "The supplied ticketFormId was not a number", e);
+        }
+
+        if (formId != null) {
+            ZendeskConfig.INSTANCE.setTicketFormId(formId);
+        }
+    }
 
     private Gson getGson() {
         return new GsonBuilder()

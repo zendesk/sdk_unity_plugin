@@ -140,6 +140,16 @@ namespace ZendeskSDK {
 			Instance.Do("setUserLocale", locale);
 		}
 
+        /// <summary>
+        /// Sets the ticket form ID to use when creating tickets
+        /// </summary>
+        public static void SetTicketFormId(string ticketFormId) {
+            if (!Instance.checkInitialized()) {
+                return;
+            }
+            Instance.Do("setTicketFormId", ticketFormId);
+        }
+
 		// Game Message Callbacks
 
 		public static void CallbackResponse(string results) {
@@ -222,6 +232,8 @@ namespace ZendeskSDK {
 		private static extern string _zendeskConfigGetCustomFields();
 		[DllImport("__Internal")]
 		private static extern void _zendeskConfigSetContactConfiguration(string[] tags, int tagsLength, string additionalInfo, string requestSubject);
+        [DllImport("__Internal")]
+        private static extern void _zendeskConfigSetTicketFormId(string ticketFormId);
 
 		#endif
 	}
