@@ -19,6 +19,7 @@ import com.zendesk.sdk.model.helpcenter.Article;
 import com.zendesk.sdk.model.request.CustomField;
 import com.zendesk.sdk.network.impl.UserAgentHeaderUtil;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
+import com.zendesk.sdk.requests.RequestActivity;
 import com.zendesk.sdk.support.ContactUsButtonVisibility;
 import com.zendesk.sdk.support.SupportActivity;
 import com.zendesk.sdk.support.ViewArticleActivity;
@@ -277,6 +278,17 @@ public class ZDK_Plugin extends UnityComponent {
                             }
                         }
                 ));
+            }
+        });
+    }
+
+    public void showRequestList() {
+        if(!checkInitialized())
+            return;
+
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                RequestActivity.startActivity(getActivity(), null);
             }
         });
     }

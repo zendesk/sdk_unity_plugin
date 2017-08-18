@@ -161,6 +161,10 @@ public class ZendeskTester: MonoBehaviour
 			ZendeskSDK.ZDKRequests.ShowRequestCreationWithConfig (config);
 		}
 
+		if (GUILayout.Button ("Show Request List", buttonWidth)) {
+        	ZendeskSDK.ZDKRequests.ShowRequestList ();
+        }
+
 		if (GUILayout.Button ("Show Rate My App", buttonWidth)) {
 			ZendeskSDK.ZDKRMA.ShowAlways ();
 		}
