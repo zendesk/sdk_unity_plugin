@@ -1,7 +1,6 @@
 package com.zendesk.unity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.util.Log;
 
 import com.google.gson.FieldNamingPolicy;
@@ -289,62 +288,6 @@ public class ZDK_Plugin extends UnityComponent {
         getActivity().runOnUiThread(new Runnable() {
             public void run() {
                 RequestActivity.startActivity(getActivity(), null);
-            }
-        });
-    }
-
-
-    // ##### ##### ##### ##### ##### ##### ##### #####
-    // ZDKRMA
-    // ##### ##### ##### ##### ##### ##### ##### #####
-
-    //Method to show RateMyApp
-    public void showInView(boolean showAlways){
-        if(!checkInitialized())
-            return;
-        final RMAConfig config= new RMAConfig();
-        //This will determine if which method the RateMyAppActivity will call
-        config.showAlways = showAlways;
-        config.dialogAction = null;
-
-        getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                //Need to open a Fragment Activity to be able to show RateMyApp dialogue
-                Intent requestIntent = new Intent(getActivity().getApplicationContext(), RateMyAppActivity.class);
-                //Lets put away the config object so we can use it later
-                requestIntent.putExtra("ConfigObject", config);
-                getActivity().startActivity(requestIntent);
-            }
-        });
-    }
-
-    //Method to show RateMyApp With Configurations
-    public void showInViewWithConfig(boolean showAlways, String[] tags, String additionalInfo,
-                                     boolean[] dialogActions, String requestSubject){
-        if(!checkInitialized())
-            return;
-        final RMAConfig config= new RMAConfig();
-        config.showAlways = showAlways;
-        //This object will contain extra information
-        config.showConfig = true;
-        //If it's not null then the user passed in values to the dialogAction array
-        if(dialogActions != null){
-            for(int i = 0; i < dialogActions.length; i++){
-                config.dialogAction[i] = dialogActions[i];
-            }
-        }
-        //Match the rest of the information passed in. It's fine if they are null
-        config.tags = tags;
-        config.additionalInfo = additionalInfo;
-        config.requestSubject = requestSubject;
-
-        getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                //Need to open a Fragment Activity to be able to show RateMyApp dialogue
-                Intent requestIntent = new Intent(getActivity().getApplicationContext(), RateMyAppActivity.class);
-                //Lets put away the config object so we can use it later
-                requestIntent.putExtra(RateMyAppActivity.EXTRA_CONFIG_OBJECT, config);
-                getActivity().startActivity(requestIntent);
             }
         });
     }
