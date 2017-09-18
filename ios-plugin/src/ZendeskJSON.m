@@ -188,21 +188,12 @@
     NSDictionary *conversationsSettings = [NSDictionary dictionaryWithObjectsAndKeys:
         [NSNumber numberWithBool:settings.appSettings.conversationsSettings.enabled], @"enabled",
         nil];
-    NSDictionary *rateMyAappSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSNumber numberWithBool:settings.appSettings.rateMyAappSettings.enabled], @"enabled",
-        settings.appSettings.rateMyAappSettings.visits, @"visits",
-        settings.appSettings.rateMyAappSettings.duration, @"duration",
-        settings.appSettings.rateMyAappSettings.delay, @"delay",
-        SafeNull(settings.appSettings.rateMyAappSettings.tags), @"tags",
-        SafeNull(settings.appSettings.rateMyAappSettings.appStoreUrl), @"appStoreUrl",
-        nil];
 
     NSDictionary *appSettings = [NSDictionary dictionaryWithObjectsAndKeys:
         settings.appSettings.authentication, @"authentication",
         helpCenterSettings, @"helpCenterSettings",
         contactUsSettings, @"contactUsSettings",
         conversationsSettings, @"conversationsSettings",
-        rateMyAappSettings, @"rateMyAappSettings",
         nil];
 
     NSDictionary *attachmentSettings = [NSDictionary dictionaryWithObjectsAndKeys:

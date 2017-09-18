@@ -59,10 +59,6 @@ public class ZendeskExample: MonoBehaviour
 		if (GUILayout.Button ("Request Creation")) {
 			ZendeskSDK.ZDKRequests.ShowRequestCreation ();
 		}
-
-		if (GUILayout.Button ("Rate My App")) {
-			ZendeskSDK.ZDKRMA.ShowAlways ();
-		}
 	}
 
 	void OnDisable() {
