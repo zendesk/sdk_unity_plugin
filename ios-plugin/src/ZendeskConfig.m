@@ -8,7 +8,7 @@
 
 #pragma mark - ZDKConfig
 
-NSString * const UnityPluginVersionNumber = @"1.10.0.1";
+NSString * const UnityPluginVersionNumber = @"1.11.0.1";
 NSString * const UnityHeaderName = @"Unity";
 
 void _zendeskConfigInitialize(char* zendeskUrl, char* applicationId, char* oauthClientId) {
