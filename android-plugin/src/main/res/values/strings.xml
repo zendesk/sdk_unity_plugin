@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Unity</string>
-    <string name="title_activity_rate_my_app">Rate our app</string>
 
     <dimen name="design_bottom_sheet_modal_peek_height">0dp</dimen>
 </resources>
