@@ -1,3 +1,10 @@
+# v1.11.2.1
+
+## Support SDK versions
+* Updates native iOS Support SDK to [1.11.2.1](https://developer.zendesk.com/embeddables/docs/ios/version_information).
+* Fixes iPhone X issues.
+* Allows attachments in landscape only apps for iOS 11.
+
 # v1.11.0.1
 
 # Support SDK versions
