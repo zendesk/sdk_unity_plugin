@@ -176,9 +176,9 @@ namespace ZendeskSDK {
 		}
 
 		/// <summary>
-		/// Pass the article ID
+		/// Displays a specific article when passed an article ID
 		/// </summary>
-		/// <param name="informationString"> article id.</param>
+		/// <param name="informationString"> article ID.</param>
 		public static void ViewSpecificArticle(string informationString){
 			instance().Do("viewArticle", informationString);
 		}
