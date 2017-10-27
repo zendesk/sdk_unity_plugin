@@ -176,10 +176,9 @@ namespace ZendeskSDK {
 		}
 
 		/// <summary>
-		/// Displays a specific article. In Android it does this by using the the id of the article.
-		/// In iOS it does this by using the article json returned from a callback to get articles.
+		/// Displays a specific article when passed an article ID
 		/// </summary>
-		/// <param name="informationString"> Android: article id. iOS: article json string</param>
+		/// <param name="informationString"> article ID.</param>
 		public static void ViewSpecificArticle(string informationString){
 			instance().Do("viewArticle", informationString);
 		}
@@ -195,7 +194,7 @@ namespace ZendeskSDK {
 			bool includeSections, string[] ids, int idsLength, int hideContactSupport, bool articleVoting);
 
 		[DllImport("__Internal")]
-		private static extern void _zendeskHelpCenterViewArticle(string jsonData);
+		private static extern void _zendeskHelpCenterViewArticle(string articleId);
 
 		[DllImport("__Internal")]
 		private static extern void _zendeskHelpCenterConfigureZDKRequests(string requestSubject, String[] tags, int tagsLength, String additionalData);
