@@ -84,25 +84,14 @@ void _zendeskHelpCenterShowHelpCenterWithOptions(char* labels[], int labelsLengt
 }
 
 
-void _zendeskHelpCenterViewArticle(char * jsonData){
-    NSString * jsonString = GetStringParam(jsonData);
-    NSData *objectData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:objectData
-                                                         options:0
-                                                           error:nil];
+void _zendeskHelpCenterViewArticle(char * articleId){
+    NSString * articleIdString = GetStringParam(articleId);
+
     
-    ZDKHelpCenterArticle *newArticle = [[ZDKHelpCenterArticle alloc]init];
-    [newArticle setSid: [json objectForKey:@"sid"]];
-    [newArticle setSection_id:[json objectForKey:@"section_id"]];
-    [newArticle setTitle:[json objectForKey:@"title"]];
-    [newArticle setBody:[json objectForKey:@"body"]];
-    [newArticle setAuthor_name:[json objectForKey:@"author_name"]];
-    [newArticle setArticle_details:[json objectForKey:@"article_details"]];
-    NSDate* date = [NSDate date];
-    [newArticle setCreated_at:date];
+    ZDKHelpCenterArticleViewModel *newArticle = [[ZDKHelpCenterArticleViewModel alloc]init];
+    newArticle.articleId = articleIdString;
     
-    ZDKArticleViewController *rootViewController = [[ZDKArticleViewController alloc] init];
-    rootViewController = [rootViewController initWithArticle:newArticle];
+    ZDKArticleViewController *rootViewController = [[ZDKArticleViewController alloc] initWithArticleViewModel:newArticle];
     
     ZendeskModalNavigationController *navController = [[ZendeskModalNavigationController alloc] initWithRootViewController:rootViewController];
     rootViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
@@ -119,7 +108,7 @@ void _zendeskHelpCenterConfigureZDKRequests(char* requestSubject, char* tags[], 
         if (requestSubject) {
             requestCreationConfig.subject = GetStringParam(requestSubject);
         }
-
+        
         if (tags && tagsLength > 0) {
             NSMutableArray *nsTags = [NSMutableArray new];
 
