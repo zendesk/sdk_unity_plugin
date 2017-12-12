@@ -22,6 +22,7 @@
 +(NSString *)ZDKSettingsToJSON:(ZDKSettings *) settings;
 +(NSString *)ZDKUploadResponseToJSON:(ZDKUploadResponse *) uploadResponse;
 +(NSString *)serializeJSONObject:(NSObject *) jsonObject;
++(NSString *)ZDKGetDeviceUpdatesToJSON:(ZDKRequestUpdates *) response;
 
 +(NSString *)ZDKVoteResponseToJSON:(ZDKHelpCenterArticleVote *) response;
 +(NSString *)ZDKPushRegistrationResponseToJSON:(ZDKPushRegistrationResponse *) response;

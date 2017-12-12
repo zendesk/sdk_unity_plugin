@@ -165,28 +165,6 @@ public class ZendeskTester: MonoBehaviour
         	ZendeskSDK.ZDKRequests.ShowRequestList ();
         }
 
-		if (GUILayout.Button ("Show Rate My App", buttonWidth)) {
-			ZendeskSDK.ZDKRMA.ShowAlways ();
-		}
-
-		if (GUILayout.Button ("Show Rate My App Config", buttonWidth)) {
-			string[] additionalTags = new string[2];
-			additionalTags[0] = "Additional Config Tag 0";
-			additionalTags[1] = "Additional Config Tag 1";
-			ZDKRMAAction[] dialogActions = new ZDKRMAAction[3];
-			dialogActions[0] = ZDKRMAAction.ZDKRMARateApp;
-			dialogActions[1] = ZDKRMAAction.ZDKRMASendFeedback;
-			dialogActions[2] = ZDKRMAAction.ZDKRMADontAskAgain;
-
-			ZDKRMAConfigObject config = new ZDKRMAConfigObject();
-			config.AdditionalTags = additionalTags;
-			config.AdditionalRequestInfo = "AdditionalRequestInfo TEST";
-			config.DialogActions = dialogActions;
-			config.SuccessImageName = null;
-			config.ErrorImageName = null;
-			ZendeskSDK.ZDKRMA.Show (config);
-		}
-
 		if (GUILayout.Button ("Get Ticket Form", buttonWidth)) {
 			int [] x = new int[1];
 			// x[0] = <your ticket form id>;
@@ -199,6 +177,7 @@ public class ZendeskTester: MonoBehaviour
 					Debug.Log("ZDKRequestProvider.GetTicketForms Successful Callback - " + MakeResultString(result));
 				}
 			});
+
 		}
 
 		if (GUILayout.Button ("Run Provider Tests", buttonWidth)) {
