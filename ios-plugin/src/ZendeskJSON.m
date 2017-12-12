@@ -110,6 +110,15 @@
     return [ZendeskJSON serializeJSONObject:dict];
 }
 
++(NSString *)ZDKGetDeviceUpdatesToJSON:(ZDKRequestUpdates *) response {
+    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+        [NSNumber numberWithBool:response.hasUpdates], @"hasUpdates",
+        response.updateCount, @"updateCount",
+        response.requestsWithUpdates, @"requestsWithUpdates",
+        nil];
+    return [ZendeskJSON serializeJSONObject:dict];
+}
+
 +(NSString *)ZDKGenericResponseToJSON:(id) response {
     NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
                           @([response statusCode]), @"statusCode",

@@ -79,7 +79,7 @@ void _zendeskRequestProviderGetTicketFormWithIds(char * gameObjectName, char * c
 
 void _zendeskRequestProviderGetUpdatesForDevice(char * gameObjectName, char * callbackId) {
     ZDKRequestProvider *provider = [ZDKRequestProvider new];
-    ZDKDefCallback(ZDKRequestUpdates*, [result toJSONString], "didRequestProviderGetUpdatesForDevice")
+    ZDKDefCallback(ZDKRequestUpdates*, [ZendeskJSON ZDKGetDeviceUpdatesToJSON:result], "didRequestProviderGetUpdatesForDevice")
     updatesDelegate = [provider getUpdatesForDevice:callback];
 }
 
