@@ -20,8 +20,8 @@ Alternatively, the 7zip command line application, `7za.exe`, can be used to perf
 
 ### iOS requirements
 
-- Xcode 8.0+
-- iOS 8 to 10
+- Xcode 9.0+
+- iOS 9 to 11
 - Android requirements also have to be met, even if only building the iOS plugin.
 
 ### Android requirements
