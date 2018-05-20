@@ -176,10 +176,15 @@ public class ZDK_Plugin extends UnityComponent {
                 .withCategoriesCollapsed(collapseCategories)
                 .withContactUsButtonVisibility(visibility)
                 .withLabelNames(labelNames)
-                .withArticlesForSectionIds(sectionIds)
-                .withArticlesForCategoryIds(categoryIds)
                 .withArticleVoting(articleVoting);
 
+        if (sectionIds != null && sectionIds.length > 0) {
+            builder.withArticlesForSectionIds(sectionIds);
+        }
+
+        if (categoryIds != null && categoryIds.length > 0) {
+            builder.withArticlesForCategoryIds(categoryIds);
+        }
 
         if (StringUtils.hasLength(additionalInfo) || StringUtils.hasLength(requestSubject) || CollectionUtils.isNotEmpty(tags)) {
 
