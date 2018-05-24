@@ -50,7 +50,9 @@ public class ZDK_Plugin extends UnityComponent {
     
     public static ZDK_Plugin _instance;
     public static Object instance(){
-        _instance = new ZDK_Plugin();
+        if (_instance == null) {
+            _instance = new ZDK_Plugin();
+        }
         return _instance;
     }
 
