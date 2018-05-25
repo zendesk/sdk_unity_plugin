@@ -88,7 +88,7 @@ public class RequestProvider extends UnityComponent {
                 new ZendeskUnityCallback<Comment>(gameObjectName, callbackId, "didRequestProviderAddCommentWithAttachments"));
     }
 
-    public void getTicketFormWithIds(final String gameObjectName, String callbackId, int[] ticketFormsIds, int formsCount){
+    public void getTicketFormWithIds(final String gameObjectName, String callbackId, long[] ticketFormsIds, int formsCount){
         
         Long[] result = new Long[formsCount];
         for (int i = 0; i < formsCount; i++) {
