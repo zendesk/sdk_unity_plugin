@@ -145,9 +145,9 @@ namespace ZendeskSDK {
 		/// </summary>
 		/// <param name="ticketForms">List of ticket form ids to get.</param>
 		/// <param name="callback">Callback that will deliver a List of Ticket Forms.</param>
-		public static void GetTicketForms(int[] ticketForms, Action<ArrayList,ZDKError> callback) {
+		public static void GetTicketForms(long[] ticketForms, Action<ArrayList,ZDKError> callback) {
 			if (ticketForms == null)
-				ticketForms = new int[0];
+				ticketForms = new long[0];
 			instance().Call("getTicketFormWithIds", callback, ticketForms, ticketForms.Length);
 		}
 
@@ -184,7 +184,7 @@ namespace ZendeskSDK {
 		[DllImport("__Internal")]
 		private static extern void _zendeskRequestProviderAddCommentWithAttachments(string gameObjectName, string callbackId, string comment, string requestId, string[] attachments, int attachmentsLength);
 		[DllImport("__Internal")]
-		private static extern void _zendeskRequestProviderGetTicketFormWithIds(string gameObjectName, string callbackId, int[] ticketFormsIds, int formsCount);
+		private static extern void _zendeskRequestProviderGetTicketFormWithIds(string gameObjectName, string callbackId, long[] ticketFormsIds, int formsCount);
 		[DllImport("__Internal")]
 		private static extern void _zendeskRequestProviderGetUpdatesForDevice(string gameObjectName, string callbackId);
 		[DllImport("__Internal")]
