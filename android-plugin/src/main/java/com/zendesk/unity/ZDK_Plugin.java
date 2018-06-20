@@ -44,10 +44,15 @@ public class ZDK_Plugin extends UnityComponent {
     private static final int CONTACT_US_BUTTON_VISIBILITY_OFF = 0;
     private static final int CONTACT_US_BUTTON_VISIBILITY_ARTICLE_LIST_ONLY = 1;
     private static final int CONTACT_US_BUTTON_VISIBILITY_ARTICLE_LIST_ARTICLE_VIEW = 2;
+
+    // Original behavior was to have article voting enabled
+    private boolean _articleVotingEnabled = true;
     
     public static ZDK_Plugin _instance;
     public static Object instance(){
-        _instance = new ZDK_Plugin();
+        if (_instance == null) {
+            _instance = new ZDK_Plugin();
+        }
         return _instance;
     }
 
@@ -124,6 +129,9 @@ public class ZDK_Plugin extends UnityComponent {
         }
     }
 
+    public void setArticleVotingEnabled(boolean enabled) {
+        _articleVotingEnabled = enabled;
+    }
 
     // ##### ##### ##### ##### ##### ##### ##### #####
     // ZDKLogger
@@ -231,7 +239,12 @@ public class ZDK_Plugin extends UnityComponent {
         provider.getArticle(idLong, new ZendeskCallback<Article>() {
             @Override
             public void onSuccess(Article article) {
-                ViewArticleActivity.startActivity(getActivity(), article);
+                ViewArticleActivity.startActivity(
+                        getActivity(),
+                        article,
+                        true, // By default enable add ticket button, might allow customization later
+                        null, // TODO: add further customization here
+                        _articleVotingEnabled);
             }
 
             @Override
