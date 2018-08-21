@@ -6,6 +6,8 @@ This is a Unity plugin that wraps the iOS and Android Zendesk Support SDKs. Revi
 This is an open source project, and is not directly supported by Zendesk. Check out the [CONTRIBUTING](./CONTRIBUTING.md) page to find out how you can make changes or report issues.
 
 ## Requirements
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fzendesk%2Fsdk_unity_plugin.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fzendesk%2Fsdk_unity_plugin?ref=badge_shield)
+
 
 - Unity 5.x
 
@@ -247,3 +249,7 @@ https://developer.zendesk.com/embeddables/docs/android/localize_text
 However, the ticket will still be successfully created, and will be present in the user's ticket list, though it will be missing any attachments added before the rotation.
 3. Unity 3D fails to detect the Android SDK correctly when Android SDK Tools 25.3.1 is installed. Tracked on [code.google.com](https://code.google.com/p/android/issues/detail?id=235455).
 4. The SDK can crash when deployed onto Android 4.0.3 devices. This occurs when your application is built with the `Internal (default)` build system. Building with gradle will fix this issue.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fzendesk%2Fsdk_unity_plugin.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fzendesk%2Fsdk_unity_plugin?ref=badge_large)
