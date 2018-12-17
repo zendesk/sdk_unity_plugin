@@ -152,7 +152,7 @@ Enabling and disabling push notifications for the current user is pretty straigh
         });
     }
 
-There is an an example of this in the `ZendeskTester.cs` script file.
+There is an example of this in the `ZendeskTester.cs` script file.
 
 Notifications are a complex, OS-dependent feature. We provide the interfaces for enabling and disabling push. To handle incoming push messages you will need to configure the Urban Airship Unity SDK or the GCM / APNS SDKs.
 
