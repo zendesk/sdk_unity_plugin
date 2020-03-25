@@ -310,6 +310,35 @@ public class ZDK_Plugin extends UnityComponent {
         });
     }
 
+    public void showRequestListWithConfig(final String requestSubject, final String[] tags, final String additionalInfo) {
+        if (!checkInitialized())
+            return;
+
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                RequestActivity.startActivity(getActivity(), new WrappedZendeskFeedbackConfiguration(
+                        new ZendeskFeedbackConfiguration() {
+                            @Override
+                            public List<String> getTags() {
+                                return tags == null ? null : Arrays.asList(tags);
+                            }
+
+                            @Override
+                            public String getAdditionalInfo() {
+                                return additionalInfo;
+                            }
+
+                            @Override
+                            public String getRequestSubject() {
+                                return requestSubject;
+                            }
+                        }
+                ));
+            }
+        });
+    }
+
+
     /**
      *  Form id for ticket creation.
      *

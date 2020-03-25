@@ -69,6 +69,19 @@ namespace ZendeskSDK {
 		public static void ShowRequestList() {
 		    instance().Do("showRequestList");
 		}
+		
+		public static void ShowRequestListWithConfig(ZendeskSDK.ZDKRequestCreationConfig config) {
+			if (config != null) {
+				#if UNITY_IPHONE
+				_zendeskRequestsConfigureZDKRequests(config.RequestSubject,
+					config.Tags, config.Tags != null ? config.Tags.Length : 0,
+					config.AdditionalRequestInfo);
+				_zendeskRequestsShowRequestList();
+				#elif UNITY_ANDROID
+				instance().DoAndroid("showRequestListWithConfig", config.RequestSubject, config.Tags, config.AdditionalRequestInfo);
+				#endif
+			}
+		}
 
 		public static void ShowRequestCreationWithConfig(ZendeskSDK.ZDKRequestCreationConfig config) {
 
