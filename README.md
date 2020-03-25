@@ -1,5 +1,17 @@
-Zendesk Unity3D Plugin
-======================
+# Zendesk Native Unity SDK EAP (March 2020)
+
+Zendesk is working to launch a native Unity SDK, an important step towards our mission of enabling the best in-app, personalized embedded customer experiences for mobile-focused businesses. This new SDK will allow your game development teams to integrate the complete Zendesk support capabilities natively into Unity 3D game. It is an easy drag-and-drop experience.
+
+We're now about to release the first version of the Zendesk native Unity SDK. However, before we roll it out to General Availability, we're offering this Early Access Program to give some of our customers upfront access to the new SDK. The objective is to work closely with you to make improvements to the integration experience and get your feedback as we continue to build the core functionality.
+
+All you have to do to join this EAP is fill in some information and you're ready to go! We'll review all responses and then select eligible partners for the program.
+
+Sign up at: [http://bit.ly/zenunityeap](http://bit.ly/zenunityeap)
+
+
+# Zendesk Unity3D Plugin
+
+The documentation below is for the Unity wrapper SDK, and not the EAP described above. Note that the EAP is written in C# and uses native Unity APIs.
 
 This is a Unity plugin that wraps the iOS and Android Zendesk Support SDKs. Review the [CHANGELOG](./CHANGELOG.md) for details about upgrading from previous versions.
 
