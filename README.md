@@ -1,4 +1,4 @@
-# Zendesk Native Unity SDK EAP (March 2020)
+# Zendesk Native Unity SDK EAP (Q2 2020)
 
 Zendesk is working to launch a native Unity SDK, an important step towards our mission of enabling the best in-app, personalized embedded customer experiences for mobile-focused businesses. This new SDK will allow your game development teams to integrate the complete Zendesk support capabilities natively into Unity 3D game. It is an easy drag-and-drop experience.
 
