@@ -1,12 +1,20 @@
-# Zendesk Native Unity SDK EAP (Q2 2020)
+# Zendesk Native Unity SDK EAP (Updated June 2020)
 
-Zendesk is working to launch a native Unity SDK, an important step towards our mission of enabling the best in-app, personalized embedded customer experiences for mobile-focused businesses. This new SDK will allow your game development teams to integrate the complete Zendesk support capabilities natively into Unity 3D game. It is an easy drag-and-drop experience.
+Zendesk is working to launch a native Unity3D SDK. This was driven by our mission to enable the best in-app, personalized embedded customer experiences for mobile-focused businesses.
 
-We're now about to release the first version of the Zendesk native Unity SDK. However, before we roll it out to General Availability, we're offering this Early Access Program to give some of our customers upfront access to the new SDK. The objective is to work closely with you to make improvements to the integration experience and get your feedback as we continue to build the core functionality.
+We're now about to release the first version of the Zendesk SDK for Unity. However, before we roll it out to everyone, we're offering this Early Access Program to give some of our customers early access to the new SDK. The objective is to work closely with you to make improvements to the integration experience and get your feedback as we continue to build the core functionality.
+
+Zendesk maintained an open-source, platform-proprietary Unity3D wrapper for a while before dropping support for it in 2016. Since then, we listened to your feedback, feature requests, and pain points using this wrapper and similar solutions.
+
+Based on this feedback, we built the first-ever native Unity Support SDK. We established three core priorities:
+
+* Customer Focus: We are tuned to the needs of you, our customers, and are pairing this with our years of experience building iOS and Android SDKs. 
+* All Native: Every Support SDK built so far has been wrapped iOS or Android SDKs, not a native Unity SDK. This native solution will keep your customers engaged in the game rather than diverting them to external email service and will keep your developers focused on game development rather than compatibility issues.
+* Simplicity: Game developers are busy making games and that is what they should be doing. Using our drag-drop solution will make integrating Zendesk customer service capabilities very simple and straightforward.
 
 All you have to do to join this EAP is fill in some information and you're ready to go! We'll review all responses and then select eligible partners for the program.
 
-Sign up at: [http://bit.ly/zenunityeap](http://bit.ly/zenunityeap)
+Read the [EAP annoucement](https://develop.zendesk.com/hc/en-us/community/posts/360045998134-Announcing-Zendesk-SDK-for-Unity-Early-Access-Program-), and sign up at: [http://bit.ly/zenunityeap](http://bit.ly/zenunityeap)
 
 
 # Zendesk Unity3D Plugin
