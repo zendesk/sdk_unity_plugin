@@ -1,8 +1,8 @@
 # Zendesk Native Unity SDK EAP (Updated June 2020)
 
-Zendesk is working to launch a native Unity3D SDK. This was driven by our mission to enable the best in-app, personalized embedded customer experiences for mobile-focused businesses.
+Zendesk has worked to launch a native Unity3D SDK. This was driven by our mission to enable the best in-app, personalized embedded customer experiences for mobile-focused businesses.
 
-We're now about to release the first version of the Zendesk SDK for Unity. However, before we roll it out to everyone, we're offering this Early Access Program to give some of our customers early access to the new SDK. The objective is to work closely with you to make improvements to the integration experience and get your feedback as we continue to build the core functionality.
+We have now released the first version of the Zendesk SDK for Unity. However, before we roll it out to everyone, we're offering this Early Access Program to give some of our customers early access to the new SDK. The objective is to work closely with you to make improvements to the integration experience and get your feedback as we continue to build the core functionality.
 
 Zendesk maintained an open-source, platform-proprietary Unity3D wrapper for a while before dropping support for it in 2016. Since then, we listened to your feedback, feature requests, and pain points using this wrapper and similar solutions.
 
