@@ -1,3 +1,5 @@
+**Important** This repository is not for Zendesk's new native Unity SDK wich is currently available through an EAP.
+
 # Zendesk Native Unity SDK EAP (Updated June 2020)
 
 Zendesk has worked to launch a native Unity3D SDK. This was driven by our mission to enable the best in-app, personalized embedded customer experiences for mobile-focused businesses.
