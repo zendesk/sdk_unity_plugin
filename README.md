@@ -1,4 +1,17 @@
-**Important** This repository is not for Zendesk's new native Unity SDK wich is currently available through an EAP.
+# UPDATE
+
+The Zendesk SDK for Unity is now generally available.
+
+We’re excited to announce that the new Zendesk SDK for Unity is now generally available. This SDK lets you bring the power of Zendesk to your Unity mobile games. 
+
+With this SDK, your players can seamlessly receive support in-game. Players can create tickets, converse with your agents, and browse help center articles – all without leaving your app. This SDK is the first customer service SDK to be verified by Unity to work seamlessly with Unity games. 
+
+
+Read the detailed documentation for the Zendesk SDK for Unity: https://developer.zendesk.com/embeddables/docs/unity-native-sdk/overview
+
+Visit our Unity Asset Store page to get the package and start using the SDK in your games:  https://assetstore.unity.com/packages/add-ons/zendesk-sdk-for-unity-184352
+
+**Important** This repository is not for Zendesk's new native Unity SDK.
 
 # Zendesk Native Unity SDK EAP (Updated June 2020)
 
