@@ -63,7 +63,7 @@ namespace ZendeskSDK {
 		}
 
 		private void CallImpl<T>(bool ios, bool android, String methodName, Action<T,ZDKError> callback, params object[] varargs) {
-			string methodNameCapped = methodName.Substring(0, 1).ToUpper() + methodName.Substring(1);
+			string methodNameCapped = methodName.Substring(0, 1).ToUpperInvariant() + methodName.Substring(1);
 			Log("Unity : " + GetLogTag() + ":" + methodNameCapped);
 
 			#if UNITY_IPHONE
@@ -125,7 +125,7 @@ namespace ZendeskSDK {
 		}
 
 		private void DoImpl(bool ios, bool android, String methodName, params object[] varargs) {
-			string methodNameCapped = methodName.Substring(0, 1).ToUpper() + methodName.Substring(1);
+			string methodNameCapped = methodName.Substring(0, 1).ToUpperInvariant() + methodName.Substring(1);
 			Log("Unity : " + GetLogTag() + ":" + methodNameCapped);
 
 			#if UNITY_IPHONE
@@ -175,7 +175,7 @@ namespace ZendeskSDK {
 		}
 
 		private T GetImpl<T>(bool ios, bool android, String methodName, params object[] varargs) {
-			string methodNameCapped = methodName.Substring(0, 1).ToUpper() + methodName.Substring(1);
+			string methodNameCapped = methodName.Substring(0, 1).ToUpperInvariant() + methodName.Substring(1);
 			Log("Unity : " + GetLogTag() + ":" + methodNameCapped);
 
 			#if UNITY_IPHONE
